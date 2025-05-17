@@ -1,0 +1,312 @@
+{
+  "tables": {
+    "users": {
+      "fields": [
+        {
+          "Field": "id",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "name",
+          "Type": "varchar(20)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "loginId",
+          "Type": "varchar(64)",
+          "Null": "NO",
+          "Key": "UNI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "group",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "password",
+          "Type": "varchar(64)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "role",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "state",
+          "Type": "tinyint(3) unsigned",
+          "Null": "NO",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "joinAt",
+          "Type": "timestamp",
+          "Null": "NO",
+          "Key": "",
+          "Default": "current_timestamp()",
+          "Extra": ""
+        },
+        {
+          "Field": "leaveAt",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "signedAt",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "lastIp",
+          "Type": "varchar(20)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ]
+    },
+    "players": {
+      "fields": [
+        {
+          "Field": "id",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "account",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "userId",
+          "Type": "varchar(64)",
+          "Null": "NO",
+          "Key": "UNI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "name",
+          "Type": "varchar(20)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "agent",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "status",
+          "Type": "smallint(5) unsigned",
+          "Null": "NO",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "note",
+          "Type": "varchar(300)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "joinPathType",
+          "Type": "varchar(16)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "joinPath",
+          "Type": "varchar(64)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "createdAt",
+          "Type": "timestamp",
+          "Null": "NO",
+          "Key": "",
+          "Default": "current_timestamp()",
+          "Extra": ""
+        },
+        {
+          "Field": "updatedAt",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "lastPlayDate",
+          "Type": "date",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "phoneName",
+          "Type": "varchar(50)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "site",
+          "Type": "varchar(16)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "adjustType",
+          "Type": "tinyint(3) unsigned",
+          "Null": "NO",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "rewardRate",
+          "Type": "float",
+          "Null": "NO",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "flowFeatures",
+          "Type": "tinyint(3) unsigned",
+          "Null": "NO",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        }
+      ]
+    },
+    "customers": {
+      "fields": [
+        {
+          "Field": "id",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "sn",
+          "Type": "varchar(20)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "name",
+          "Type": "varchar(50)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "createdAt",
+          "Type": "timestamp",
+          "Null": "NO",
+          "Key": "",
+          "Default": "current_timestamp()",
+          "Extra": ""
+        },
+        {
+          "Field": "updatedAt",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "setId",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "grade",
+          "Type": "int(10) unsigned",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "flags",
+          "Type": "tinyint(3) unsigned",
+          "Null": "NO",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "code",
+          "Type": "varchar(16)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ]
+    }
+  }
+}
