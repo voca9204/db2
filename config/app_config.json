@@ -1,0 +1,25 @@
+{
+  "display": {
+    "hide_player_names": true,
+    "hide_player_numbers": true,
+    "id_masking_char": "***",
+    "mask_partial": true,
+    "sensitive_fields": [
+      "name",
+      "player_name",
+      "account",
+      "email",
+      "phone",
+      "phoneName",
+      "contact",
+      "id",
+      "player_id",
+      "user_id"
+    ],
+    "hide_phone_numbers": true
+  },
+  "security": {
+    "data_masking_enabled": true,
+    "log_sensitive_data": false
+  }
+}

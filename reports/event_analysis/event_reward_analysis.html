@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 지급 분석 보고서: 입금 없이 배팅한 프로모션 수혜자</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            margin-top: 30px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .summary-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .info {
+            color: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>이벤트 지급 분석 보고서: 입금 없이 배팅한 프로모션 수혜자</h1>
+        
+        <div class="summary-box">
+            <h2>요약</h2>
+            <p><strong>분석 대상:</strong> 이벤트 지급을 1회 이상 받은 후, 추가 입금 없이 배팅을 진행한 사용자</p>
+            <p><strong>분석 기간:</strong> 전체 데이터 (각 사용자별 첫 이벤트 지급 이후)</p>
+            <p><strong>총 수혜자 수:</strong> <span class="highlight">93명</span></p>
+            <p><strong>총 이벤트 지급 횟수:</strong> 231회</p>
+            <p><strong>총 이벤트 지급 금액:</strong> <span class="highlight">49,068.00</span></p>
+            <p><strong>총 유효 배팅 금액:</strong> <span class="highlight">363,821.14</span></p>
+            <p><strong>사용자당 평균 배팅 금액:</strong> 3,912.06</p>
+            <p><strong>최대 배팅 금액:</strong> 55,943.50 (플레이어 ID: 2311)</p>
+            <p><strong>최소 배팅 금액:</strong> 2.00 (플레이어 ID: 3243)</p>
+        </div>
+
+        <h2>분석 방법</h2>
+        <p>본 분석은 다음과 같은 조건을 충족하는 사용자를 대상으로 진행되었습니다:</p>
+        <ol>
+            <li>이벤트 지급을 1회 이상 받은 사용자 (appliedAt IS NOT NULL 조건 활용)</li>
+            <li>첫 이벤트 지급 이후 유효 배팅 기록이 있는 사용자</li>
+            <li>첫 이벤트 지급 이후 입금 기록이 없는 사용자</li>
+        </ol>
+        <p class="note">참고: 기존 분석에서 이벤트 지급 횟수 조건을 2회 이상에서 1회 이상으로 변경하여 분석하였습니다.</p>
+
+        <h2>상위 유효 배팅 사용자</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>사용자 ID</th>
+                    <th>이벤트 지급 횟수</th>
+                    <th>이벤트 지급 총액</th>
+                    <th>유효 배팅 금액</th>
+                    <th>마지막 접속일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>liaw004 (2311)</td>
+                    <td>1</td>
+                    <td>300.00</td>
+                    <td>55,943.50</td>
+                    <td>2025-04-30</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>mdyaw005 (3268)</td>
+                    <td>2</td>
+                    <td>422.00</td>
+                    <td>40,657.40</td>
+                    <td>2025-03-14</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>ya3125 (2922)</td>
+                    <td>7</td>
+                    <td>1,155.00</td>
+                    <td>20,970.00</td>
+                    <td>2025-03-06</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>ub3012 (2964)</td>
+                    <td>2</td>
+                    <td>300.00</td>
+                    <td>16,748.00</td>
+                    <td>2025-03-18</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>yi3109 (3481)</td>
+                    <td>1</td>
+                    <td>1,000.00</td>
+                    <td>16,184.00</td>
+                    <td>2025-03-31</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>qul3804 (3245)</td>
+                    <td>5</td>
+                    <td>1,266.00</td>
+                    <td>12,914.00</td>
+                    <td>2025-04-29</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>ui3009 (3068)</td>
+                    <td>3</td>
+                    <td>622.00</td>
+                    <td>11,862.00</td>
+                    <td>2025-02-13</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>ya3008 (2968)</td>
+                    <td>4</td>
+                    <td>422.00</td>
+                    <td>11,350.00</td>
+                    <td>2025-03-04</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>xja3851 (3287)</td>
+                    <td>3</td>
+                    <td>322.00</td>
+                    <td>10,299.00</td>
+                    <td>2025-04-11</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>ui3807 (3343)</td>
+                    <td>3</td>
+                    <td>755.00</td>
+                    <td>9,669.00</td>
+                    <td>2024-12-26</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>이벤트 지급 횟수별 분포</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>이벤트 지급 횟수</th>
+                    <th>사용자 수</th>
+                    <th>총 지급 금액</th>
+                    <th>평균 배팅 금액</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1회</td>
+                    <td>30</td>
+                    <td>6,055.00</td>
+                    <td>3,155.32</td>
+                </tr>
+                <tr>
+                    <td>2회</td>
+                    <td>29</td>
+                    <td>9,965.00</td>
+                    <td>2,275.14</td>
+                </tr>
+                <tr>
+                    <td>3회</td>
+                    <td>18</td>
+                    <td>8,603.00</td>
+                    <td>3,425.62</td>
+                </tr>
+                <tr>
+                    <td>4회 이상</td>
+                    <td>16</td>
+                    <td>24,445.00</td>
+                    <td>8,254.38</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>마지막 접속일 기준 분포</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>마지막 접속 기간</th>
+                    <th>사용자 수</th>
+                    <th>총 이벤트 금액</th>
+                    <th>평균 배팅 금액</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>최근 7일 이내</td>
+                    <td>8</td>
+                    <td>2,800.00</td>
+                    <td>9,154.25</td>
+                </tr>
+                <tr>
+                    <td>최근 30일 이내</td>
+                    <td>31</td>
+                    <td>11,266.00</td>
+                    <td>5,232.68</td>
+                </tr>
+                <tr>
+                    <td>최근 60일 이내</td>
+                    <td>27</td>
+                    <td>15,966.00</td>
+                    <td>4,087.33</td>
+                </tr>
+                <tr>
+                    <td>60일 이상 전</td>
+                    <td>27</td>
+                    <td>19,036.00</td>
+                    <td>2,122.82</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>결론 및 인사이트</h2>
+        <div class="summary-box">
+            <ol>
+                <li><strong>높은 투자 대비 수익:</strong> 총 이벤트 지급 금액(49,068.00)에 비해 총 유효 배팅 금액(363,821.14)이 약 7.4배 높게 나타났습니다. 이는 이벤트 지급이 사용자의 배팅 활동을 촉진하는 데 효과적임을 시사합니다.</li>
+                <li><strong>다양한 사용자 행동 패턴:</strong> 이벤트 지급을 1회만 받은 사용자들도 상당한 배팅 활동을 보이며, 이벤트 지급 횟수가 증가할수록 평균 배팅 금액이 대체로 증가하는 경향을 보입니다.</li>
+                <li><strong>최근 활동 사용자 가치:</strong> 최근 접속한 사용자일수록 평균 배팅 금액이 높게 나타나, 이벤트 지급 효과가 활성 사용자에게 더 크게 작용함을 알 수 있습니다.</li>
+                <li><strong>효율적인 이벤트 전략:</strong> 이벤트 지급 후 추가 입금 없이도 배팅을 계속하는 사용자들이 적지 않은 수(93명)로 존재하며, 이는 이벤트 지급이 추가 입금 없이도 플랫폼 활동을 유지하게 하는 효과가 있음을 보여줍니다.</li>
+            </ol>
+        </div>
+
+        <h2>제안 사항</h2>
+        <ol>
+            <li><strong>맞춤형 이벤트 전략:</strong> 입금 없이 배팅을 지속하는 사용자들을 위한, 배팅 활동에 비례한 보상 체계를 강화하는 것이 효과적일 수 있습니다.</li>
+            <li><strong>유저 세그먼트 관리:</strong> 이벤트 지급 횟수와 배팅 패턴에 따라 사용자를 세분화하여 각 그룹에 최적화된 프로모션을 제공하는 전략을 고려해볼 수 있습니다.</li>
+            <li><strong>상위 배팅 사용자 VIP 전환:</strong> 입금 없이도 높은 배팅 활동을 보이는 상위 사용자들을 VIP 프로그램으로 전환하여 플랫폼 충성도를 높이는 방안을 고려해볼 수 있습니다.</li>
+            <li><strong>이벤트 ROI 분석:</strong> 이벤트 지급 금액 대비 유효 배팅 금액의 비율을 지속적으로 모니터링하여 이벤트의 ROI를 최적화하는 방향으로 프로모션 전략을 조정하는 것이 권장됩니다.</li>
+        </ol>
+        
+        <p class="note">이 보고서는 2025년 5월 17일에 생성되었으며, 분석 시점의 데이터를 기반으로 합니다.</p>
+    </div>
+</body>
+</html>

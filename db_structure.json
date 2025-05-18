@@ -1,312 +1,3923 @@
 {
-  "tables": {
-    "users": {
-      "fields": [
-        {
-          "Field": "id",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "PRI",
-          "Default": null,
-          "Extra": "auto_increment"
-        },
-        {
-          "Field": "name",
-          "Type": "varchar(20)",
-          "Null": "NO",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "loginId",
-          "Type": "varchar(64)",
-          "Null": "NO",
-          "Key": "UNI",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "group",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "MUL",
-          "Default": "0",
-          "Extra": ""
-        },
-        {
-          "Field": "password",
-          "Type": "varchar(64)",
-          "Null": "NO",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "role",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "",
-          "Default": "0",
-          "Extra": ""
-        },
-        {
-          "Field": "state",
-          "Type": "tinyint(3) unsigned",
-          "Null": "NO",
-          "Key": "",
-          "Default": "0",
-          "Extra": ""
-        },
-        {
-          "Field": "joinAt",
-          "Type": "timestamp",
-          "Null": "NO",
-          "Key": "",
-          "Default": "current_timestamp()",
-          "Extra": ""
-        },
-        {
-          "Field": "leaveAt",
-          "Type": "timestamp",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "signedAt",
-          "Type": "timestamp",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "lastIp",
-          "Type": "varchar(20)",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
+  "abnormal_contacts": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "dateCode",
+        "Type": "char(12)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "sn",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "contact",
+        "Type": "varchar(50)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "originSet",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "originSn",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "abnormalType",
+        "Type": "int(10) unsigned",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "originSet",
+        "references": {
+          "table": "customer_sets",
+          "column": "id"
         }
-      ]
-    },
-    "players": {
-      "fields": [
-        {
-          "Field": "id",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "PRI",
-          "Default": null,
-          "Extra": "auto_increment"
-        },
-        {
-          "Field": "account",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "MUL",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "userId",
-          "Type": "varchar(64)",
-          "Null": "NO",
-          "Key": "UNI",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "name",
-          "Type": "varchar(20)",
-          "Null": "NO",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "agent",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "MUL",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "status",
-          "Type": "smallint(5) unsigned",
-          "Null": "NO",
-          "Key": "",
-          "Default": "0",
-          "Extra": ""
-        },
-        {
-          "Field": "note",
-          "Type": "varchar(300)",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "joinPathType",
-          "Type": "varchar(16)",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "joinPath",
-          "Type": "varchar(64)",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "createdAt",
-          "Type": "timestamp",
-          "Null": "NO",
-          "Key": "",
-          "Default": "current_timestamp()",
-          "Extra": ""
-        },
-        {
-          "Field": "updatedAt",
-          "Type": "timestamp",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "lastPlayDate",
-          "Type": "date",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "phoneName",
-          "Type": "varchar(50)",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "site",
-          "Type": "varchar(16)",
-          "Null": "NO",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "adjustType",
-          "Type": "tinyint(3) unsigned",
-          "Null": "NO",
-          "Key": "",
-          "Default": "0",
-          "Extra": ""
-        },
-        {
-          "Field": "rewardRate",
-          "Type": "float",
-          "Null": "NO",
-          "Key": "",
-          "Default": "0",
-          "Extra": ""
-        },
-        {
-          "Field": "flowFeatures",
-          "Type": "tinyint(3) unsigned",
-          "Null": "NO",
-          "Key": "",
-          "Default": "0",
-          "Extra": ""
+      }
+    ]
+  },
+  "ad_contacts": {
+    "fields": [
+      {
+        "Field": "node",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "contactType",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": "phone",
+        "Extra": ""
+      },
+      {
+        "Field": "contact",
+        "Type": "varchar(100)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "node",
+      "contactType"
+    ],
+    "foreignKeys": [
+      {
+        "column": "node",
+        "references": {
+          "table": "ad_nodes",
+          "column": "id"
         }
-      ]
-    },
-    "customers": {
-      "fields": [
-        {
-          "Field": "id",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "PRI",
-          "Default": null,
-          "Extra": "auto_increment"
-        },
-        {
-          "Field": "sn",
-          "Type": "varchar(20)",
-          "Null": "NO",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "name",
-          "Type": "varchar(50)",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "createdAt",
-          "Type": "timestamp",
-          "Null": "NO",
-          "Key": "",
-          "Default": "current_timestamp()",
-          "Extra": ""
-        },
-        {
-          "Field": "updatedAt",
-          "Type": "timestamp",
-          "Null": "YES",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "setId",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "MUL",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "grade",
-          "Type": "int(10) unsigned",
-          "Null": "NO",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
-        },
-        {
-          "Field": "flags",
-          "Type": "tinyint(3) unsigned",
-          "Null": "NO",
-          "Key": "",
-          "Default": "0",
-          "Extra": ""
-        },
-        {
-          "Field": "code",
-          "Type": "varchar(16)",
-          "Null": "NO",
-          "Key": "",
-          "Default": null,
-          "Extra": ""
+      }
+    ]
+  },
+  "ad_node_changes": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "node",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "user",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "grade",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "user",
+        "references": {
+          "table": "users",
+          "column": "id"
         }
-      ]
-    }
+      },
+      {
+        "column": "node",
+        "references": {
+          "table": "ad_nodes",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "ad_node_groups": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(50)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "",
+        "Extra": ""
+      },
+      {
+        "Field": "source",
+        "Type": "varchar(50)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "D",
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "type",
+        "Type": "tinyint(3)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "ad_nodes": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "groupId",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "adCode",
+        "Type": "varchar(8)",
+        "Null": "NO",
+        "Key": "UNI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "phoneName",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "note",
+        "Type": "varchar(100)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "groupId",
+        "references": {
+          "table": "ad_node_groups",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "adjust_invoices": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "scope",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "startAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0000-00-00 00:00:00",
+        "Extra": ""
+      },
+      {
+        "Field": "endAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0000-00-00 00:00:00",
+        "Extra": ""
+      },
+      {
+        "Field": "author",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "authorName",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "completedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "allowed_ips": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "startIp",
+        "Type": "bigint(20) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "endIp",
+        "Type": "bigint(20) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "order",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "enabled",
+        "Type": "bit(1)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "b'1'",
+        "Extra": ""
+      },
+      {
+        "Field": "label",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "assign_ad_histories": {
+    "fields": [
+      {
+        "Field": "node",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assignee",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assignedAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "node",
+      "assignee"
+    ],
+    "foreignKeys": [
+      {
+        "column": "assignee",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      },
+      {
+        "column": "node",
+        "references": {
+          "table": "ad_nodes",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "assign_histories": {
+    "fields": [
+      {
+        "Field": "customer",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assignee",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assignedAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": "on update current_timestamp()"
+      }
+    ],
+    "primaryKey": [
+      "customer",
+      "assignee"
+    ],
+    "foreignKeys": [
+      {
+        "column": "customer",
+        "references": {
+          "table": "customers",
+          "column": "id"
+        }
+      },
+      {
+        "column": "assignee",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "assigned_ad_nodes": {
+    "fields": [
+      {
+        "Field": "node",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assignee",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assigner",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "grade",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "assignedAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "node",
+    "foreignKeys": [
+      {
+        "column": "assignee",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      },
+      {
+        "column": "node",
+        "references": {
+          "table": "ad_nodes",
+          "column": "id"
+        }
+      },
+      {
+        "column": "assigner",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "assignments": {
+    "fields": [
+      {
+        "Field": "customer",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assignee",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assigner",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "grade",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "assignedAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "customer",
+    "foreignKeys": [
+      {
+        "column": "customer",
+        "references": {
+          "table": "customers",
+          "column": "id"
+        }
+      },
+      {
+        "column": "assigner",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      },
+      {
+        "column": "assignee",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "customer_contacts": {
+    "fields": [
+      {
+        "Field": "customer",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "contactType",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "contact",
+        "Type": "varchar(50)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "order",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "customer",
+      "contactType",
+      "contact"
+    ],
+    "foreignKeys": [
+      {
+        "column": "customer",
+        "references": {
+          "table": "customers",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "customer_details": {
+    "fields": [
+      {
+        "Field": "customer",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "gender",
+        "Type": "char(1)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "location",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "memo",
+        "Type": "varchar(100)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "phoneName",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "customer",
+    "foreignKeys": [
+      {
+        "column": "customer",
+        "references": {
+          "table": "customers",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "customer_sets": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "memo",
+        "Type": "varchar(500)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "type",
+        "Type": "tinyint(4)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "customers": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "sn",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "setId",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "grade",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "flags",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "code",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "setId",
+        "references": {
+          "table": "customer_sets",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "dime_avoid_players": {
+    "fields": [
+      {
+        "Field": "player",
+        "Type": "bigint(20) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "area",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": "1",
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "player",
+      "area"
+    ],
+    "foreignKeys": []
+  },
+  "dime_channels": {
+    "fields": [
+      {
+        "Field": "range",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "card",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "areas",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "1",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "range",
+      "card"
+    ],
+    "foreignKeys": [
+      {
+        "column": "card",
+        "references": {
+          "table": "money_operation_cards",
+          "column": "id"
+        }
+      },
+      {
+        "column": "range",
+        "references": {
+          "table": "dime_ranges",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "dime_ranges": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "method",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "minTrans",
+        "Type": "float unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "maxTrans",
+        "Type": "float unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "favorite_money_cards": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "account",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bank",
+        "Type": "varchar(24)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOffice",
+        "Type": "varchar(24)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankAccount",
+        "Type": "varchar(32)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOwner",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": "on update current_timestamp()"
+      },
+      {
+        "Field": "usedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "account",
+        "references": {
+          "table": "money_accounts",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "game_attends": {
+    "fields": [
+      {
+        "Field": "userId",
+        "Type": "varchar(32)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "account",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "dates",
+        "Type": "mediumtext",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "phone",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": null,
+    "foreignKeys": []
+  },
+  "game_scores": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "bigint(20) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "gameDate",
+        "Type": "date",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "userId",
+        "Type": "varchar(32)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "currency",
+        "Type": "varchar(4)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "betCount",
+        "Type": "smallint(5) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "totalBet",
+        "Type": "float unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "netBet",
+        "Type": "float unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "winLoss",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "bonus",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "share",
+        "Type": "float unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "gameType",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "importId",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved1",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved2",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved3",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved4",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved5",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved6",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved7",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved8",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reserved9",
+        "Type": "float",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "gamers": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "userId",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "lastPlayDate",
+        "Type": "date",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "smallint(5) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "site",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": null,
+    "foreignKeys": []
+  },
+  "money_account_transactions": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "accountId",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "orderId",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "transId",
+        "Type": "char(32)",
+        "Null": "YES",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "shift",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "transType",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "amount",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "balance",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "note",
+        "Type": "varchar(300)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": "on update current_timestamp()"
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "orderId",
+        "references": {
+          "table": "money_orders",
+          "column": "id"
+        }
+      },
+      {
+        "column": "accountId",
+        "references": {
+          "table": "money_accounts",
+          "column": "id"
+        }
+      },
+      {
+        "column": "transId",
+        "references": {
+          "table": "money_flows",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_accounts": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "site",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "balance",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "rate",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "1",
+        "Extra": ""
+      },
+      {
+        "Field": "maxBalance",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "dailyLimit",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "share",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "rewardRate",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "money_alerts": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "eventId",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "message",
+        "Type": "varchar(300)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "",
+        "Extra": ""
+      },
+      {
+        "Field": "readerRoles",
+        "Type": "tinyint(4) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "dismissedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "readerId",
+        "Type": "varchar(20)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "readerName",
+        "Type": "varchar(20)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "eventId",
+        "references": {
+          "table": "money_flow_events",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_card_groups": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "money_fee_reports": {
+    "fields": [
+      {
+        "Field": "date",
+        "Type": "char(10)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "group",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "deposit",
+        "Type": "decimal(12,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "depositFee",
+        "Type": "decimal(10,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "withdraw",
+        "Type": "decimal(12,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "withdrawFee",
+        "Type": "decimal(10,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "dayIndex",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "date",
+      "group"
+    ],
+    "foreignKeys": [
+      {
+        "column": "group",
+        "references": {
+          "table": "money_card_groups",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_flow_events": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "orderId",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "flowId",
+        "Type": "char(32)",
+        "Null": "YES",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "eventCode",
+        "Type": "smallint(5) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "payload",
+        "Type": "longtext",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "actorId",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "actorName",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "orderId",
+        "references": {
+          "table": "money_orders",
+          "column": "id"
+        }
+      },
+      {
+        "column": "flowId",
+        "references": {
+          "table": "money_flows",
+          "column": "id"
+        }
+      },
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_flows": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "type",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "amount",
+        "Type": "decimal(12,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0.00",
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "orderId",
+        "Type": "char(32)",
+        "Null": "YES",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "orderId",
+        "references": {
+          "table": "money_orders",
+          "column": "id"
+        }
+      },
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_notifications": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "oid",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "transId",
+        "Type": "char(32)",
+        "Null": "YES",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "eventName",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "payload",
+        "Type": "longtext",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "readerRoles",
+        "Type": "tinyint(4) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "oid",
+        "references": {
+          "table": "money_orders",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_operation_cards": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "group",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bank",
+        "Type": "varchar(24)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOffice",
+        "Type": "varchar(24)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankAccount",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOwner",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "minTrans",
+        "Type": "decimal(5,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0.00",
+        "Extra": ""
+      },
+      {
+        "Field": "maxTrans",
+        "Type": "decimal(12,2)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "note",
+        "Type": "varchar(300)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "currency",
+        "Type": "varchar(5)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "CNY",
+        "Extra": ""
+      },
+      {
+        "Field": "method",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "accountType",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "bankQr",
+        "Type": "mediumblob",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "group",
+        "references": {
+          "table": "money_card_groups",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_order_cards": {
+    "fields": [
+      {
+        "Field": "orderId",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bank",
+        "Type": "varchar(24)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOffice",
+        "Type": "varchar(24)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankAccount",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOwner",
+        "Type": "varchar(24)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "group",
+        "Type": "int(10) unsigned",
+        "Null": "YES",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankId",
+        "Type": "int(10) unsigned",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "orderId",
+    "foreignKeys": [
+      {
+        "column": "orderId",
+        "references": {
+          "table": "money_orders",
+          "column": "id"
+        }
+      },
+      {
+        "column": "group",
+        "references": {
+          "table": "money_card_groups",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_orders": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "orderType",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "currency",
+        "Type": "varchar(5)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "CNY",
+        "Extra": ""
+      },
+      {
+        "Field": "amount",
+        "Type": "decimal(12,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0.00",
+        "Extra": ""
+      },
+      {
+        "Field": "remain",
+        "Type": "decimal(12,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0.00",
+        "Extra": ""
+      },
+      {
+        "Field": "dailyCount",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "options",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "flags",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "fee",
+        "Type": "decimal(8,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0.00",
+        "Extra": ""
+      },
+      {
+        "Field": "exchangeRate",
+        "Type": "decimal(12,8)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "1.00000000",
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "creatorId",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": "on update current_timestamp()"
+      },
+      {
+        "Field": "alias",
+        "Type": "varchar(20)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "note",
+        "Type": "varchar(300)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "device",
+        "Type": "varchar(16)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "method",
+        "Type": "tinyint(4) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_receipt_files": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "orderId",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bin",
+        "Type": "mediumblob",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "orderId",
+        "references": {
+          "table": "money_orders",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "money_trans_files": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "tid",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bin",
+        "Type": "mediumblob",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "player_adjustments": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "invoice",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "assignee",
+        "Type": "int(10) unsigned",
+        "Null": "YES",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "account",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "playerSite",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "adjustSite",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "adjustType",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "rate",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "amount",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "approvedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "approver",
+        "Type": "int(10) unsigned",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "approverName",
+        "Type": "varchar(20)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "assignee",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      },
+      {
+        "column": "invoice",
+        "references": {
+          "table": "adjust_invoices",
+          "column": "id"
+        }
+      },
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      },
+      {
+        "column": "account",
+        "references": {
+          "table": "money_accounts",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_agents": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "smallint(5) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "player_audits": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "action",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "1",
+        "Extra": ""
+      },
+      {
+        "Field": "actorId",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "actorName",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "before",
+        "Type": "longtext",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "after",
+        "Type": "longtext",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_comments": {
+    "fields": [
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "eventNote",
+        "Type": "varchar(500)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "",
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": "on update current_timestamp()"
+      }
+    ],
+    "primaryKey": "player",
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_contacts": {
+    "fields": [
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "contactType",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "contact",
+        "Type": "varchar(50)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "player",
+      "contactType",
+      "contact"
+    ],
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_delegations": {
+    "fields": [
+      {
+        "Field": "assignor",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "scope",
+        "Type": "tinyint(4)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "assignee",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "assignor",
+      "scope"
+    ],
+    "foreignKeys": [
+      {
+        "column": "assignee",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      },
+      {
+        "column": "assignor",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_guilds": {
+    "fields": [
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "guild",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "player",
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_limits": {
+    "fields": [
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "withdrawMax",
+        "Type": "float unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "withdrawDays",
+        "Type": "smallint(6)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "reward",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "withdrawFee",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "flowFeatures",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "player",
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_relations": {
+    "fields": [
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "sibling",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "note",
+        "Type": "varchar(50)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "player",
+      "sibling"
+    ],
+    "foreignKeys": [
+      {
+        "column": "sibling",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      },
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_wallet_limits": {
+    "fields": [
+      {
+        "Field": "wallet",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "suspendedFrom",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "suspendedTo",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "suspendReason",
+        "Type": "varchar(100)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "wallet",
+    "foreignKeys": [
+      {
+        "column": "wallet",
+        "references": {
+          "table": "player_wallets",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "player_wallets": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bank",
+        "Type": "varchar(24)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOffice",
+        "Type": "varchar(24)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankAccount",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "bankOwner",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "currency",
+        "Type": "varchar(5)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "CNY",
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "usedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "players": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "account",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "userId",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "UNI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "agent",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "smallint(5) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "note",
+        "Type": "varchar(300)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "joinPathType",
+        "Type": "varchar(16)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "joinPath",
+        "Type": "varchar(64)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "lastPlayDate",
+        "Type": "date",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "phoneName",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "site",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "adjustType",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "rewardRate",
+        "Type": "float",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "flowFeatures",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "agent",
+        "references": {
+          "table": "player_agents",
+          "column": "id"
+        }
+      },
+      {
+        "column": "account",
+        "references": {
+          "table": "money_accounts",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "private_players": {
+    "fields": [
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "player",
+    "foreignKeys": [
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "promotion_players": {
+    "fields": [
+      {
+        "Field": "promotion",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "player",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "reward",
+        "Type": "decimal(8,2) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0.00",
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "appliedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "dismissedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "payerId",
+        "Type": "varchar(20)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "lastAttend",
+        "Type": "date",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": [
+      "promotion",
+      "player"
+    ],
+    "foreignKeys": [
+      {
+        "column": "promotion",
+        "references": {
+          "table": "promotions",
+          "column": "id"
+        }
+      },
+      {
+        "column": "player",
+        "references": {
+          "table": "players",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "promotions": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "title",
+        "Type": "varchar(30)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "description",
+        "Type": "varchar(100)",
+        "Null": "NO",
+        "Key": "",
+        "Default": "",
+        "Extra": ""
+      },
+      {
+        "Field": "openDate",
+        "Type": "char(10)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "type",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "1",
+        "Extra": ""
+      },
+      {
+        "Field": "area",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": "1",
+        "Extra": ""
+      },
+      {
+        "Field": "status",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "reward",
+        "Type": "decimal(8,2) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0.00",
+        "Extra": ""
+      },
+      {
+        "Field": "rewardType",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "1",
+        "Extra": ""
+      },
+      {
+        "Field": "options",
+        "Type": "smallint(5) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "closedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "score_imports": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "importedAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "gameDate",
+        "Type": "date",
+        "Null": "NO",
+        "Key": "",
+        "Default": "2022-10-01",
+        "Extra": ""
+      },
+      {
+        "Field": "share",
+        "Type": "float unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "rowCount",
+        "Type": "int(11) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "account",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": "8",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "account",
+        "references": {
+          "table": "money_accounts",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "service_states": {
+    "fields": [
+      {
+        "Field": "name",
+        "Type": "varchar(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "currentValue",
+        "Type": "varchar(300)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "previousValue",
+        "Type": "varchar(300)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "updatedAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": "on update current_timestamp()"
+      }
+    ],
+    "primaryKey": "name",
+    "foreignKeys": []
+  },
+  "talk_phrases": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "title",
+        "Type": "varchar(50)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "content",
+        "Type": "varchar(200)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "order",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "talks": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "customer",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "user",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "message",
+        "Type": "text",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "grade",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "talkTime",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "customer",
+        "references": {
+          "table": "customers",
+          "column": "id"
+        }
+      },
+      {
+        "column": "user",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "user_groups": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "parent",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "user_sessions": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "varchar(32)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "user",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "role",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "accessAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "user",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      }
+    ]
+  },
+  "users": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "name",
+        "Type": "varchar(20)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "loginId",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "UNI",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "group",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "password",
+        "Type": "varchar(64)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "role",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "state",
+        "Type": "tinyint(3) unsigned",
+        "Null": "NO",
+        "Key": "",
+        "Default": "0",
+        "Extra": ""
+      },
+      {
+        "Field": "joinAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      },
+      {
+        "Field": "leaveAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "signedAt",
+        "Type": "timestamp",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "lastIp",
+        "Type": "varchar(20)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": []
+  },
+  "using_operation_cards": {
+    "fields": [
+      {
+        "Field": "id",
+        "Type": "bigint(20) unsigned",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+      },
+      {
+        "Field": "group",
+        "Type": "int(10) unsigned",
+        "Null": "NO",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "amount",
+        "Type": "decimal(12,2)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "flowId",
+        "Type": "char(32)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "scope",
+        "Type": "varchar(16)",
+        "Null": "NO",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+      },
+      {
+        "Field": "createdAt",
+        "Type": "timestamp",
+        "Null": "NO",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "column": "group",
+        "references": {
+          "table": "money_card_groups",
+          "column": "id"
+        }
+      }
+    ]
   }
 }

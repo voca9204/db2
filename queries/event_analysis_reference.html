@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 지급 분석 참고 자료</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        h3 {
+            color: #2980b9;
+        }
+        .summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .chart-container {
+            margin: 30px 0;
+            height: 400px;
+        }
+        .conclusion {
+            background-color: #e8f4fc;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        .note {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #ffffcc;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>이벤트 지급 분석 참고 자료</h1>
+        <p>최종 업데이트: 2025년 5월 17일</p>
+    </header>
+
+    <div class="summary">
+        <h2>개요</h2>
+        <p>이 문서는 헤르메스 시스템에서 진행된 이벤트 지급 관련 데이터를 분석한 결과를 정리한 참고 자료입니다. 특히 이벤트 지급을 1회 이상 받은 사용자들의 행동 패턴과 이벤트 효과에 중점을 두고 있습니다.</p>
+    </div>
+
+    <h2>이벤트 지급 현황</h2>
+    
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">462</div>
+            <div class="stat-label">전체 이벤트 대상자 수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">448</div>
+            <div class="stat-label">실제 이벤트 지급 완료 사용자 수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1,029</div>
+            <div class="stat-label">전체 이벤트 지급 레코드 수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">2.17</div>
+            <div class="stat-label">사용자당 평균 이벤트 지급 횟수</div>
+        </div>
+    </div>
+
+    <h3>이벤트 지급 횟수 분포</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>지급 횟수</th>
+                <th>사용자 수</th>
+                <th>비율</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1회</td>
+                <td>202명</td>
+                <td>45.09%</td>
+            </tr>
+            <tr>
+                <td>2회</td>
+                <td>108명</td>
+                <td>24.11%</td>
+            </tr>
+            <tr>
+                <td>3회</td>
+                <td>56명</td>
+                <td>12.50%</td>
+            </tr>
+            <tr>
+                <td>4회</td>
+                <td>48명</td>
+                <td>10.71%</td>
+            </tr>
+            <tr>
+                <td>5회</td>
+                <td>17명</td>
+                <td>3.79%</td>
+            </tr>
+            <tr>
+                <td>6회</td>
+                <td>11명</td>
+                <td>2.46%</td>
+            </tr>
+            <tr>
+                <td>7회</td>
+                <td>5명</td>
+                <td>1.12%</td>
+            </tr>
+            <tr>
+                <td>8회</td>
+                <td>1명</td>
+                <td>0.22%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="chart-container">
+        <!-- 실제 구현 시에는 여기에 Chart.js 등을 사용하여 차트 추가 -->
+        <div style="text-align: center; padding: 100px 0; background-color: #f9f9f9; border-radius: 5px;">
+            [여기에 이벤트 지급 횟수 분포 차트가 표시됩니다]
+        </div>
+    </div>
+
+    <h2>이벤트 효과 분석</h2>
+
+    <h3>이벤트 지급 후 행동 패턴</h3>
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">275</div>
+            <div class="stat-label">이벤트 지급 후 배팅한 사용자 수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">61.38%</div>
+            <div class="stat-label">이벤트 지급 후 배팅 비율</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">173</div>
+            <div class="stat-label">이벤트 지급 후 배팅하지 않은 사용자 수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">38.62%</div>
+            <div class="stat-label">이벤트 지급 후 미배팅 비율</div>
+        </div>
+    </div>
+
+    <h3>이벤트 지급 후 입금 없이 배팅한 사용자</h3>
+    <p>이벤트 지급 이후 <span class="highlight">입금 없이 배팅한 사용자</span>는 전체의 43.75%(196명)로 확인되었습니다. 이는 이벤트 지급이 새로운 입금 없이도 사용자의 배팅 활동을 유도하는 효과가 있음을 시사합니다.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>구분</th>
+                <th>사용자 수</th>
+                <th>비율</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>이벤트 지급 후 입금 없이 배팅한 사용자</td>
+                <td>196명</td>
+                <td>43.75%</td>
+            </tr>
+            <tr>
+                <td>이벤트 지급 후 입금하고 배팅한 사용자</td>
+                <td>79명</td>
+                <td>17.63%</td>
+            </tr>
+            <tr>
+                <td>이벤트 지급 후 배팅하지 않은 사용자</td>
+                <td>173명</td>
+                <td>38.62%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="chart-container">
+        <!-- 실제 구현 시에는 여기에 Chart.js 등을 사용하여 차트 추가 -->
+        <div style="text-align: center; padding: 100px 0; background-color: #f9f9f9; border-radius: 5px;">
+            [여기에 이벤트 지급 후 사용자 행동 분석 차트가 ��시됩니다]
+        </div>
+    </div>
+
+    <h2>이벤트 성과 분석</h2>
+
+    <h3>이벤트 지급 최다 수혜 사용자</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>사용자 ID</th>
+                <th>이름</th>
+                <th>이벤트 지급 횟수</th>
+                <th>첫 이벤트 지급일</th>
+                <th>마지막 이벤트 지급일</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ug3802</td>
+                <td>何鉴其</td>
+                <td>8회</td>
+                <td>2024-11-26</td>
+                <td>2025-04-30</td>
+            </tr>
+            <tr>
+                <td>obuh501</td>
+                <td>毛云冬</td>
+                <td>7회</td>
+                <td>2024-11-26</td>
+                <td>2025-02-17</td>
+            </tr>
+            <tr>
+                <td>yi3175</td>
+                <td>yi3175</td>
+                <td>7회</td>
+                <td>2024-11-26</td>
+                <td>2025-04-25</td>
+            </tr>
+            <tr>
+                <td>mdupw003</td>
+                <td>卢彬</td>
+                <td>7회</td>
+                <td>2024-11-26</td>
+                <td>2025-04-13</td>
+            </tr>
+            <tr>
+                <td>ya3125</td>
+                <td>陈卫</td>
+                <td>7회</td>
+                <td>2024-11-26</td>
+                <td>2025-03-07</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="conclusion">
+        <h2>결론 및 시사점</h2>
+        <p>이벤트 지급은 사용자의 배팅 활동에 긍정적인 영향을 미치고 있으며, 특히 61.38%의 사용자가 이벤트 지급 이후 실제 배팅으로 이어지는 것을 확인했습니다.</p>
+        <p>주목할 만한 점은 이벤트 지급 이후 <strong>입금 없이 배팅한 사용자</strong>가 43.75%로, 이벤트가 사용자의 추가 입금 없이도 게임 참여를 유도하는 효과가 있다는 것입니다.</p>
+        <p>이벤트 지급 1회만 받은 사용자가 가장 많으나(45.09%), 절반 이상의 사용자들(54.91%)이 2회 이상 이벤트 혜택을 받고 있어 반복적인 이벤트 참여도가 높은 것으로 분석됩니다.</p>
+    </div>
+
+    <h2>향후 분석 방향</h2>
+    <ul>
+        <li>이벤트 유형별 효과 분석</li>
+        <li>이벤트 지급 금액과 후속 배팅 금액의 상관관계 분석</li>
+        <li>시간 경과에 따른 이벤트 효과 지속성 분석</li>
+        <li>사용자 세그먼트별 이벤트 반응 분석</li>
+    </ul>
+
+    <div class="note">
+        <p><strong>참고:</strong> 이 분석은 2025년 5월 17일 기준 데이터를 활용하여 작성되었습니다. 데이터베이스 테이블 구조 및 필드 의미는 <a href="../hermes_variables.md" target="_blank">hermes_variables.md</a> 문서를 참조하십시오.</p>
+    </div>
+</body>
+</html>
