@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 프로젝트 - 데이터 분석 대시보드</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .sidebar {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 250px;
+            min-height: calc(100vh - 56px);
+            position: fixed;
+            top: 56px;
+            left: 0;
+            z-index: 100;
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .sidebar.collapsed {
+            margin-left: -250px;
+        }
+        
+        .content {
+            margin-left: 250px;
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .content.expanded {
+            margin-left: 0;
+        }
+        
+        .nav-link {
+            color: #2c3e50;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-link:hover {
+            background-color: #f1f8ff;
+        }
+        
+        .nav-link.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .nav-link i {
+            width: 25px;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            margin-bottom: 1rem;
+        }
+        
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0,0,0,0.125);
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            color: white;
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .dropdown-toggle {
+            cursor: pointer;
+        }
+        
+        .dropdown-menu {
+            right: 0;
+            left: auto;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .login-required {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            
+            .sidebar.active {
+                margin-left: 0;
+            }
+            
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 로딩 화면 -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    
+    <!-- 로그인 필요 안내 -->
+    <div class="login-required" id="loginRequired">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-lock-fill text-warning" style="font-size: 4rem;"></i>
+                            <h2 class="mt-3">로그인이 필요합니다</h2>
+                            <p class="text-muted">이 페이지에 접근하기 위해서는 로그인이 필요합니다.</p>
+                            <a href="login.html" class="btn btn-primary mt-3">로그인 페이지로 이동</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 인증된 사용자에게 보이는 메인 콘텐츠 -->
+    <div id="authenticatedContent" style="display: none;">
+        <!-- 네비게이션 바 -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <button class="btn btn-outline-light me-2" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <a class="navbar-brand" href="#">DB2 프로젝트</a>
+                
+                <div class="user-info dropdown">
+                    <img id="userAvatar" src="assets/logo-placeholder.svg" alt="User" class="user-avatar">
+                    <div class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="userName">사용자</span>
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person-fill me-2"></i>프로필</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear-fill me-2"></i>설정</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="logoutButton"><i class="bi bi-box-arrow-right me-2"></i>로그아웃</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+                <!-- 사이드바 -->
+                <div class="sidebar" id="sidebar">
+                    <h6 class="sidebar-heading text-uppercase text-muted mb-3">메뉴</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <i class="bi bi-house-fill"></i>
+                                대시보드
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-bar-chart-fill"></i>
+                                보고서
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-people-fill"></i>
+                                사용자 분석
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-calendar-event-fill"></i>
+                                이벤트 분석
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-currency-dollar"></i>
+                                매출 분석
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading text-uppercase text-muted mt-4 mb-3">관리</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-gear-fill"></i>
+                                설정
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-question-circle-fill"></i>
+                                도움말
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 메인 콘텐츠 -->
+                <div class="content" id="content">
+                    <div class="container-fluid">
+                        <h1 class="h2 mb-4">대시보드</h1>
+                        
+                        <div class="row">
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">총 사용자</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary text-white p-3 rounded me-3">
+                                                <i class="bi bi-people-fill"></i>
+                                            </div>
+                                            <h2 class="mb-0">45,632</h2>
+                                        </div>
+                                        <div class="text-success mt-2">
+                                            <i class="bi bi-arrow-up"></i> 12% 증가
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">휴면 사용자</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-warning text-white p-3 rounded me-3">
+                                                <i class="bi bi-person-dash-fill"></i>
+                                            </div>
+                                            <h2 class="mb-0">10,748</h2>
+                                        </div>
+                                        <div class="text-danger mt-2">
+                                            <i class="bi bi-arrow-up"></i> 5% 증가
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">누적 매출</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-success text-white p-3 rounded me-3">
+                                                <i class="bi bi-currency-dollar"></i>
+                                            </div>
+                                            <h2 class="mb-0">₩850M</h2>
+                                        </div>
+                                        <div class="text-success mt-2">
+                                            <i class="bi bi-arrow-up"></i> 8% 증가
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">전환율</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-info text-white p-3 rounded me-3">
+                                                <i class="bi bi-arrow-repeat"></i>
+                                            </div>
+                                            <h2 class="mb-0">23.5%</h2>
+                                        </div>
+                                        <div class="text-success mt-2">
+                                            <i class="bi bi-arrow-up"></i> 3% 증가
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-8 mb-4">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span>월별 활성 사용자 추이</span>
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-outline-secondary">일</button>
+                                            <button type="button" class="btn btn-outline-secondary active">월</button>
+                                            <button type="button" class="btn btn-outline-secondary">년</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div style="height: 300px; background-color: #f5f5f5; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                            <p class="text-muted">그래프가 여기에 표시됩니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4 mb-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        사용자 세그먼트 분포
+                                    </div>
+                                    <div class="card-body">
+                                        <div style="height: 300px; background-color: #f5f5f5; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                            <p class="text-muted">차트가 여기에 표시됩니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        최근 이벤트 효과
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>이벤트명</th>
+                                                        <th>참여율</th>
+                                                        <th>복귀율</th>
+                                                        <th>전환율</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>여름 방학 특별 이벤트</td>
+                                                        <td>38.4%</td>
+                                                        <td>15.6%</td>
+                                                        <td>7.2%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>신규 영웅 출시 기념</td>
+                                                        <td>42.7%</td>
+                                                        <td>18.3%</td>
+                                                        <td>8.5%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>봄맞이 복귀 축제</td>
+                                                        <td>56.2%</td>
+                                                        <td>23.4%</td>
+                                                        <td>10.1%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>발렌타인 이벤트</td>
+                                                        <td>35.8%</td>
+                                                        <td>14.2%</td>
+                                                        <td>6.8%</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6 mb-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        휴면 사용자 재활성화 현황
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <h6>전체 진행률</h6>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">35%</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <h6>세그먼트별 진행률</h6>
+                                            <div class="mb-2">
+                                                <small>1-3개월 휴면: 48%</small>
+                                                <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar bg-info" style="width: 48%" aria-valuenow="48" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <small>3-6개월 휴면: 32%</small>
+                                                <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar bg-info" style="width: 32%" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <small>6-12개월 휴면: 21%</small>
+                                                <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar bg-info" style="width: 21%" aria-valuenow="21" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <small>12개월 이상 휴면: 14%</small>
+                                                <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar bg-info" style="width: 14%" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap & Firebase Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/index.js"></script>
+</body>
+</html>
