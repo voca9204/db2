@@ -42,7 +42,7 @@ loginForm.addEventListener('submit', async (e) => {
     // 로그인 시도
     await signInWithEmailAndPassword(auth, email, password);
     // 로그인 성공 - 메인 페이지로 리디렉션
-    window.location.href = 'index.html';
+    window.location.href = 'main-index.html';
   } catch (error) {
     // 에러 메시지 표시
     showError(getErrorMessage(error.code));
@@ -55,7 +55,7 @@ googleLoginBtn.addEventListener('click', async () => {
     // Google 로그인 팝업 표시
     await signInWithPopup(auth, provider);
     // 로그인 성공 - 메인 페이지로 리디렉션
-    window.location.href = 'index.html';
+    window.location.href = 'main-index.html';
   } catch (error) {
     // 팝업이 닫히거나 에러 발생 시
     if (error.code !== 'auth/popup-closed-by-user') {
@@ -130,6 +130,6 @@ function getErrorMessage(errorCode) {
 auth.onAuthStateChanged((user) => {
   if (user) {
     // 이미 로그인된 경우 메인 페이지로 이동
-    window.location.href = 'index.html';
+    window.location.href = 'main-index.html';
   }
 });
