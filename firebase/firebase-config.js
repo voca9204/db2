@@ -1,15 +1,14 @@
 // Firebase 설정 파일
-// db888 프로젝트에 추가적인 웹 앱으로 db2를 등록한 후 여기에 설정을 저장하세요
+// db888 프로젝트와 db2 프로젝트의 공유 설정
 
-// 실제 Firebase 프로젝트에서 받은 설정으로 대체하세요
+// Firebase 설정
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "db888.firebaseapp.com",
-  projectId: "db888",
-  storageBucket: "db888.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+  apiKey: "AIzaSyD2RY02pN2RrhT8Qt2hTSEilRqV4JAbCR0",
+  authDomain: "db888-67827.firebaseapp.com",
+  projectId: "db888-67827",
+  storageBucket: "db888-67827.firebasestorage.app",
+  messagingSenderId: "888497598316",
+  appId: "1:888497598316:web:b2cb26b0a825e11a658d49"
 };
 
 // Firebase 초기화
