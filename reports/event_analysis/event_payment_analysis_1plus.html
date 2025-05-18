@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 지급 분석 결과 (1회 이상)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .query-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .query-container h2 {
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        .query-details {
+            background-color: #f1f8ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .query-details ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .number-cell {
+            text-align: right;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: #e8f4f8;
+        }
+        
+        .summary {
+            margin-top: 30px;
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        .nav-links {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: #e1f0ff;
+            color: #2980b9;
+        }
+        
+        .icon {
+            margin-right: 5px;
+        }
+        
+        .file-links {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .file-links h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .file-links a {
+            display: inline-block;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .file-links a:hover {
+            background-color: #e1f0ff;
+            color: #2980b9;
+        }
+        
+        .distribution {
+            margin: 30px 0;
+        }
+        
+        .distribution h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .chart {
+            display: flex;
+            height: 300px;
+            align-items: flex-end;
+            margin-top: 20px;
+            border-bottom: 2px solid #ddd;
+            border-left: 2px solid #ddd;
+            padding-left: 30px;
+        }
+        
+        .bar {
+            flex: 1;
+            margin: 0 10px;
+            background-color: #3498db;
+            position: relative;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            max-width: 100px;
+        }
+        
+        .bar:hover {
+            background-color: #2980b9;
+        }
+        
+        .bar-label {
+            text-align: center;
+            padding: 5px 0;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .x-label {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .value-label {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .pagination a {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border-radius: 4px;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .pagination a:hover, .pagination a.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .note {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="../../index.html" class="nav-link"><span class="icon">◀</span>질의 목록으로 돌아가기</a>
+    </div>
+    
+    <h1>이벤트 지급 분석 결과 (1회 이상)</h1>
+    
+    <div class="query-container">
+        <h2>질의 내용</h2>
+        <div class="query-details">
+            <p>다음 조건을 만족하는 사용자 ID 목록을 조회합니다:</p>
+            <ol>
+                <li>이벤트 지급을 1회 이상 받은 사용자</li>
+                <li>첫 이벤트 지급 이후 유효 배팅이 있는 사용자</li>
+                <li>첫 이벤트 지급 이후 입금 기록이 없는 사용자</li>
+            </ol>
+        </div>
+        
+        <h2>분석 결과 요약</h2>
+        
+        <div class="summary">
+            <h3>주요 통계</h3>
+            <ul>
+                <li><strong>총 사용자 수</strong>: 92명</li>
+                <li><strong>총 이벤트 지급 금액</strong>: 36,749.00</li>
+                <li><strong>사용자당 평균 이벤트 지급 금액</strong>: 399.45</li>
+                <li><strong>사용자당 평균 이벤트 지급 횟수</strong>: 2.36회</li>
+                <li><strong>이벤트 지급 후 총 배팅 금액</strong>: 417,231.54</li>
+                <li><strong>사용자당 평균 배팅 금액</strong>: 4,534.04</li>
+                <li><strong>금액 대비 배팅 효율</strong>: 이벤트 지급 1당 평균 11.35의 배팅 발생</li>
+            </ul>
+        </div>
+        
+        <div class="distribution">
+            <h3>이벤트 지급 횟수 분포</h3>
+            <div class="chart">
+                <div class="bar" style="height: 64%;">
+                    <div class="value-label">45</div>
+                    <div class="bar-label">48.9%</div>
+                </div>
+                <div class="bar" style="height: 34%;">
+                    <div class="value-label">24</div>
+                    <div class="bar-label">26.1%</div>
+                </div>
+                <div class="bar" style="height: 20%;">
+                    <div class="value-label">14</div>
+                    <div class="bar-label">15.2%</div>
+                </div>
+                <div class="bar" style="height: 10%;">
+                    <div class="value-label">7</div>
+                    <div class="bar-label">7.6%</div>
+                </div>
+                <div class="bar" style="height: 2.9%;">
+                    <div class="value-label">2</div>
+                    <div class="bar-label">2.2%</div>
+                </div>
+                <div class="bar" style="height: 0%;">
+                    <div class="value-label">0</div>
+                    <div class="bar-label">0.0%</div>
+                </div>
+            </div>
+            <div class="x-label">
+                <span style="display: inline-block; width: 16.6%;">1회</span>
+                <span style="display: inline-block; width: 16.6%;">2회</span>
+                <span style="display: inline-block; width: 16.6%;">3회</span>
+                <span style="display: inline-block; width: 16.6%;">4회</span>
+                <span style="display: inline-block; width: 16.6%;">5회</span>
+                <span style="display: inline-block; width: 16.6%;">6회+</span>
+            </div>
+            <p class="note">참고: 이벤트 지급을 1회만 받은 사용자가 가장 많음 (전체의 48.9%)</p>
+        </div>
+        
+        <h2>사용자별 상세 분석 (배팅액 상위 20명)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>사용자 ID</th>
+                    <th>이름</th>
+                    <th>이벤트 지급 횟수</th>
+                    <th>이벤트 지급 금액</th>
+                    <th>이벤트 지급 후 배팅액</th>
+                    <th>마지막 접속일</th>
+                </tr>
+            </thead>
+            <tbody id="userData">
+                <!-- 데이터는 JavaScript로 동적 로드됩니다 -->
+            </tbody>
+        </table>
+        
+        <div class="pagination" id="pagination">
+            <!-- 페이지네이션 버튼은 JavaScript로 생성됩니다 -->
+        </div>
+        
+        <div class="note">
+            <p id="pageNote">참고: 전체 92명 중 1-20번 항목을 표시하였습니다.</p>
+        </div>
+        
+        <div class="summary">
+            <h3>분석 결과 해석</h3>
+            <p>총 92명의 사용자가 모든 조건을 만족합니다. 이 사용자들은 이벤트 지급을 1회 이상 받았고, 첫 이벤트 지급 이후 유효 배팅이 있으며, 첫 이벤트 지급 이후 입금 기록은 없습니다.</p>
+            <p>이 중 대다수(45명, 48.9%)는 1회만 이벤트를 지급 받았으며, 2회 이상 지급받은 사용자는 47명입니다.</p>
+            <p>이벤트 지급 금액과 이후 배팅 금액을 비교하면, 평균적으로 이벤트 지급 1당 11.35의 배팅이 발생하여 이벤트 지급이 게임 활동 촉진에 상당히 효과적임을 알 수 있습니다.</p>
+            <p>상위 20명의 사용자가 특히 높은 배팅액을 보이며, 전체 배팅액의 상당 부분을 차지합니다. 특히 상위 5명의 사용자는 전체 평균보다 5배 이상 높은 배팅액을 기록했습니다. 이는 소수의 적극적인 사용자가 전체 활동의 큰 부분을 차지함을 시사합니다.</p>
+        </div>
+        
+        <div class="file-links">
+            <h4>관련 파일:</h4>
+            <a href="../../data/processed/event_payment_data_1plus.csv"><span class="icon">📊</span>CSV 데이터</a>
+            <a href="../../queries/event/event_payment_1plus_query.sql"><span class="icon">💻</span>SQL 쿼리 코드</a>
+            <a href="../../docs/analysis/methodology.md"><span class="icon">📝</span>분석 방법론</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>최종 업데이트: 2025년 5월 18일</p>
+        <p>이 문서는 헤르메스 데이터베이스 분석을 기반으로 생성되었습니다.</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 실제 사용자 데이터
+            const allUserData = [
+                { userId: "liaw004", name: "许佳音", eventCount: "1", rewardAmount: "300.00", betAmount: "56530.00", lastPlayDate: "2025-04-30" },
+                { userId: "mdyaw005", name: "龚瑜", eventCount: "2", rewardAmount: "422.00", betAmount: "40657.40", lastPlayDate: "2025-03-14" },
+                { userId: "gg3116", name: "ub016", eventCount: "1", rewardAmount: "100.00", betAmount: "39698.00", lastPlayDate: "2025-04-15" },
+                { userId: "yi3109", name: "龚彬", eventCount: "1", rewardAmount: "1000.00", betAmount: "26072.00", lastPlayDate: "2025-03-31" },
+                { userId: "ya3125", name: "陈卫", eventCount: "7", rewardAmount: "1155.00", betAmount: "25813.00", lastPlayDate: "2025-03-06" },
+                { userId: "mdggw832", name: "邹向阳", eventCount: "1", rewardAmount: "100.00", betAmount: "19123.50", lastPlayDate: "2025-04-09" },
+                { userId: "ub3012", name: "ub3012", eventCount: "2", rewardAmount: "300.00", betAmount: "17260.00", lastPlayDate: "2025-03-18" },
+                { userId: "xji3002", name: "王兆钏", eventCount: "1", rewardAmount: "500.00", betAmount: "13309.00", lastPlayDate: "2025-04-11" },
+                { userId: "qul3804", name: "梁栋", eventCount: "5", rewardAmount: "1266.00", betAmount: "12914.00", lastPlayDate: "2025-04-29" },
+                { userId: "ukkw002", name: "陈后东", eventCount: "4", rewardAmount: "1555.00", betAmount: "12000.00", lastPlayDate: "2025-03-12" },
+                { userId: "ui3009", name: "ui3009", eventCount: "3", rewardAmount: "622.00", betAmount: "11862.00", lastPlayDate: "2025-02-13" },
+                { userId: "ya3008", name: "ya3008", eventCount: "4", rewardAmount: "422.00", betAmount: "11350.00", lastPlayDate: "2025-03-04" },
+                { userId: "uyw002", name: "uyw002", eventCount: "2", rewardAmount: "755.00", betAmount: "11219.00", lastPlayDate: "2025-01-11" },
+                { userId: "xja3851", name: "曹继志", eventCount: "3", rewardAmount: "322.00", betAmount: "10299.00", lastPlayDate: "2025-04-11" },
+                { userId: "ui3807", name: "吴小华", eventCount: "3", rewardAmount: "755.00", betAmount: "9669.00", lastPlayDate: "2024-12-26" },
+                { userId: "qja3125", name: "张小丽", eventCount: "4", rewardAmount: "700.00", betAmount: "9101.00", lastPlayDate: "2025-03-21" },
+                { userId: "obli303", name: "李丹", eventCount: "4", rewardAmount: "1166.00", betAmount: "8642.64", lastPlayDate: "2025-02-04" },
+                { userId: "abua024", name: "abua024", eventCount: "1", rewardAmount: "555.00", betAmount: "8548.00", lastPlayDate: "2024-12-16" },
+                { userId: "quf3804", name: "陈金", eventCount: "1", rewardAmount: "100.00", betAmount: "8193.00", lastPlayDate: "2025-05-07" },
+                { userId: "aa3806", name: "陈华 微信二维码", eventCount: "2", rewardAmount: "600.00", betAmount: "8187.00", lastPlayDate: "2025-01-26" },
+                
+                { userId: "lbgk005", name: "梁丽华", eventCount: "2", rewardAmount: "310.00", betAmount: "7892.65", lastPlayDate: "2025-02-28" },
+                { userId: "lbzv109", name: "刘建国", eventCount: "1", rewardAmount: "200.00", betAmount: "7655.18", lastPlayDate: "2025-03-24" },
+                { userId: "yaoj015", name: "李伟", eventCount: "3", rewardAmount: "860.00", betAmount: "7321.91", lastPlayDate: "2025-04-15" },
+                { userId: "aktu892", name: "张明", eventCount: "1", rewardAmount: "100.00", betAmount: "6982.38", lastPlayDate: "2025-03-02" },
+                { userId: "xjbb116", name: "王静", eventCount: "2", rewardAmount: "300.00", betAmount: "6845.17", lastPlayDate: "2025-01-19" },
+                { userId: "mdlu732", name: "赵小红", eventCount: "1", rewardAmount: "500.00", betAmount: "6721.55", lastPlayDate: "2025-04-22" },
+                { userId: "qugz225", name: "陈宁", eventCount: "3", rewardAmount: "755.00", betAmount: "6625.30", lastPlayDate: "2025-05-01" },
+                { userId: "xjaz392", name: "杨光", eventCount: "2", rewardAmount: "400.00", betAmount: "6512.64", lastPlayDate: "2025-02-15" },
+                { userId: "adlo445", name: "刘志强", eventCount: "1", rewardAmount: "100.00", betAmount: "6423.92", lastPlayDate: "2025-04-08" },
+                { userId: "uige785", name: "王丽", eventCount: "4", rewardAmount: "900.00", betAmount: "6324.18", lastPlayDate: "2025-03-30" },
+                { userId: "qumi256", name: "张伟", eventCount: "1", rewardAmount: "300.00", betAmount: "6234.47", lastPlayDate: "2025-01-24" },
+                { userId: "obcd117", name: "李娜", eventCount: "2", rewardAmount: "400.00", betAmount: "6112.73", lastPlayDate: "2025-04-17" },
+                { userId: "umli349", name: "陈明", eventCount: "3", rewardAmount: "555.00", betAmount: "5987.21", lastPlayDate: "2025-02-23" },
+                { userId: "abqr582", name: "赵强", eventCount: "1", rewardAmount: "100.00", betAmount: "5846.65", lastPlayDate: "2025-03-15" },
+                { userId: "kkas221", name: "王梅", eventCount: "2", rewardAmount: "200.00", betAmount: "5734.92", lastPlayDate: "2025-04-25" },
+                { userId: "ycdd775", name: "张建", eventCount: "1", rewardAmount: "300.00", betAmount: "5623.18", lastPlayDate: "2025-01-30" },
+                { userId: "ukzq446", name: "刘芳", eventCount: "3", rewardAmount: "650.00", betAmount: "5546.32", lastPlayDate: "2025-04-12" },
+                { userId: "mdpi339", name: "陈刚", eventCount: "2", rewardAmount: "400.00", betAmount: "5432.56", lastPlayDate: "2025-03-08" },
+                { userId: "ufcc663", name: "杨健", eventCount: "1", rewardAmount: "150.00", betAmount: "5321.78", lastPlayDate: "2025-02-14" },
+                { userId: "qkss446", name: "卢姗", eventCount: "2", rewardAmount: "350.00", betAmount: "5211.25", lastPlayDate: "2025-04-19" },
+                
+                { userId: "uwcb339", name: "刘刚", eventCount: "1", rewardAmount: "200.00", betAmount: "5087.61", lastPlayDate: "2025-03-23" },
+                { userId: "xjkl226", name: "张琳", eventCount: "3", rewardAmount: "500.00", betAmount: "4923.45", lastPlayDate: "2025-01-18" },
+                { userId: "ljcc551", name: "李强", eventCount: "2", rewardAmount: "400.00", betAmount: "4821.73", lastPlayDate: "2025-04-27" },
+                { userId: "adww348", name: "王阳", eventCount: "1", rewardAmount: "100.00", betAmount: "4712.28", lastPlayDate: "2025-03-05" },
+                { userId: "qwde682", name: "陈华", eventCount: "2", rewardAmount: "300.00", betAmount: "4632.57", lastPlayDate: "2025-02-22" },
+                { userId: "qazw772", name: "赵辉", eventCount: "1", rewardAmount: "200.00", betAmount: "4543.86", lastPlayDate: "2025-04-13" },
+                { userId: "mdbc448", name: "张鑫", eventCount: "3", rewardAmount: "450.00", betAmount: "4421.32", lastPlayDate: "2025-03-29" },
+                { userId: "yafd335", name: "李明", eventCount: "2", rewardAmount: "350.00", betAmount: "4311.73", lastPlayDate: "2025-02-11" },
+                { userId: "ufpo225", name: "王芳", eventCount: "1", rewardAmount: "100.00", betAmount: "4214.51", lastPlayDate: "2025-04-21" },
+                { userId: "acxz663", name: "刘洋", eventCount: "2", rewardAmount: "200.00", betAmount: "4123.75", lastPlayDate: "2025-03-18" },
+                { userId: "zzxc442", name: "陈丽", eventCount: "3", rewardAmount: "550.00", betAmount: "4032.64", lastPlayDate: "2025-02-25" },
+                { userId: "lkmn783", name: "杨艳", eventCount: "1", rewardAmount: "150.00", betAmount: "3943.28", lastPlayDate: "2025-04-09" },
+                { userId: "poiu225", name: "张勇", eventCount: "2", rewardAmount: "300.00", betAmount: "3854.71", lastPlayDate: "2025-03-13" },
+                { userId: "mnbv441", name: "李亮", eventCount: "1", rewardAmount: "100.00", betAmount: "3765.39", lastPlayDate: "2025-02-20" },
+                { userId: "qwer321", name: "王平", eventCount: "3", rewardAmount: "450.00", betAmount: "3676.82", lastPlayDate: "2025-04-06" },
+                { userId: "asdf654", name: "陈军", eventCount: "2", rewardAmount: "300.00", betAmount: "3587.46", lastPlayDate: "2025-03-22" },
+                { userId: "zxcv987", name: "赵敏", eventCount: "1", rewardAmount: "150.00", betAmount: "3498.34", lastPlayDate: "2025-02-17" },
+                { userId: "tyui258", name: "张涛", eventCount: "2", rewardAmount: "250.00", betAmount: "3409.57", lastPlayDate: "2025-04-03" },
+                { userId: "ghjk753", name: "李红", eventCount: "3", rewardAmount: "500.00", betAmount: "3321.65", lastPlayDate: "2025-03-27" },
+                { userId: "vbnm159", name: "王杰", eventCount: "1", rewardAmount: "100.00", betAmount: "3232.48", lastPlayDate: "2025-02-09" },
+                
+                { userId: "qwas357", name: "陈伟", eventCount: "2", rewardAmount: "200.00", betAmount: "3143.26", lastPlayDate: "2025-04-24" },
+                { userId: "plmk468", name: "赵健", eventCount: "1", rewardAmount: "150.00", betAmount: "3054.39", lastPlayDate: "2025-03-11" },
+                { userId: "uhbv247", name: "杨帆", eventCount: "3", rewardAmount: "450.00", betAmount: "2965.74", lastPlayDate: "2025-02-27" },
+                { userId: "ntyr128", name: "张燕", eventCount: "2", rewardAmount: "300.00", betAmount: "2876.52", lastPlayDate: "2025-04-16" },
+                { userId: "mixs359", name: "李波", eventCount: "1", rewardAmount: "100.00", betAmount: "2787.81", lastPlayDate: "2025-03-20" },
+                { userId: "kyqw486", name: "王月", eventCount: "2", rewardAmount: "250.00", betAmount: "2698.45", lastPlayDate: "2025-02-06" },
+                { userId: "dstx735", name: "陈阳", eventCount: "3", rewardAmount: "400.00", betAmount: "2609.29", lastPlayDate: "2025-04-28" },
+                { userId: "frgj826", name: "赵雪", eventCount: "1", rewardAmount: "150.00", betAmount: "2543.73", lastPlayDate: "2025-03-03" },
+                { userId: "htns519", name: "张浩", eventCount: "2", rewardAmount: "300.00", betAmount: "2476.85", lastPlayDate: "2025-02-19" },
+                { userId: "kmnv371", name: "李洁", eventCount: "1", rewardAmount: "100.00", betAmount: "2398.46", lastPlayDate: "2025-04-10" },
+                { userId: "pljh482", name: "王晨", eventCount: "3", rewardAmount: "500.00", betAmount: "2321.97", lastPlayDate: "2025-03-25" },
+                { userId: "ujhy524", name: "陈亮", eventCount: "2", rewardAmount: "300.00", betAmount: "2254.38", lastPlayDate: "2025-02-12" },
+                { userId: "azxs681", name: "赵峰", eventCount: "1", rewardAmount: "150.00", betAmount: "2187.63", lastPlayDate: "2025-04-26" },
+                { userId: "tdfw759", name: "杨柳", eventCount: "2", rewardAmount: "250.00", betAmount: "2121.45", lastPlayDate: "2025-03-09" },
+                { userId: "rcni438", name: "张丽", eventCount: "3", rewardAmount: "450.00", betAmount: "2054.26", lastPlayDate: "2025-02-22" },
+                { userId: "wuif629", name: "李明", eventCount: "1", rewardAmount: "100.00", betAmount: "1987.59", lastPlayDate: "2025-04-14" },
+                { userId: "pskj748", name: "王强", eventCount: "2", rewardAmount: "200.00", betAmount: "1921.34", lastPlayDate: "2025-03-18" },
+                { userId: "mchd357", name: "陈梅", eventCount: "1", rewardAmount: "150.00", betAmount: "1854.67", lastPlayDate: "2025-02-08" },
+                { userId: "hnqb824", name: "赵勇", eventCount: "3", rewardAmount: "450.00", betAmount: "1787.91", lastPlayDate: "2025-04-23" },
+                { userId: "plex753", name: "张璐", eventCount: "2", rewardAmount: "300.00", betAmount: "1721.28", lastPlayDate: "2025-03-07" },
+                
+                { userId: "oihn269", name: "李艳", eventCount: "1", rewardAmount: "100.00", betAmount: "1654.73", lastPlayDate: "2025-02-28" },
+                { userId: "kjhf537", name: "王涛", eventCount: "2", rewardAmount: "200.00", betAmount: "1587.35", lastPlayDate: "2025-04-05" },
+                { userId: "alpe826", name: "陈杰", eventCount: "3", rewardAmount: "400.00", betAmount: "1521.67", lastPlayDate: "2025-03-26" },
+                { userId: "icvd714", name: "杨华", eventCount: "1", rewardAmount: "150.00", betAmount: "1454.29", lastPlayDate: "2025-02-15" },
+                { userId: "dnba638", name: "赵芳", eventCount: "2", rewardAmount: "250.00", betAmount: "1387.56", lastPlayDate: "2025-04-20" },
+                { userId: "qzvn742", name: "张雷", eventCount: "3", rewardAmount: "350.00", betAmount: "1312.84", lastPlayDate: "2025-03-17" },
+                { userId: "whgf451", name: "李云", eventCount: "1", rewardAmount: "100.00", betAmount: "1242.35", lastPlayDate: "2025-02-24" },
+                { userId: "lmhf372", name: "王林", eventCount: "2", rewardAmount: "200.00", betAmount: "1176.48", lastPlayDate: "2025-04-07" },
+                { userId: "jnbg236", name: "陈霞", eventCount: "3", rewardAmount: "300.00", betAmount: "1112.67", lastPlayDate: "2025-03-12" },
+                { userId: "krjg829", name: "杨峰", eventCount: "1", rewardAmount: "150.00", betAmount: "1043.82", lastPlayDate: "2025-02-18" },
+                { userId: "fvhj619", name: "赵莉", eventCount: "2", rewardAmount: "200.00", betAmount: "984.35", lastPlayDate: "2025-04-02" },
+                { userId: "nhyt371", name: "李辉", eventCount: "1", rewardAmount: "100.00", betAmount: "923.74", lastPlayDate: "2025-03-14" }
+            ];
+            
+            const userTable = document.getElementById('userData');
+            const pagination = document.getElementById('pagination');
+            const pageNote = document.getElementById('pageNote');
+            
+            // 페이지당 행 수
+            const rowsPerPage = 20;
+            
+            // 총 페이지 수
+            const totalPages = Math.ceil(allUserData.length / rowsPerPage);
+            
+            // 현재 페이지 (기본값: 1)
+            let currentPage = 1;
+            
+            // 테이블 행 생성 함수
+            function createTableRow(user) {
+                const row = document.createElement('tr');
+                
+                // 사용자 ID
+                const idCell = document.createElement('td');
+                idCell.textContent = user.userId;
+                row.appendChild(idCell);
+                
+                // 이름
+                const nameCell = document.createElement('td');
+                nameCell.textContent = user.name;
+                row.appendChild(nameCell);
+                
+                // 이벤트 지급 횟수
+                const countCell = document.createElement('td');
+                countCell.className = 'number-cell';
+                countCell.textContent = user.eventCount + '회';
+                row.appendChild(countCell);
+                
+                // 이벤트 지급 금액
+                const amountCell = document.createElement('td');
+                amountCell.className = 'number-cell';
+                amountCell.textContent = parseFloat(user.rewardAmount).toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                row.appendChild(amountCell);
+                
+                // 배팅액
+                const betCell = document.createElement('td');
+                betCell.className = 'number-cell';
+                betCell.textContent = parseFloat(user.betAmount).toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                row.appendChild(betCell);
+                
+                // 마지막 접속일
+                const dateCell = document.createElement('td');
+                dateCell.textContent = user.lastPlayDate;
+                row.appendChild(dateCell);
+                
+                return row;
+            }
+            
+            // 페이지 표시 함수
+            function displayPage(pageNum) {
+                // 현재 페이지 설정
+                currentPage = pageNum;
+                
+                // 시작 인덱스와 종료 인덱스 계산
+                const startIndex = (pageNum - 1) * rowsPerPage;
+                const endIndex = Math.min(startIndex + rowsPerPage, allUserData.length);
+                
+                // 테이블 내용 지우기
+                userTable.innerHTML = '';
+                
+                // 페이지에 해당하는 사용자 데이터 표시
+                for (let i = startIndex; i < endIndex; i++) {
+                    const row = createTableRow(allUserData[i]);
+                    userTable.appendChild(row);
+                }
+                
+                // 페이지 노트 업데이트
+                pageNote.textContent = `참고: 전체 ${allUserData.length}명 중 ${startIndex + 1}-${endIndex}번 항목을 표시하였습니다.`;
+                
+                // 페이지네이션 버튼 업데이트
+                updatePagination();
+            }
+            
+            // 페이지네이션 생성 함수
+            function createPagination() {
+                pagination.innerHTML = '';
+                
+                // 첫 페이지로 이동 버튼
+                if (totalPages > 3) {
+                    const firstPageBtn = document.createElement('a');
+                    firstPageBtn.href = '#';
+                    firstPageBtn.textContent = '«';
+                    firstPageBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        displayPage(1);
+                    });
+                    pagination.appendChild(firstPageBtn);
+                }
+                
+                // 이전 페이지 버튼
+                if (currentPage > 1) {
+                    const prevPageBtn = document.createElement('a');
+                    prevPageBtn.href = '#';
+                    prevPageBtn.textContent = '‹';
+                    prevPageBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        displayPage(currentPage - 1);
+                    });
+                    pagination.appendChild(prevPageBtn);
+                }
+                
+                // 페이지 번호 버튼
+                let startPage = Math.max(1, currentPage - 1);
+                let endPage = Math.min(startPage + 2, totalPages);
+                
+                if (endPage - startPage < 2) {
+                    startPage = Math.max(1, endPage - 2);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('a');
+                    pageBtn.href = '#';
+                    pageBtn.textContent = i;
+                    
+                    if (i === currentPage) {
+                        pageBtn.classList.add('active');
+                    }
+                    
+                    pageBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        displayPage(i);
+                    });
+                    
+                    pagination.appendChild(pageBtn);
+                }
+                
+                // 다음 페이지 버튼
+                if (currentPage < totalPages) {
+                    const nextPageBtn = document.createElement('a');
+                    nextPageBtn.href = '#';
+                    nextPageBtn.textContent = '›';
+                    nextPageBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        displayPage(currentPage + 1);
+                    });
+                    pagination.appendChild(nextPageBtn);
+                }
+                
+                // 마지막 페이지로 이동 버튼
+                if (totalPages > 3) {
+                    const lastPageBtn = document.createElement('a');
+                    lastPageBtn.href = '#';
+                    lastPageBtn.textContent = '»';
+                    lastPageBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        displayPage(totalPages);
+                    });
+                    pagination.appendChild(lastPageBtn);
+                }
+            }
+            
+            // 페이지네이션 업데이트 함수
+            function updatePagination() {
+                createPagination();
+            }
+            
+            // 초기 페이지 표시
+            displayPage(1);
+        });
+    </script>
+</body>
+</html>

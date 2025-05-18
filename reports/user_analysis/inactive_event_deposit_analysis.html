@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장기 미접속 & 이벤트 후 입금 사용자 분석</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .query-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .query-container h2 {
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        .query-details {
+            background-color: #f1f8ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .query-details ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .number-cell {
+            text-align: right;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: #e8f4f8;
+        }
+        
+        .summary {
+            margin-top: 30px;
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        .nav-links {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: #e1f0ff;
+            color: #2980b9;
+        }
+        
+        .icon {
+            margin-right: 5px;
+        }
+        
+        .file-links {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .file-links h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .file-links a {
+            display: inline-block;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .file-links a:hover {
+            background-color: #e1f0ff;
+            color: #2980b9;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .pagination a {
+            color: #3498db;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+            border: 1px solid #ddd;
+            margin: 0 4px;
+            cursor: pointer;
+        }
+        
+        .pagination a.active {
+            background-color: #3498db;
+            color: white;
+            border: 1px solid #3498db;
+        }
+        
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        
+        /* 페이지네이션을 위한 스타일 */
+        .data-row {
+            display: none;
+        }
+        
+        .data-row.visible {
+            display: table-row;
+        }
+        
+        #pageInfo {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="../index.html" class="nav-link"><span class="icon">◀</span>질의 목록으로 돌아가기</a>
+    </div>
+    
+    <h1>장기 미접속 & 이벤트 후 입금 사용자 분석</h1>
+    
+    <div class="query-container">
+        <h2>질의 내용</h2>
+        <div class="query-details">
+            <p>다음 조건을 만족하는 사용자 ID 목록을 조회합니다:</p>
+            <ol>
+                <li>금일(2025-05-17) 기준으로 10일 동안 게임을 하지 않은 사용자</li>
+                <li>이벤트 차수에 관계없이 한 번이라도 이벤트 지급을 받은 후 입금 기록이 있는 사용자</li>
+            </ol>
+        </div>
+        
+        <h2>분석 결과</h2>
+        <div id="pageInfo">페이지 1 / 5 (총 141명의 사용자)</div>
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>사용자 ID</th>
+                    <th>이벤트 받은 횟수</th>
+                    <th>이벤트 받은 이후 입금액 합</th>
+                    <th>마지막 게임날짜</th>
+                    <th>이벤트 금액(최신순)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 데이터 행들이 JavaScript로 채워집니다 -->
+            </tbody>
+        </table>
+        
+        <div class="pagination" id="pagination">
+            <!-- 페이지네이션 링크들이 JavaScript로 채워집니다 -->
+        </div>
+        
+        <div class="summary">
+            <h3>요약</h3>
+            <p>총 141명의 사용자가 분석 조건을 충족합니다. 이 사용자들은 모두 10일 이상 게임을 하지 않았으며, 이벤트 지급 후 적어도 한 번 이상 입금한 기록이 있습니다.</p>
+            <p>주요 발견 사항은 다음과 같습니다:</p>
+            <ul>
+                <li>가장 많은 이벤트를 받은 사용자는 "ug3802"로 8회 이벤트를 받았습니다.</li>
+                <li>이벤트 후 가장 많은 입금액을 기록한 사용자는 "jiaw189"로 764,000원의 입금액을 기록했습니다.</li>
+                <li>가장 최근에 게임을 한 날짜는 2025년 5월 5일입니다.</li>
+                <li>총 입금액은 3,255,134원입니다.</li>
+                <li>전체 이벤트 지급 횟수는 407회입니다.</li>
+                <li>가장 큰 단일 이벤트 지급 금액은 "hh3803"에게 지급된 3,330원입니다.</li>
+            </ul>
+        </div>
+        
+        <div class="file-links">
+            <h4>관련 파일:</h4>
+            <a href="inactive_event_deposit_data.csv"><span class="icon">📊</span>CSV 데이터</a>
+            <a href="inactive_event_deposit_query.sql"><span class="icon">💻</span>SQL 쿼리 코드</a>
+            <a href="inactive_event_deposit_methodology.md"><span class="icon">📝</span>분석 방법론</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>생성일: 2025년 5월 17일</p>
+        <p>이 문서는 헤르메스 데이터베이스 분석을 기반으로 생성되었습니다.</p>
+    </footer>
+
+    <script>
+        // CSV 파일을 가져와 파싱하는 함수 (UTF-8 인코딩 명시)
+        async function fetchCSVData() {
+            try {
+                // 고정 헤더 (CSV 파일의 헤더는 무시)
+                const fixedHeaders = [
+                    "사용자id", 
+                    "이벤트 받은 횟수", 
+                    "이벤트 받은 이후 입금액 합", 
+                    "마지막 게임날짜", 
+                    "이벤트 금액(최신순)"
+                ];
+
+                const response = await fetch('inactive_event_deposit_data.csv');
+                const csvText = await response.text();
+                const lines = csvText.trim().split('\n');
+                
+                // 첫 번째 줄(헤더)는 무시하고 데이터 행만 처리
+                const userData = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i];
+                    
+                    // CSV 행을 쉼표로 분리하되, 따옴표 내의 쉼표는 무시
+                    const values = [];
+                    let value = '';
+                    let insideQuotes = false;
+                    
+                    for (let j = 0; j < line.length; j++) {
+                        const char = line[j];
+                        
+                        if (char === '"') {
+                            insideQuotes = !insideQuotes;
+                        } else if (char === ',' && !insideQuotes) {
+                            values.push(value);
+                            value = '';
+                        } else {
+                            value += char;
+                        }
+                    }
+                    values.push(value); // 마지막 값 추가
+                    
+                    // 데이터 객체로 변환 - 명시적 헤더 매핑 사용
+                    userData.push({
+                        id: values[0],
+                        eventCount: parseInt(values[1]),
+                        deposit: parseInt(values[2]),
+                        lastDate: values[3],
+                        rewardList: values[4].replace(/"/g, '') // 따옴표 제거
+                    });
+                }
+                
+                return userData;
+            } catch (error) {
+                console.error('CSV 파일을 가져오는 중 오류 발생:', error);
+                
+                // 오류 발생 시 백업 데이터 사용
+                return backupUserData;
+            }
+        }
+        
+        // 백업용 데이터 배열 정의 - 전체 141건의 데이터
+        const backupUserData = [
+          { id: "ja3106", eventCount: 6, deposit: 5500, lastDate: "2025-05-05", rewardList: "100,100,100,100,100,111" },
+          { id: "xja3802", eventCount: 2, deposit: 3000, lastDate: "2025-05-04", rewardList: "300,300" },
+          { id: "ph3007", eventCount: 2, deposit: 2700, lastDate: "2025-05-04", rewardList: "200,200" },
+          { id: "mm3801", eventCount: 3, deposit: 18800, lastDate: "2025-05-03", rewardList: "100,300,100" },
+          { id: "ug3004", eventCount: 5, deposit: 1000, lastDate: "2025-05-03", rewardList: "200,300,300,300,555" },
+          { id: "ue3012", eventCount: 2, deposit: 19200, lastDate: "2025-05-03", rewardList: "200,300" },
+          { id: "yi3801", eventCount: 4, deposit: 6000, lastDate: "2025-05-03", rewardList: "100,200,222,222" },
+          { id: "obna001", eventCount: 2, deposit: 2800, lastDate: "2025-05-03", rewardList: "100,100" },
+          { id: "yi3803", eventCount: 4, deposit: 2500, lastDate: "2025-05-02", rewardList: "100,100,100,222" },
+          { id: "quh3803", eventCount: 4, deposit: 1500, lastDate: "2025-05-02", rewardList: "100,100,100,111" },
+          { id: "ud3002", eventCount: 2, deposit: 5000, lastDate: "2025-05-01", rewardList: "200,100" },
+          { id: "hn3102", eventCount: 4, deposit: 22685, lastDate: "2025-05-01", rewardList: "100,100,500,300" },
+          { id: "ug3802", eventCount: 8, deposit: 1000, lastDate: "2025-05-01", rewardList: "100,100,300,200,200,200,333,555" },
+          { id: "yi3175", eventCount: 7, deposit: 470, lastDate: "2025-05-01", rewardList: "100,100,100,200,100,200,222" },
+          { id: "yi3162", eventCount: 1, deposit: 1000, lastDate: "2025-05-01", rewardList: "500" },
+          { id: "jiaw189", eventCount: 6, deposit: 764000, lastDate: "2025-04-30", rewardList: "888,800,500,888,888,888" },
+          { id: "ul3801", eventCount: 2, deposit: 1600, lastDate: "2025-04-30", rewardList: "100,100" },
+          { id: "aa3807", eventCount: 1, deposit: 132000, lastDate: "2025-04-30", rewardList: "1000" },
+          { id: "ue3015", eventCount: 2, deposit: 3000, lastDate: "2025-04-30", rewardList: "200,222" },
+          { id: "pi3809", eventCount: 5, deposit: 740, lastDate: "2025-04-30", rewardList: "100,100,100,100,111" },
+          { id: "xu3101", eventCount: 4, deposit: 149400, lastDate: "2025-04-29", rewardList: "300,300,300,333" },
+          { id: "uq3111", eventCount: 4, deposit: 40510, lastDate: "2025-04-29", rewardList: "100,200,200,200" },
+          { id: "xuc3501", eventCount: 5, deposit: 5800, lastDate: "2025-04-29", rewardList: "100,100,100,100,100" },
+          { id: "xhn3101", eventCount: 4, deposit: 5500, lastDate: "2025-04-29", rewardList: "100,100,111,100" },
+          { id: "ji3149", eventCount: 4, deposit: 6700, lastDate: "2025-04-29", rewardList: "100,100,100,111" },
+          { id: "pi3805", eventCount: 5, deposit: 1500, lastDate: "2025-04-29", rewardList: "100,100,100,111,222" },
+          { id: "xja3177", eventCount: 3, deposit: 12000, lastDate: "2025-04-29", rewardList: "200,222,100" },
+          { id: "obua024", eventCount: 4, deposit: 5000, lastDate: "2025-04-29", rewardList: "100,300,200,333" },
+          { id: "uz3002", eventCount: 2, deposit: 1500, lastDate: "2025-04-29", rewardList: "100,100" },
+          { id: "pi3812", eventCount: 1, deposit: 147200, lastDate: "2025-04-29", rewardList: "200" },
+          { id: "mdudw003", eventCount: 2, deposit: 15500, lastDate: "2025-04-29", rewardList: "100,100" },
+          { id: "xua3024", eventCount: 4, deposit: 8000, lastDate: "2025-04-29", rewardList: "100,111,100,100" },
+          { id: "mdyaw006", eventCount: 3, deposit: 25000, lastDate: "2025-04-29", rewardList: "1000,100,200" },
+          { id: "ji3810", eventCount: 1, deposit: 3000, lastDate: "2025-04-29", rewardList: "100" },
+          { id: "ji3808", eventCount: 2, deposit: 3600, lastDate: "2025-04-29", rewardList: "100,100" },
+          { id: "xja3148", eventCount: 2, deposit: 500, lastDate: "2025-04-29", rewardList: "100,100" },
+          { id: "obja155", eventCount: 3, deposit: 1500, lastDate: "2025-04-29", rewardList: "300,100,111" },
+          { id: "ju3210", eventCount: 1, deposit: 1000, lastDate: "2025-04-29", rewardList: "200" },
+          { id: "ud3001", eventCount: 4, deposit: 2000, lastDate: "2025-04-29", rewardList: "100,100,200,222" },
+          { id: "ggw001", eventCount: 2, deposit: 70000, lastDate: "2025-04-29", rewardList: "100,500" },
+          { id: "ji3107", eventCount: 4, deposit: 1500, lastDate: "2025-04-25", rewardList: "200,200,100,111" },
+          { id: "ja3168", eventCount: 4, deposit: 5300, lastDate: "2025-04-25", rewardList: "100,200,100,333" },
+          { id: "mduew007", eventCount: 1, deposit: 45355, lastDate: "2025-04-24", rewardList: "300" },
+          { id: "yy3001", eventCount: 2, deposit: 1000, lastDate: "2025-04-24", rewardList: "100,100" },
+          { id: "ji3129", eventCount: 2, deposit: 26000, lastDate: "2025-04-24", rewardList: "100,100" },
+          { id: "hn3806", eventCount: 1, deposit: 500, lastDate: "2025-04-23", rewardList: "100" },
+          { id: "xpi3806", eventCount: 6, deposit: 72500, lastDate: "2025-04-22", rewardList: "300,222,200,333,200,200" },
+          { id: "li3100", eventCount: 1, deposit: 9700, lastDate: "2025-04-22", rewardList: "100" },
+          { id: "ju3801", eventCount: 1, deposit: 1800, lastDate: "2025-04-22", rewardList: "100" },
+          { id: "ud3805", eventCount: 4, deposit: 37150, lastDate: "2025-04-22", rewardList: "200,200,200,200" },
+          { id: "yaw117", eventCount: 1, deposit: 28000, lastDate: "2025-04-22", rewardList: "500" },
+          { id: "mdptw006", eventCount: 2, deposit: 2000, lastDate: "2025-04-22", rewardList: "100,300" },
+          { id: "mduhw803", eventCount: 2, deposit: 5000, lastDate: "2025-04-22", rewardList: "100,100" },
+          { id: "ya3809", eventCount: 1, deposit: 4000, lastDate: "2025-04-22", rewardList: "100" },
+          { id: "yi3102", eventCount: 4, deposit: 1000, lastDate: "2025-04-22", rewardList: "100,100,111,111" },
+          { id: "pt3804", eventCount: 2, deposit: 5500, lastDate: "2025-04-22", rewardList: "300,333" },
+          { id: "ji3809", eventCount: 1, deposit: 1000, lastDate: "2025-04-21", rewardList: "200" },
+          { id: "spt21", eventCount: 1, deposit: 21000, lastDate: "2025-04-19", rewardList: "200" },
+          { id: "ja3186", eventCount: 1, deposit: 1500, lastDate: "2025-04-17", rewardList: "100" },
+          { id: "pm3801", eventCount: 4, deposit: 22500, lastDate: "2025-04-16", rewardList: "100,200,300,333" },
+          { id: "yi3002", eventCount: 1, deposit: 2000, lastDate: "2025-04-16", rewardList: "100" },
+          { id: "gg3806", eventCount: 3, deposit: 28200, lastDate: "2025-04-15", rewardList: "200,200,222" },
+          { id: "pi3804", eventCount: 5, deposit: 90000, lastDate: "2025-04-14", rewardList: "500,500,300,500,555" },
+          { id: "yi3107", eventCount: 3, deposit: 1500, lastDate: "2025-04-14", rewardList: "100,100,100" },
+          { id: "bb3002", eventCount: 4, deposit: 194000, lastDate: "2025-04-13", rewardList: "100,500,300,333" },
+          { id: "mdupw003", eventCount: 7, deposit: 1500, lastDate: "2025-04-12", rewardList: "100,100,100,100,100,111,222" },
+          { id: "ji3500", eventCount: 5, deposit: 4000, lastDate: "2025-04-11", rewardList: "800,500,500,300,500" },
+          { id: "mdpsw001", eventCount: 4, deposit: 5700, lastDate: "2025-04-11", rewardList: "100,100,200,200" },
+          { id: "mdggw002", eventCount: 1, deposit: 3700, lastDate: "2025-04-10", rewardList: "100" },
+          { id: "mducw002", eventCount: 3, deposit: 148700, lastDate: "2025-04-09", rewardList: "300,200,300" },
+          { id: "pi3801", eventCount: 1, deposit: 17100, lastDate: "2025-04-09", rewardList: "222" },
+          { id: "yi3148", eventCount: 4, deposit: 2000, lastDate: "2025-04-08", rewardList: "100,100,100,111" },
+          { id: "qya3121", eventCount: 4, deposit: 13000, lastDate: "2025-04-07", rewardList: "300,200,300,333" },
+          { id: "pl3013", eventCount: 5, deposit: 76000, lastDate: "2025-04-07", rewardList: "100,200,200,222,222" },
+          { id: "pf3003", eventCount: 4, deposit: 5000, lastDate: "2025-04-07", rewardList: "100,100,100,111" },
+          { id: "ja3175", eventCount: 2, deposit: 3000, lastDate: "2025-04-07", rewardList: "200,100" },
+          { id: "ue3001", eventCount: 4, deposit: 13000, lastDate: "2025-04-06", rewardList: "500,200,300,500" },
+          { id: "ddw001", eventCount: 5, deposit: 13300, lastDate: "2025-04-06", rewardList: "300,200,300,333,555" },
+          { id: "un3803", eventCount: 1, deposit: 1000, lastDate: "2025-04-03", rewardList: "300" },
+          { id: "qhn3143", eventCount: 2, deposit: 44700, lastDate: "2025-04-03", rewardList: "100,333" },
+          { id: "hn3137", eventCount: 4, deposit: 10500, lastDate: "2025-04-03", rewardList: "100,100,100,111" },
+          { id: "xuz3801", eventCount: 5, deposit: 3700, lastDate: "2025-04-01", rewardList: "100,111,111,100,100" },
+          { id: "abli001", eventCount: 4, deposit: 18500, lastDate: "2025-04-01", rewardList: "200,100,100,111" },
+          { id: "ya3180", eventCount: 3, deposit: 14100, lastDate: "2025-04-01", rewardList: "100,100,222" },
+          { id: "mdyaw171", eventCount: 1, deposit: 13800, lastDate: "2025-03-29", rewardList: "100" },
+          { id: "ja3812", eventCount: 3, deposit: 2300, lastDate: "2025-03-28", rewardList: "100,100,100" },
+          { id: "mdnnw801", eventCount: 1, deposit: 49100, lastDate: "2025-03-27", rewardList: "200" },
+          { id: "uf3035", eventCount: 1, deposit: 2100, lastDate: "2025-03-27", rewardList: "100" },
+          { id: "xua3801", eventCount: 3, deposit: 56900, lastDate: "2025-03-26", rewardList: "333,333,300" },
+          { id: "gg3832", eventCount: 4, deposit: 23900, lastDate: "2025-03-25", rewardList: "300,200,222,222" },
+          { id: "ya3503", eventCount: 1, deposit: 4000, lastDate: "2025-03-25", rewardList: "100" },
+          { id: "qji3502", eventCount: 6, deposit: 1500, lastDate: "2025-03-22", rewardList: "100,100,100,200,111,222" },
+          { id: "ya3004", eventCount: 6, deposit: 3100, lastDate: "2025-03-22", rewardList: "300,100,100,100,222,222" },
+          { id: "qja3126", eventCount: 5, deposit: 23600, lastDate: "2025-03-21", rewardList: "200,200,333,333,333" },
+          { id: "pplw011", eventCount: 2, deposit: 2200, lastDate: "2025-03-21", rewardList: "200,200" },
+          { id: "un3802", eventCount: 1, deposit: 4000, lastDate: "2025-03-19", rewardList: "200" },
+          { id: "obja002", eventCount: 2, deposit: 11000, lastDate: "2025-03-18", rewardList: "300,500" },
+          { id: "ja3103", eventCount: 3, deposit: 1500, lastDate: "2025-03-17", rewardList: "100,100,222" },
+          { id: "ya3803", eventCount: 4, deposit: 500, lastDate: "2025-03-15", rewardList: "100,100,100,222" },
+          { id: "uk3003", eventCount: 1, deposit: 1300, lastDate: "2025-03-15", rewardList: "200" },
+          { id: "py3004", eventCount: 4, deposit: 16100, lastDate: "2025-03-14", rewardList: "300,100,200,333" },
+          { id: "ya3130", eventCount: 7, deposit: 8000, lastDate: "2025-03-14", rewardList: "200,300,300,300,333,333,333" },
+          { id: "ug3808", eventCount: 3, deposit: 10000, lastDate: "2025-03-14", rewardList: "300,500,500" },
+          { id: "uddw002", eventCount: 4, deposit: 6600, lastDate: "2025-03-14", rewardList: "500,500,500,555" },
+          { id: "ug3002", eventCount: 1, deposit: 3500, lastDate: "2025-03-14", rewardList: "111" },
+          { id: "umw010", eventCount: 3, deposit: 32000, lastDate: "2025-03-11", rewardList: "500,500,555" },
+          { id: "tt3803", eventCount: 1, deposit: 600, lastDate: "2025-03-11", rewardList: "200" },
+          { id: "obhn119", eventCount: 1, deposit: 12300, lastDate: "2025-03-11", rewardList: "200" },
+          { id: "quh3002", eventCount: 5, deposit: 500, lastDate: "2025-03-07", rewardList: "100,500,100,100,222" },
+          { id: "hh3803", eventCount: 5, deposit: 87000, lastDate: "2025-03-04", rewardList: "500,200,200,333,3330" },
+          { id: "qpi3803", eventCount: 4, deposit: 500, lastDate: "2025-02-28", rewardList: "100,100,100,111" },
+          { id: "mdeew804", eventCount: 4, deposit: 56234, lastDate: "2025-02-24", rewardList: "300,300,333,555" },
+          { id: "obhn143", eventCount: 1, deposit: 1860, lastDate: "2025-02-22", rewardList: "200" },
+          { id: "un3812", eventCount: 1, deposit: 1000, lastDate: "2025-02-21", rewardList: "300" },
+          { id: "dd3801", eventCount: 3, deposit: 10900, lastDate: "2025-02-20", rewardList: "300,500,500" },
+          { id: "obuc002", eventCount: 1, deposit: 70200, lastDate: "2025-02-18", rewardList: "500" },
+          { id: "obuh501", eventCount: 7, deposit: 7000, lastDate: "2025-02-17", rewardList: "300,300,200,333,555,333,222" },
+          { id: "ff3802", eventCount: 2, deposit: 15000, lastDate: "2025-02-12", rewardList: "200,222" },
+          { id: "yaaw206", eventCount: 3, deposit: 24100, lastDate: "2025-02-10", rewardList: "300,300,666" },
+          { id: "mduaw801", eventCount: 2, deposit: 2800, lastDate: "2025-01-27", rewardList: "100,100" },
+          { id: "mdpvw001", eventCount: 2, deposit: 700, lastDate: "2025-01-26", rewardList: "100,222" },
+          { id: "ja3140", eventCount: 2, deposit: 500, lastDate: "2025-01-26", rewardList: "100,111" },
+          { id: "hh3805", eventCount: 2, deposit: 129000, lastDate: "2025-01-21", rewardList: "200,333" },
+          { id: "obua001", eventCount: 2, deposit: 2000, lastDate: "2025-01-21", rewardList: "300,300" },
+          { id: "ud3003", eventCount: 1, deposit: 500, lastDate: "2025-01-18", rewardList: "200" },
+          { id: "uyyw002", eventCount: 1, deposit: 6100, lastDate: "2025-01-18", rewardList: "222" },
+          { id: "qya3501", eventCount: 3, deposit: 500, lastDate: "2025-01-12", rewardList: "100,100,111" },
+          { id: "obhn3102", eventCount: 2, deposit: 1000, lastDate: "2025-01-12", rewardList: "100,111" },
+          { id: "nn3801", eventCount: 1, deposit: 5300, lastDate: "2025-01-11", rewardList: "100" },
+          { id: "yhn311", eventCount: 3, deposit: 1500, lastDate: "2025-01-11", rewardList: "111,111,100" },
+          { id: "xug3001", eventCount: 4, deposit: 1100, lastDate: "2025-01-11", rewardList: "111,111,100,100" },
+          { id: "hn3143", eventCount: 2, deposit: 620, lastDate: "2025-01-09", rewardList: "222,222" },
+          { id: "ee3801", eventCount: 3, deposit: 11000, lastDate: "2024-12-25", rewardList: "200,200,222" },
+          { id: "mdyaw139", eventCount: 1, deposit: 4800, lastDate: "2024-12-25", rewardList: "100" },
+          { id: "mduqw301", eventCount: 1, deposit: 2000, lastDate: "2024-12-22", rewardList: "100" },
+          { id: "ubw006", eventCount: 2, deposit: 1000, lastDate: "2024-12-09", rewardList: "100,222" },
+          { id: "ji3801", eventCount: 2, deposit: 1000, lastDate: "2024-12-06", rewardList: "100,111" },
+          { id: "sky222", eventCount: 1, deposit: 10, lastDate: "2024-12-04", rewardList: "100" },
+          { id: "xgg3805", eventCount: 3, deposit: 2300, lastDate: "2024-11-27", rewardList: "555,333,200" },
+          { id: "xpi3804", eventCount: 1, deposit: 10000, lastDate: "2024-11-15", rewardList: "555" },
+          { id: "li3001", eventCount: 1, deposit: 1000, lastDate: "2024-06-23", rewardList: "111" }
+        ];
+
+        // 변수 초기화
+        const itemsPerPage = 30;
+        let currentPage = 1;
+        let userData = [];
+        let totalItems = 0;
+        let totalPages = 0;
+
+        // 테이블 본문 참조
+        const tableBody = document.querySelector('#resultsTable tbody');
+        // 페이지네이션 컨테이너 참조
+        const paginationContainer = document.getElementById('pagination');
+        // 페이지 정보 참조
+        const pageInfo = document.getElementById('pageInfo');
+
+        // 테이블 헤더 직접 설정
+        const headers = ["사용자 ID", "이벤트 받은 횟수", "이벤트 받은 이후 입금액 합", "마지막 게임날짜", "이벤트 금액(최신순)"];
+        
+        // 페이지 로드 시 데이터 초기화
+        async function initData() {
+            try {
+                // CSV에서 데이터 가져오기 시도
+                userData = await fetchCSVData();
+            } catch (error) {
+                console.error('데이터 초기화 중 오류 발생:', error);
+                // 오류 발생 시 백업 데이터 사용
+                userData = backupUserData;
+            }
+            
+            totalItems = userData.length;
+            totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            // 초기 렌더링
+            renderTableData();
+            renderPagination();
+        }
+
+        // 함수: 테이블 데이터 렌더링
+        function renderTableData() {
+            // 테이블 비우기
+            tableBody.innerHTML = '';
+            
+            // 현재 페이지에 표시할 데이터 계산
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, userData.length);
+            
+            // 현재 페이지 데이터 렌더링
+            for (let i = startIndex; i < endIndex; i++) {
+                const user = userData[i];
+                const row = document.createElement('tr');
+                
+                // 각 셀 생성
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td class="number-cell">${user.eventCount}회</td>
+                    <td class="number-cell">${user.deposit.toLocaleString('ko-KR')}</td>
+                    <td>${user.lastDate}</td>
+                    <td class="number-cell">${user.rewardList}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            }
+            
+            // 총계 행 추가
+            if (currentPage === 1) {
+                const totalRow = document.createElement('tr');
+                totalRow.className = 'total-row';
+                
+                // 전체 데이터에 대한 총계 계산
+                const totalCount = userData.reduce((sum, user) => sum + user.eventCount, 0); // 전체 이벤트 지급 횟수
+                const totalDeposit = userData.reduce((sum, user) => sum + user.deposit, 0); // 전체 입금액 합계
+                
+                totalRow.innerHTML = `
+                    <td>총계 (${totalItems}명)</td>
+                    <td class="number-cell">${totalCount}회</td>
+                    <td class="number-cell">${totalDeposit.toLocaleString('ko-KR')}</td>
+                    <td>-</td>
+                    <td>-</td>
+                `;
+                
+                tableBody.appendChild(totalRow);
+            }
+            
+            // 페이지 정보 업데이트
+            pageInfo.textContent = `페이지 ${currentPage} / ${totalPages} (총 ${totalItems}명의 사용자)`;
+        }
+
+        // 함수: 페이지네이션 렌더링
+        function renderPagination() {
+            paginationContainer.innerHTML = '';
+            
+            // 처음으로 버튼
+            if (currentPage > 1) {
+                const firstLink = document.createElement('a');
+                firstLink.textContent = '◀◀ 처음';
+                firstLink.onclick = () => {
+                    currentPage = 1;
+                    renderTableData();
+                    updateActivePageLink();
+                };
+                paginationContainer.appendChild(firstLink);
+            }
+            
+            // 이전 버튼
+            if (currentPage > 1) {
+                const prevLink = document.createElement('a');
+                prevLink.textContent = '◀ 이전';
+                prevLink.onclick = () => {
+                    currentPage--;
+                    renderTableData();
+                    updateActivePageLink();
+                };
+                paginationContainer.appendChild(prevLink);
+            }
+            
+            // 페이지 번호
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.textContent = i;
+                pageLink.dataset.page = i;
+                if (i === currentPage) {
+                    pageLink.className = 'active';
+                }
+                pageLink.onclick = () => {
+                    currentPage = i;
+                    renderTableData();
+                    updateActivePageLink();
+                };
+                paginationContainer.appendChild(pageLink);
+            }
+            
+            // 다음 버튼
+            if (currentPage < totalPages) {
+                const nextLink = document.createElement('a');
+                nextLink.textContent = '다음 ▶';
+                nextLink.onclick = () => {
+                    currentPage++;
+                    renderTableData();
+                    updateActivePageLink();
+                };
+                paginationContainer.appendChild(nextLink);
+            }
+            
+            // 마지막으로 버튼
+            if (currentPage < totalPages) {
+                const lastLink = document.createElement('a');
+                lastLink.textContent = '마지막 ▶▶';
+                lastLink.onclick = () => {
+                    currentPage = totalPages;
+                    renderTableData();
+                    updateActivePageLink();
+                };
+                paginationContainer.appendChild(lastLink);
+            }
+        }
+
+        // 함수: 활성 페이지 링크 업데이트
+        function updateActivePageLink() {
+            const pageLinks = paginationContainer.querySelectorAll('a');
+            pageLinks.forEach(link => {
+                if (link.dataset.page) {
+                    if (parseInt(link.dataset.page) === currentPage) {
+                        link.className = 'active';
+                    } else {
+                        link.className = '';
+                    }
+                }
+            });
+        }
+
+        // 페이지 로드 시 데이터 초기화 및 렌더링
+        window.addEventListener('DOMContentLoaded', initData);
+    </script>
+</body>
+</html>

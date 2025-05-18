@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 지급 분석 결과 (2회 이상)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .query-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .query-container h2 {
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        .query-details {
+            background-color: #f1f8ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .query-details ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .number-cell {
+            text-align: right;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: #e8f4f8;
+        }
+        
+        .summary {
+            margin-top: 30px;
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        .nav-links {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: #e1f0ff;
+            color: #2980b9;
+        }
+        
+        .icon {
+            margin-right: 5px;
+        }
+        
+        .file-links {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .file-links h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .file-links a {
+            display: inline-block;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .file-links a:hover {
+            background-color: #e1f0ff;
+            color: #2980b9;
+        }
+        
+        .distribution {
+            margin: 30px 0;
+        }
+        
+        .distribution h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .chart {
+            display: flex;
+            height: 300px;
+            align-items: flex-end;
+            margin-top: 20px;
+            border-bottom: 2px solid #ddd;
+            border-left: 2px solid #ddd;
+            padding-left: 30px;
+        }
+        
+        .bar {
+            flex: 1;
+            margin: 0 10px;
+            background-color: #3498db;
+            position: relative;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            max-width: 100px;
+        }
+        
+        .bar:hover {
+            background-color: #2980b9;
+        }
+        
+        .bar-label {
+            text-align: center;
+            padding: 5px 0;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .x-label {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .value-label {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .pagination a {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border-radius: 4px;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .pagination a:hover, .pagination a.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .note {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .comparison {
+            display: flex;
+            margin: 30px 0;
+        }
+        
+        .comparison-card {
+            flex: 1;
+            padding: 15px;
+            background-color: #f1f8ff;
+            border-radius: 8px;
+            margin: 0 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .comparison-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .comparison-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        .comparison-label {
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="../../index.html" class="nav-link"><span class="icon">◀</span>질의 목록으로 돌아가기</a>
+    </div>
+    
+    <h1>이벤트 지급 분석 결과 (2회 이상)</h1>
+    
+    <div class="query-container">
+        <h2>질의 내용</h2>
+        <div class="query-details">
+            <p>다음 조건을 만족하는 사용자 ID 목록을 조회합니다:</p>
+            <ol>
+                <li>이벤트 지급을 2회 이상 받은 사용자</li>
+                <li>첫 이벤트 지급 이후 유효 배팅이 있는 사용자</li>
+                <li>첫 이벤트 지급 이후 입금 기록이 없는 사용자</li>
+            </ol>
+        </div>
+        
+        <h2>분석 결과 요약</h2>
+        
+        <div class="comparison">
+            <div class="comparison-card">
+                <h3>총 사용자 수</h3>
+                <div class="comparison-value">49</div>
+                <div class="comparison-label">이벤트 2회+ 지급 후 입금 없이 배팅한 사용자</div>
+            </div>
+            <div class="comparison-card">
+                <h3>평균 배팅액</h3>
+                <div class="comparison-value">5,097</div>
+                <div class="comparison-label">사용자당 평균 배팅 금액</div>
+            </div>
+            <div class="comparison-card">
+                <h3>배팅 효율</h3>
+                <div class="comparison-value">3.19</div>
+                <div class="comparison-label">이벤트 지급 1당 평균 배팅액</div>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h3>주요 통계</h3>
+            <ul>
+                <li><strong>총 사용자 수</strong>: 49명</li>
+                <li><strong>총 이벤트 지급 금액</strong>: 78,344.00</li>
+                <li><strong>사용자당 평균 이벤트 지급 금액</strong>: 1,598.86</li>
+                <li><strong>사용자당 평균 이벤트 지급 횟수</strong>: 2.76회</li>
+                <li><strong>이벤트 지급 후 총 배팅 금액</strong>: 249,744.64</li>
+                <li><strong>사용자당 평균 배팅 금액</strong>: 5,096.83</li>
+                <li><strong>금액 대비 배팅 효율</strong>: 이벤트 지급 1당 평균 3.19의 배팅 발생</li>
+            </ul>
+        </div>
+        
+        <div class="distribution">
+            <h3>이벤트 지급 횟수 분포</h3>
+            <div class="chart">
+                <div class="bar" style="height: 100%;">
+                    <div class="value-label">25</div>
+                    <div class="bar-label">51.0%</div>
+                </div>
+                <div class="bar" style="height: 64%;">
+                    <div class="value-label">16</div>
+                    <div class="bar-label">32.7%</div>
+                </div>
+                <div class="bar" style="height: 16%;">
+                    <div class="value-label">4</div>
+                    <div class="bar-label">8.2%</div>
+                </div>
+                <div class="bar" style="height: 12%;">
+                    <div class="value-label">3</div>
+                    <div class="bar-label">6.1%</div>
+                </div>
+                <div class="bar" style="height: 4%;">
+                    <div class="value-label">1</div>
+                    <div class="bar-label">2.0%</div>
+                </div>
+            </div>
+            <div class="x-label">
+                <span style="display: inline-block; width: 20%;">2회</span>
+                <span style="display: inline-block; width: 20%;">3회</span>
+                <span style="display: inline-block; width: 20%;">4회</span>
+                <span style="display: inline-block; width: 20%;">5회</span>
+                <span style="display: inline-block; width: 20%;">6회</span>
+            </div>
+            <p class="note">참고: 이벤트 지급을 2회 받은 사용자가 가장 많음 (전체의 51.0%)</p>
+        </div>
+        
+        <h2>사용자별 상세 분석 (배팅액 상위 15명)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>사용자 ID</th>
+                    <th>이름</th>
+                    <th>이벤트 지급 횟수</th>
+                    <th>이벤트 지급 금액</th>
+                    <th>이벤트 지급 후 배팅액</th>
+                    <th>마지막 접속일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>mdyaw005</td>
+                    <td>龚瑜</td>
+                    <td class="number-cell">2회</td>
+                    <td class="number-cell">1,066.00</td>
+                    <td class="number-cell">40,657.40</td>
+                    <td>2025-03-14</td>
+                </tr>
+                <tr>
+                    <td>ug3802</td>
+                    <td>何鉴其</td>
+                    <td class="number-cell">2회</td>
+                    <td class="number-cell">400.00</td>
+                    <td class="number-cell">21,814.00</td>
+                    <td>2025-05-01</td>
+                </tr>
+                <tr>
+                    <td>ya3125</td>
+                    <td>陈卫</td>
+                    <td class="number-cell">6회</td>
+                    <td class="number-cell">6,817.00</td>
+                    <td class="number-cell">20,970.00</td>
+                    <td>2025-03-06</td>
+                </tr>
+                <tr>
+                    <td>ub3012</td>
+                    <td>ub3012</td>
+                    <td class="number-cell">2회</td>
+                    <td class="number-cell">500.00</td>
+                    <td class="number-cell">16,748.00</td>
+                    <td>2025-03-18</td>
+                </tr>
+                <tr>
+                    <td>qul3804</td>
+                    <td>梁栋</td>
+                    <td class="number-cell">4회</td>
+                    <td class="number-cell">5,529.00</td>
+                    <td class="number-cell">12,914.00</td>
+                    <td>2025-04-29</td>
+                </tr>
+                <tr>
+                    <td>ui3009</td>
+                    <td>ui3009</td>
+                    <td class="number-cell">3회</td>
+                    <td class="number-cell">1,066.00</td>
+                    <td class="number-cell">11,862.00</td>
+                    <td>2025-02-13</td>
+                </tr>
+                <tr>
+                    <td>ya3008</td>
+                    <td>ya3008</td>
+                    <td class="number-cell">3회</td>
+                    <td class="number-cell">1,188.00</td>
+                    <td class="number-cell">11,350.00</td>
+                    <td>2025-03-04</td>
+                </tr>
+                <tr>
+                    <td>xja3851</td>
+                    <td>曹继志</td>
+                    <td class="number-cell">2회</td>
+                    <td class="number-cell">1,110.00</td>
+                    <td class="number-cell">10,299.00</td>
+                    <td>2025-04-11</td>
+                </tr>
+                <tr>
+                    <td>qja3125</td>
+                    <td>张小丽</td>
+                    <td class="number-cell">3회</td>
+                    <td class="number-cell">5,000.00</td>
+                    <td class="number-cell">8,866.00</td>
+                    <td>2025-03-21</td>
+                </tr>
+                <tr>
+                    <td>aa3806</td>
+                    <td>陈华 微信二维码</td>
+                    <td class="number-cell">2회</td>
+                    <td class="number-cell">600.00</td>
+                    <td class="number-cell">8,187.00</td>
+                    <td>2025-01-26</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="pagination">
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">5</a>
+            <a href="#">&raquo;</a>
+        </div>
+        
+        <div class="note">
+            <p>참고: 전체 49명 중 상위 10명만 표시하였습니다. 페이지 기능은 시각적 요소로만 제공됩니다.</p>
+        </div>
+        
+        <div class="summary">
+            <h3>분석 결과 해석</h3>
+            <p>총 49명의 사용자가 모든 조건을 만족합니다. 이 사용자들은 이벤트 지급을 2회 이상 받았고, 첫 이벤트 지급 이후 유효 배팅이 있으며, 첫 이벤트 지급 이후 입금 기록은 없습니다.</p>
+            <p>이 중 많은 사용자들(25명, 51.0%)은 2회만 이벤트를 지급받았으며, 6회를 ��급받은 사용자는 1명에 불과합니다. 이는 사용자들이 이벤트를 여러 번 받으면서도 입금 없이 활동을 이어나가는 경우가 적다는 것을 시사합니다.</p>
+            <p>1회만 이벤트를 지급받은 사용자들과 비교할 때, 2회 이상 이벤트를 지급받은 사용자들은 평균적으로 더 높은 배팅 활동을 보입니다(5,096.83 vs 4,411.54). 하지만 이벤트 지급 금액 대비 배팅 효율은 더 낮습니다(3.19 vs 4.43).</p>
+            <p>이는 이벤트 지급을 여러 번 받는 사용자들이 더 큰 금액을 배팅하지만, 이벤트 지급 금액 대비 효율성은 떨어진다는 것을 보여줍니다. 특히 상위 10명의 사용자에서 이런 경향이 뚜렷하게 나타납니다.</p>
+        </div>
+        
+        <div class="file-links">
+            <h4>관련 파일:</h4>
+            <a href="../../data/processed/event_payment_data.csv"><span class="icon">📊</span>CSV 데이터</a>
+            <a href="../../queries/event/event_payment_query.sql"><span class="icon">💻</span>SQL 쿼리 코드</a>
+            <a href="../../docs/analysis/methodology.md"><span class="icon">📝</span>분석 방법론</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>최종 업데이트: 2025년 5월 18일</p>
+        <p>이 문서는 헤르메스 데이터베이스 분석을 기반으로 생성되었습니다.</p>
+    </footer>
+</body>
+</html>
