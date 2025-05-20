@@ -4,6 +4,11 @@
 """
 
 import sys
+import os
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 from pathlib import Path
 import logging
 import pymysql
@@ -22,7 +27,7 @@ def get_connection():
     return pymysql.connect(
         host="211.248.190.46",
         user="hermes",
-        password="mcygicng!022",
+        password = os.getenv("DB_PASSWORD", ""),
         database="hermes",
         cursorclass=DictCursor
     )

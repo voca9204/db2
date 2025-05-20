@@ -8,7 +8,13 @@ PyMySQL을 사용한 간소화된 테스트 스크립트
 import sys
 import time
 import logging
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
+
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -24,11 +30,11 @@ from pymysql.cursors import DictCursor
 
 # 데이터베이스 연결 정보
 DB_CONFIG = {
-    "host": "211.248.190.46",
-    "user": "hermes",
-    "password": "mcygicng!022",
-    "database": "hermes",
-    "charset": "utf8mb4",
+    "host": os.getenv("DB_HOST", "211.248.190.46"),
+    "user": os.getenv("DB_USER", "hermes"),
+    "password": os.getenv("DB_PASSWORD", ""),
+    "database": os.getenv("DB_NAME", "hermes"),
+    "charset": os.getenv("DB_CHARSET", "utf8mb4"),
     "cursorclass": DictCursor
 }
 

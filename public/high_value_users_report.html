@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고가치 사용자 종합 분석 보고서</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        th {
+            background-color: #f1f8ff;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .summary-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            width: calc(33.33% - 15px);
+            box-sizing: border-box;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        .stat-sub {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .comparison-table {
+            width: 100%;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+        
+        .tag-active {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        .tag-dormant {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .bar-chart {
+            margin-top: 20px;
+        }
+        
+        .bar-chart .chart-bar {
+            height: 25px;
+            margin-bottom: 8px;
+            background-color: #3498db;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .bar-chart .chart-label {
+            width: 120px;
+            display: inline-block;
+            margin-right: 10px;
+            text-align: right;
+            font-weight: 500;
+        }
+        
+        .bar-chart .chart-value {
+            position: absolute;
+            right: 10px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .recommendations {
+            background-color: #f0f9ff;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .recommendations h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>고가치 사용자 종합 분석 보고서</h1>
+        <p>7일 이상 게임 기록 및 유효배팅 50,000 이상 사용자 분석</p>
+        <p>분석일: 2025-05-20</p>
+    </header>
+    
+    <div class="section">
+        <h2>분석 개요</h2>
+        <p>본 보고서는 다음 조건을 만족하는 고가치 사용자에 대한 분석 결과입니다:</p>
+        <ul>
+            <li>7일 이상 게임 기록이 있는 사용자</li>
+            <li>전체 유효배팅(netBet)의 합이 50,000 이상인 사용자</li>
+        </ul>
+        
+        <div class="summary-stats">
+            <div class="stat-card">
+                <h3>총 고가치 사용자 수</h3>
+                <div class="stat-value">731명</div>
+                <div class="stat-sub">모든 활성 및 휴면 사용자</div>
+            </div>
+            <div class="stat-card">
+                <h3>활성 사용자 비율</h3>
+                <div class="stat-value">62.5%</div>
+                <div class="stat-sub">457명 (최근 30일 내 활동)</div>
+            </div>
+            <div class="stat-card">
+                <h3>휴면 사용자 비율</h3>
+                <div class="stat-value">37.5%</div>
+                <div class="stat-sub">274명 (30일 이상 미활동)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 사용자 비교 분석 섹션 -->
+    <div class="section">
+        <h2>활성 vs 휴면 사용자 비교</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>지표</th>
+                    <th>활성 사용자</th>
+                    <th>휴면 사용자</th>
+                    <th>차이</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>평균 플레이 일수</td>
+                    <td>15일</td>
+                    <td>9일</td>
+                    <td>+67%</td>
+                </tr>
+                <tr>
+                    <td>평균 유효배팅 금액</td>
+                    <td>185,420원</td>
+                    <td>124,350원</td>
+                    <td>+49%</td>
+                </tr>
+                <tr>
+                    <td>최대 유효배팅 금액</td>
+                    <td>1,254,800원</td>
+                    <td>845,600원</td>
+                    <td>+48%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 휴면 사용자 분석 섹션 -->
+    <div class="section">
+        <h2>휴면 기간별 사용자 분포</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>휴면 기간</th>
+                    <th>사용자 수</th>
+                    <th>비율</th>
+                    <th>평균 유효배팅</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>31-60일</td>
+                    <td>98명</td>
+                    <td>35.8%</td>
+                    <td>142,350원</td>
+                </tr>
+                <tr>
+                    <td>61-90일</td>
+                    <td>72명</td>
+                    <td>26.3%</td>
+                    <td>128,650원</td>
+                </tr>
+                <tr>
+                    <td>91-180일</td>
+                    <td>58명</td>
+                    <td>21.2%</td>
+                    <td>105,320원</td>
+                </tr>
+                <tr>
+                    <td>181-365일</td>
+                    <td>32명</td>
+                    <td>11.7%</td>
+                    <td>86,450원</td>
+                </tr>
+                <tr>
+                    <td>365일 이상</td>
+                    <td>14명</td>
+                    <td>5.0%</td>
+                    <td>72,250원</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="bar-chart">
+            <div>
+                <span class="chart-label">31-60일</span>
+                <span class="chart-bar" style="width: 179px;">
+                    <span class="chart-value">98명 (35.8%)</span>
+                </span>
+            </div>
+            <div>
+                <span class="chart-label">61-90일</span>
+                <span class="chart-bar" style="width: 131px;">
+                    <span class="chart-value">72명 (26.3%)</span>
+                </span>
+            </div>
+            <div>
+                <span class="chart-label">91-180일</span>
+                <span class="chart-bar" style="width: 106px;">
+                    <span class="chart-value">58명 (21.2%)</span>
+                </span>
+            </div>
+            <div>
+                <span class="chart-label">181-365일</span>
+                <span class="chart-bar" style="width: 58px;">
+                    <span class="chart-value">32명 (11.7%)</span>
+                </span>
+            </div>
+            <div>
+                <span class="chart-label">365일 이상</span>
+                <span class="chart-bar" style="width: 25px;">
+                    <span class="chart-value">14명 (5.0%)</span>
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 사용자 목록 섹션 -->
+    <div class="section">
+        <h2>고가치 사용자 목록 (상위 10명)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>유저명</th>
+                    <th>플레이 일수</th>
+                    <th>총 유효배팅</th>
+                    <th>마지막 플레이</th>
+                    <th>경과일수</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>gamer728</td>
+                    <td>24</td>
+                    <td>1,254,800</td>
+                    <td>2025-05-12</td>
+                    <td>8</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>playpro365</td>
+                    <td>21</td>
+                    <td>982,450</td>
+                    <td>2025-05-15</td>
+                    <td>5</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>gameking03</td>
+                    <td>18</td>
+                    <td>845,600</td>
+                    <td>2025-03-12</td>
+                    <td>69</td>
+                    <td><span class="tag tag-dormant">휴면</span></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>winner2025</td>
+                    <td>19</td>
+                    <td>782,500</td>
+                    <td>2025-05-08</td>
+                    <td>12</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>lucky777</td>
+                    <td>16</td>
+                    <td>758,200</td>
+                    <td>2025-05-18</td>
+                    <td>2</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>topplayer2</td>
+                    <td>20</td>
+                    <td>732,450</td>
+                    <td>2025-05-01</td>
+                    <td>19</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>gamer465</td>
+                    <td>15</td>
+                    <td>695,800</td>
+                    <td>2025-04-02</td>
+                    <td>48</td>
+                    <td><span class="tag tag-dormant">휴면</span></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>bestbets</td>
+                    <td>14</td>
+                    <td>658,350</td>
+                    <td>2025-05-16</td>
+                    <td>4</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>vipuser89</td>
+                    <td>16</td>
+                    <td>635,120</td>
+                    <td>2025-05-10</td>
+                    <td>10</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>luckystar</td>
+                    <td>17</td>
+                    <td>618,750</td>
+                    <td>2025-05-05</td>
+                    <td>15</td>
+                    <td><span class="tag tag-active">활성</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 권장 전략 섹션 -->
+    <div class="section">
+        <h2>권장 전략</h2>
+        
+        <div class="recommendations">
+            <h3>활성 고가치 사용자 유지 전략</h3>
+            <ul>
+                <li><strong>맞춤형 VIP 프로그램</strong>: 개인화된 보상 및 혜택, 전담 VIP 매니저 배정</li>
+                <li><strong>계층적 충성도 프로그램</strong>: 활동 수준에 따른 등급 시스템, 등급별 차별화된 혜택</li>
+                <li><strong>활동 예측 및 예방</strong>: 활동 패턴 모니터링, 활동 감소 시 즉각적인 개입</li>
+            </ul>
+        </div>
+        
+        <div class="recommendations">
+            <h3>휴면 고가치 사용자 재활성화 전략</h3>
+            <ul>
+                <li><strong>세그먼트별 맞춤형 전략</strong>:
+                    <ul>
+                        <li>단기 휴면(31-90일): 즉각적인 복귀 인센티브, 환영 보너스</li>
+                        <li>중기 휴면(91-365일): 단계적 재참여 유도, 더 큰 보상</li>
+                        <li>장기 휴면(365일+): 강력한 복귀 패키지, 최신 기능 소개</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025-05-20</p>
+        <p><a href="/">홈페이지로 돌아가기</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+{
+  "functions": [
+    {
+      "id": "api",
+      "region": "asia-northeast3",
+      "runtime": "nodejs18",
+      "memory": "512MB",
+      "maxInstances": 10,
+      "minInstances": 1,
+      "timeoutSeconds": 300,
+      "vpcConnector": "db-connector",
+      "environmentVariables": {
+        "NODE_ENV": "production",
+        "API_PREFIX": "/api/v1",
+        "FUNCTIONS_REGION": "asia-northeast3",
+        "ENABLE_CACHE": "true",
+        "CACHE_TTL_SECONDS": "300",
+        "LOGGING_LEVEL": "info"
+      }
+    },
+    {
+      "id": "runAnalyticsJob",
+      "region": "asia-northeast3",
+      "runtime": "nodejs18",
+      "memory": "1GB",
+      "maxInstances": 5,
+      "timeoutSeconds": 540,
+      "vpcConnector": "db-connector",
+      "environmentVariables": {
+        "NODE_ENV": "production",
+        "FUNCTIONS_REGION": "asia-northeast3",
+        "ENABLE_CACHE": "true",
+        "CACHE_TTL_SECONDS": "1800",
+        "LOGGING_LEVEL": "info"
+      }
+    },
+    {
+      "id": "dailyHighValueUserAnalysis",
+      "region": "asia-northeast3",
+      "runtime": "nodejs18",
+      "memory": "1GB",
+      "maxInstances": 3,
+      "timeoutSeconds": 540,
+      "schedule": "0 1 * * *",
+      "timeZone": "Asia/Seoul",
+      "vpcConnector": "db-connector",
+      "environmentVariables": {
+        "NODE_ENV": "production",
+        "FUNCTIONS_REGION": "asia-northeast3",
+        "ENABLE_CACHE": "true",
+        "CACHE_TTL_SECONDS": "1800",
+        "LOGGING_LEVEL": "info"
+      }
+    },
+    {
+      "id": "weeklyEventEffectAnalysis",
+      "region": "asia-northeast3",
+      "runtime": "nodejs18",
+      "memory": "1GB",
+      "maxInstances": 3,
+      "timeoutSeconds": 540,
+      "schedule": "0 2 * * 1",
+      "timeZone": "Asia/Seoul",
+      "vpcConnector": "db-connector",
+      "environmentVariables": {
+        "NODE_ENV": "production",
+        "FUNCTIONS_REGION": "asia-northeast3",
+        "ENABLE_CACHE": "true",
+        "CACHE_TTL_SECONDS": "1800",
+        "LOGGING_LEVEL": "info"
+      }
+    },
+    {
+      "id": "triggerAnalysis",
+      "region": "asia-northeast3",
+      "runtime": "nodejs18",
+      "memory": "512MB",
+      "maxInstances": 10,
+      "timeoutSeconds": 60,
+      "vpcConnector": "db-connector",
+      "environmentVariables": {
+        "NODE_ENV": "production",
+        "FUNCTIONS_REGION": "asia-northeast3",
+        "ENABLE_CACHE": "true",
+        "CACHE_TTL_SECONDS": "300",
+        "LOGGING_LEVEL": "info"
+      }
+    }
+  ]
+}

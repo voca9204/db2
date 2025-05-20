@@ -23,11 +23,17 @@ from src.utils.config import AppConfig, mask_sensitive_data
 
 def get_connection():
     """데이터베이스 연결 획득"""
+    from dotenv import load_dotenv
+    import os
+    
+    # 환경 변수 로드
+    load_dotenv()
+    
     return pymysql.connect(
-        host="211.248.190.46",
-        user="hermes",
-        password="mcygicng!022",
-        database="hermes",
+        host=os.getenv("DB_HOST", "211.248.190.46"),
+        user=os.getenv("DB_USER", "hermes"),
+        password=os.getenv("DB_PASSWORD", ""),
+        database=os.getenv("DB_NAME", "hermes"),
         cursorclass=DictCursor
     )
 

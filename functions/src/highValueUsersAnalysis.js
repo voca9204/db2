@@ -6,17 +6,13 @@
  */
 
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const mysql = require('mysql2/promise');
 const cors = require('cors')({ origin: true });
+const { getFirebaseApp } = require('./firebase/firebase-admin');
 
 // 싱글턴 패턴으로 Firebase 초기화
-let firebaseApp;
-function getFirebaseApp() {
-  if (!firebaseApp) {
-    firebaseApp = admin.initializeApp();
-  }
-  return firebaseApp;
+function initializeFirebase() {
+  return getFirebaseApp();
 }
 
 // 데이터베이스 연결 풀 관리자
@@ -26,9 +22,12 @@ const DB_CONFIG = {
   password: process.env.DB_PASSWORD || 'mcygicng!022',
   database: process.env.DB_NAME || 'hermes',
   waitForConnections: true,
-  connectionLimit: 5,
+  connectionLimit: process.env.DB_CONNECTION_LIMIT ? parseInt(process.env.DB_CONNECTION_LIMIT, 10) : 5,
   queueLimit: 0,
   connectTimeout: 10000,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
+  timezone: '+09:00' // 한국 시간대
 };
 
 let pool;
@@ -40,11 +39,11 @@ function getConnectionPool() {
 }
 
 // API 함수를 Firebase Functions로 구현
-exports.highValueUsersAnalysis = functions.region('asia-northeast3').https.onRequest((req, res) => {
+exports.highValueUsersAnalysis = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       // Firebase 초기화
-      getFirebaseApp();
+      initializeFirebase();
 
       // 요청 파라미터 처리
       const minPlayDays = parseInt(req.query.minPlayDays || '7', 10);

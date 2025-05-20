@@ -1,0 +1,776 @@
+{
+  "connection": {
+    "success": true,
+    "error": null,
+    "timestamp": "2025-05-19T13:49:58.458Z",
+    "time": 32
+  },
+  "tableInfo": {
+    "players": {
+      "exists": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "int(10) unsigned",
+          "nullable": false,
+          "key": "PRI",
+          "default": null,
+          "extra": "auto_increment"
+        },
+        {
+          "name": "account",
+          "type": "int(10) unsigned",
+          "nullable": false,
+          "key": "MUL",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "userId",
+          "type": "varchar(64)",
+          "nullable": false,
+          "key": "UNI",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "name",
+          "type": "varchar(20)",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "agent",
+          "type": "int(10) unsigned",
+          "nullable": false,
+          "key": "MUL",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "status",
+          "type": "smallint(5) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "note",
+          "type": "varchar(300)",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "joinPathType",
+          "type": "varchar(16)",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "joinPath",
+          "type": "varchar(64)",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "nullable": false,
+          "key": "",
+          "default": "current_timestamp()",
+          "extra": ""
+        },
+        {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "lastPlayDate",
+          "type": "date",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "phoneName",
+          "type": "varchar(50)",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "site",
+          "type": "varchar(16)",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "adjustType",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "rewardRate",
+          "type": "float",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "flowFeatures",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        }
+      ],
+      "count": 2946
+    },
+    "promotions": {
+      "exists": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "char(32)",
+          "nullable": false,
+          "key": "PRI",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "title",
+          "type": "varchar(30)",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "description",
+          "type": "varchar(100)",
+          "nullable": false,
+          "key": "",
+          "default": "",
+          "extra": ""
+        },
+        {
+          "name": "openDate",
+          "type": "char(10)",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "type",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "1",
+          "extra": ""
+        },
+        {
+          "name": "area",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "MUL",
+          "default": "1",
+          "extra": ""
+        },
+        {
+          "name": "status",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "reward",
+          "type": "decimal(8,2) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0.00",
+          "extra": ""
+        },
+        {
+          "name": "rewardType",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "1",
+          "extra": ""
+        },
+        {
+          "name": "options",
+          "type": "smallint(5) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "nullable": false,
+          "key": "",
+          "default": "current_timestamp()",
+          "extra": ""
+        },
+        {
+          "name": "closedAt",
+          "type": "timestamp",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        }
+      ],
+      "count": 25
+    },
+    "promotion_players": {
+      "exists": true,
+      "columns": [
+        {
+          "name": "promotion",
+          "type": "char(32)",
+          "nullable": false,
+          "key": "PRI",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "player",
+          "type": "int(10) unsigned",
+          "nullable": false,
+          "key": "PRI",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reward",
+          "type": "decimal(8,2) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0.00",
+          "extra": ""
+        },
+        {
+          "name": "status",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "MUL",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "appliedAt",
+          "type": "timestamp",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "dismissedAt",
+          "type": "timestamp",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "payerId",
+          "type": "varchar(20)",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "lastAttend",
+          "type": "date",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        }
+      ],
+      "count": 1029
+    },
+    "money_flows": {
+      "exists": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "char(32)",
+          "nullable": false,
+          "key": "PRI",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "player",
+          "type": "int(10) unsigned",
+          "nullable": false,
+          "key": "MUL",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "type",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "amount",
+          "type": "decimal(12,2)",
+          "nullable": false,
+          "key": "",
+          "default": "0.00",
+          "extra": ""
+        },
+        {
+          "name": "status",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "orderId",
+          "type": "char(32)",
+          "nullable": true,
+          "key": "MUL",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "nullable": false,
+          "key": "",
+          "default": "current_timestamp()",
+          "extra": ""
+        }
+      ],
+      "count": 34778
+    },
+    "game_scores": {
+      "exists": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint(20) unsigned",
+          "nullable": false,
+          "key": "PRI",
+          "default": null,
+          "extra": "auto_increment"
+        },
+        {
+          "name": "gameDate",
+          "type": "date",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "userId",
+          "type": "varchar(32)",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "currency",
+          "type": "varchar(4)",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "betCount",
+          "type": "smallint(5) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "totalBet",
+          "type": "float unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "netBet",
+          "type": "float unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "winLoss",
+          "type": "float",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "bonus",
+          "type": "float",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "share",
+          "type": "float unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "gameType",
+          "type": "tinyint(3) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": "0",
+          "extra": ""
+        },
+        {
+          "name": "importId",
+          "type": "int(10) unsigned",
+          "nullable": false,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved1",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved2",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved3",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved4",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved5",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved6",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved7",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved8",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        },
+        {
+          "name": "reserved9",
+          "type": "float",
+          "nullable": true,
+          "key": "",
+          "default": null,
+          "extra": ""
+        }
+      ],
+      "count": 87486
+    }
+  },
+  "queries": [
+    {
+      "query": "\n    SELECT \n      userId, status, \n      DATEDIFF(NOW(), COALESCE(last_activity_date, created_at)) AS inactive_days,\n      COUNT(DISTINCT game_id) as game_count,\n      SUM(netBet) as total_net_bet,\n      SUM(winLoss) as total_win_loss\n    FROM \n      players\n    WHERE \n      status = 0\n      AND DATEDIFF(NOW(), COALESCE(last_activity_date, created_at)) > 30\n    GROUP BY \n      userId\n    ORDER BY \n      inactive_days DESC\n    LIMIT 10\n  ",
+      "success": false,
+      "error": {
+        "message": "Unknown column 'last_activity_date' in 'field list'",
+        "code": "ER_BAD_FIELD_ERROR",
+        "errno": 1054,
+        "sqlState": "42S22",
+        "sqlMessage": "Unknown column 'last_activity_date' in 'field list'"
+      },
+      "duration": 0,
+      "timestamp": "2025-05-19T13:49:58.613Z",
+      "simpleQuery": "\n        SELECT * \n        FROM players \n        LIMIT 1\n      ",
+      "simpleResult": {
+        "id": 1,
+        "account": 8,
+        "userId": "wind",
+        "name": "ssww",
+        "agent": 2,
+        "status": 0,
+        "note": null,
+        "joinPathType": "direct",
+        "joinPath": "my feet",
+        "createdAt": "2022-04-02T10:48:47.000Z",
+        "updatedAt": "2022-10-04T11:54:06.000Z",
+        "lastPlayDate": null,
+        "phoneName": null,
+        "site": "Ju",
+        "adjustType": 0,
+        "rewardRate": 0,
+        "flowFeatures": 0
+      }
+    },
+    {
+      "query": "\n    SELECT *\n    FROM promotions\n    ORDER BY createdAt DESC\n    LIMIT 5\n  ",
+      "success": true,
+      "error": null,
+      "duration": 7,
+      "timestamp": "2025-05-19T13:49:58.628Z",
+      "resultCount": 5,
+      "sampleResults": [
+        {
+          "id": "95470a2f95f14132abe1301694000808",
+          "title": "수시지급 6",
+          "description": "",
+          "openDate": "2025-04-24",
+          "type": 2,
+          "area": 1,
+          "status": 0,
+          "reward": "0.00",
+          "rewardType": 1,
+          "options": 0,
+          "createdAt": "2025-04-24T13:20:56.000Z",
+          "closedAt": null
+        },
+        {
+          "id": "b79153de2c064c26815fc8aee45d2221",
+          "title": "지인 소개 1",
+          "description": "",
+          "openDate": "2025-04-15",
+          "type": 2,
+          "area": 1,
+          "status": 0,
+          "reward": "0.00",
+          "rewardType": 1,
+          "options": 0,
+          "createdAt": "2025-04-15T09:14:05.000Z",
+          "closedAt": null
+        },
+        {
+          "id": "7f51ad1236a643fa92a65873afa18c1d",
+          "title": "수시지급 5",
+          "description": "",
+          "openDate": "2025-04-03",
+          "type": 2,
+          "area": 1,
+          "status": 1,
+          "reward": "0.00",
+          "rewardType": 1,
+          "options": 0,
+          "createdAt": "2025-04-03T07:01:00.000Z",
+          "closedAt": "2025-05-07T06:12:40.000Z"
+        }
+      ]
+    },
+    {
+      "query": "\n    SELECT \n      pp.*, \n      p.userId\n    FROM \n      promotion_players pp\n    JOIN \n      players p ON pp.player = p.id\n    WHERE \n      pp.reward > 0\n      AND pp.appliedAt IS NOT NULL\n    ORDER BY \n      pp.appliedAt DESC\n    LIMIT 10\n  ",
+      "success": true,
+      "error": null,
+      "duration": 8,
+      "timestamp": "2025-05-19T13:49:58.635Z",
+      "resultCount": 10,
+      "sampleResults": [
+        {
+          "promotion": "95470a2f95f14132abe1301694000808",
+          "player": 3024,
+          "reward": "100.00",
+          "status": 1,
+          "appliedAt": "2025-05-08T09:11:09.000Z",
+          "dismissedAt": null,
+          "payerId": "CCEvent",
+          "lastAttend": "2024-02-03T15:00:00.000Z",
+          "userId": "ja3071"
+        },
+        {
+          "promotion": "95470a2f95f14132abe1301694000808",
+          "player": 3436,
+          "reward": "100.00",
+          "status": 2,
+          "appliedAt": "2025-05-04T12:28:01.000Z",
+          "dismissedAt": "2025-05-05T08:21:23.000Z",
+          "payerId": "CCEvent",
+          "lastAttend": "2025-03-27T15:00:00.000Z",
+          "userId": "obna001"
+        },
+        {
+          "promotion": "95470a2f95f14132abe1301694000808",
+          "player": 3352,
+          "reward": "100.00",
+          "status": 2,
+          "appliedAt": "2025-05-04T09:05:09.000Z",
+          "dismissedAt": "2025-05-05T08:21:26.000Z",
+          "payerId": "CCEvent",
+          "lastAttend": "2025-04-25T15:00:00.000Z",
+          "userId": "obya003"
+        }
+      ]
+    },
+    {
+      "query": "\n    SELECT \n      mf.*, \n      p.userId\n    FROM \n      money_flows mf\n    JOIN \n      players p ON mf.player = p.id\n    WHERE \n      mf.type = 0 -- 입금\n    ORDER BY \n      mf.createdAt DESC\n    LIMIT 10\n  ",
+      "success": true,
+      "error": null,
+      "duration": 32,
+      "timestamp": "2025-05-19T13:49:58.643Z",
+      "resultCount": 10,
+      "sampleResults": [
+        {
+          "id": "3ea0993f66774716b2c50efb02fd7630",
+          "player": 2839,
+          "type": 0,
+          "amount": "1020.00",
+          "status": 0,
+          "orderId": "d768d5bc531e4b238a1f2c9c47beb305",
+          "createdAt": "2025-05-09T01:28:24.000Z",
+          "userId": "hn3123"
+        },
+        {
+          "id": "e5643f7c566f4b8f825848639cd94019",
+          "player": 2973,
+          "type": 0,
+          "amount": "1000.00",
+          "status": 0,
+          "orderId": "62147e216ae649e290fa3eca672eecd2",
+          "createdAt": "2025-05-09T01:01:39.000Z",
+          "userId": "qyi3111"
+        },
+        {
+          "id": "2d8a523020c944a8a3812bbf980e8a90",
+          "player": 3163,
+          "type": 0,
+          "amount": "5000.00",
+          "status": 0,
+          "orderId": "4b5971f365e74f42ad03e76630935c15",
+          "createdAt": "2025-05-09T00:59:41.000Z",
+          "userId": "aa3802"
+        }
+      ]
+    },
+    {
+      "query": "\n    SELECT\n      p.userId,\n      (SELECT COUNT(*) FROM promotion_players pp WHERE pp.player = p.id AND pp.appliedAt IS NOT NULL) AS promotion_count,\n      (SELECT MIN(pp2.appliedAt) FROM promotion_players pp2 WHERE pp2.player = p.id AND pp2.appliedAt IS NOT NULL) AS first_promotion_date,\n      SUM(CASE WHEN mf.createdAt > (SELECT MIN(pp3.appliedAt) FROM promotion_players pp3 WHERE pp3.player = p.id AND pp3.appliedAt IS NOT NULL) THEN ROUND(mf.amount) ELSE 0 END) AS deposit_after_promotion\n    FROM \n      players p\n    JOIN \n      money_flows mf ON p.id = mf.player\n    WHERE \n      p.id IN (SELECT player FROM promotion_players WHERE appliedAt IS NOT NULL)\n      AND mf.type = 0 -- 입금\n    GROUP BY \n      p.userId\n    HAVING \n      deposit_after_promotion > 0\n    ORDER BY \n      deposit_after_promotion DESC\n    LIMIT 10\n  ",
+      "success": true,
+      "error": null,
+      "duration": 166,
+      "timestamp": "2025-05-19T13:49:58.675Z",
+      "statistics": {
+        "totalUsers": 10,
+        "totalDeposit": "010460191043500896000764000713400673000305300293900209800207700",
+        "avgDeposit": 1.0460191043500897e+60,
+        "maxDeposit": 1046019
+      },
+      "resultCount": 10,
+      "sampleResults": [
+        {
+          "userId": "yi3198",
+          "promotion_count": 4,
+          "first_promotion_date": "2024-12-04T06:14:37.000Z",
+          "deposit_after_promotion": "1046019"
+        },
+        {
+          "userId": "xja3012",
+          "promotion_count": 1,
+          "first_promotion_date": "2024-11-16T04:47:22.000Z",
+          "deposit_after_promotion": "1043500"
+        },
+        {
+          "userId": "uiw005",
+          "promotion_count": 5,
+          "first_promotion_date": "2024-11-15T09:49:29.000Z",
+          "deposit_after_promotion": "896000"
+        },
+        {
+          "userId": "jiaw189",
+          "promotion_count": 5,
+          "first_promotion_date": "2024-11-16T10:29:46.000Z",
+          "deposit_after_promotion": "764000"
+        },
+        {
+          "userId": "hn5011",
+          "promotion_count": 5,
+          "first_promotion_date": "2024-12-19T02:10:12.000Z",
+          "deposit_after_promotion": "713400"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>휴면 사용자 재활성화 대시보드</title>
+    <link rel="stylesheet" href="../css/report-nav.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        header h1 {
+            color: white;
+            margin: 0;
+        }
+        
+        header p {
+            margin: 10px 0 0;
+            color: #ecf0f1;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section h2 {
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            flex: 1 1 200px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 0 10px 15px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            margin: 0 0 10px;
+            font-size: 1em;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .stat-sub {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        table tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+        
+        .flex-col {
+            flex: 1 1 calc(50% - 20px);
+            margin: 10px;
+            min-width: 250px;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            margin-right: 5px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .tag-positive {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        .tag-negative {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .tag-neutral {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+            border: 1px solid rgba(108, 117, 125, 0.2);
+        }
+        
+        .insights {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .insights h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        
+        .recommendations {
+            background-color: #f0f9ff;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .recommendations h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .filters select,
+        .filters input {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        .filters label {
+            margin-right: 5px;
+            font-weight: 500;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background-color: #fff5f5;
+            color: #e53e3e;
+            padding: 10px 15px;
+            border-radius: 4px;
+            border-left: 4px solid #e53e3e;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .event-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .event-card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        
+        .event-card .event-stats {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .event-card .event-stat {
+            flex: 1 1 calc(33% - 10px);
+            margin: 5px;
+            text-align: center;
+        }
+        
+        .event-card .event-stat-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .event-card .event-stat-label {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        .segment-chart {
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>휴면 사용자 재활성화 대시보드</h1>
+        <p>이벤트를 통한 휴면 사용자 활성화 및 입금 전환율 최적화</p>
+        <p>분석일: 2025년 5월 18일</p>
+    </header>
+    
+    <div class="section">
+        <h2>이벤트 효과 통합 분석</h2>
+        
+        <div class="filters">
+            <div class="filter-item">
+                <label for="eventSelect">이벤트 선택:</label>
+                <select id="eventSelect">
+                    <option value="">모든 이벤트</option>
+                    <!-- 이벤트 목록이 동적으로 로드됩니다 -->
+                </select>
+            </div>
+            <div class="filter-item">
+                <label for="daysAfter">이벤트 후 분석 기간:</label>
+                <select id="daysAfter">
+                    <option value="7">7일</option>
+                    <option value="14">14일</option>
+                    <option value="30" selected>30일</option>
+                    <option value="60">60일</option>
+                    <option value="90">90일</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label for="playerStatus">사용자 상태:</label>
+                <select id="playerStatus">
+                    <option value="all">모든 사용자</option>
+                    <option value="active">활성 사용자</option>
+                    <option value="dormant" selected>휴면 사용자</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <button id="refreshDataBtn" class="btn">데이터 새로고침</button>
+            </div>
+        </div>
+        
+        <div class="loading-spinner" id="loadingSpinner"></div>
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="summary-stats" id="overallSummary">
+            <div class="stat-card">
+                <h3>이벤트 지급 사용자 수</h3>
+                <div class="stat-value" id="totalRewardedPlayers">448명</div>
+                <div class="stat-sub">이벤트를 통해 혜택을 받은 전체 사용자</div>
+            </div>
+            <div class="stat-card">
+                <h3>게임 참여율</h3>
+                <div class="stat-value" id="retentionRate">61.6%</div>
+                <div class="stat-sub" id="playersPlayedCount">276명이 게임에 참여</div>
+            </div>
+            <div class="stat-card">
+                <h3>입금 전환율</h3>
+                <div class="stat-value" id="depositConversionRate">43.3%</div>
+                <div class="stat-sub" id="playersDepositedCount">194명이 입금 진행</div>
+            </div>
+            <div class="stat-card">
+                <h3>이벤트 ROI</h3>
+                <div class="stat-value" id="overallROI">215.3%</div>
+                <div class="stat-sub">투자 대비 수익률</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="conversionFunnelChart"></canvas>
+        </div>
+        
+        <div class="insights">
+            <h3>주요 인사이트</h3>
+            <ul id="insightsList">
+                <li>이벤트를 통해 <strong>61.6%의 휴면 사용자가 게임에 재참여</strong>하였으며, 이는 이벤트가 사용자 활성화에 효과적임을 보여줍니다.</li>
+                <li>게임에 참여한 사용자 중 <strong>70.3%가 실제 입금으로 전환</strong>되었으며, 이는 게임 참여와 입금 사이에 강한 상관관계가 있음을 시사합니다.</li>
+                <li>이벤트 지급 금액 대비 <strong>215.3%의 ROI</strong>를 달성하여, 이벤트가 비용 효과적인 마케팅 전략임을 입증합니다.</li>
+                <li>이벤트 참여 후 평균 <strong>5.2일 이내에 첫 게임 참여</strong>가 이루어지고, <strong>8.7일 이내에 첫 입금</strong>이 이루어집니다.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>휴면 기간별 사용자 분석</h2>
+        
+        <div class="segment-chart">
+            <canvas id="dormantSegmentChart"></canvas>
+        </div>
+        
+        <table id="segmentTable">
+            <thead>
+                <tr>
+                    <th>휴면 기간</th>
+                    <th>사용자 수</th>
+                    <th>평균 플레이 일수</th>
+                    <th>평균 유효배팅</th>
+                    <th>이벤트 참여율</th>
+                    <th>게임 재참여율</th>
+                    <th>입금 전환율</th>
+                </tr>
+            </thead>
+            <tbody id="segmentTableBody">
+                <!-- 세그먼트 데이터가 동적으로 로드됩니다 -->
+            </tbody>
+        </table>
+        
+        <div class="insights">
+            <h3>세그먼트별 인사이트</h3>
+            <ul id="segmentInsightsList">
+                <li><strong>단기 휴면 사용자(31-90일)</strong>는 가장 높은 게임 재참여율(82.4%)과 입금 전환율(64.5%)을 보이며, 빠른 회복이 가능합니다.</li>
+                <li><strong>중기 휴면 사용자(91-180일)</strong>는 적절한 인센티브를 통해 57.3%의 재참여율을 보여, 재활성화 가능성이 높습니다.</li>
+                <li><strong>장기 휴면 사용자(365일 이상)</strong>도 이벤트를 통해 41.6%가 게임에 재참여하여, 효과적인 이벤트는 오래된 사용자도 되돌릴 수 있음을 시사합니다.</li>
+                <li>휴면 기간이 길수록 <strong>입금 전환율이 점진적으로 감소</strong>하므로, 휴면 기간별 차별화된 전략이 필요합니다.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>이벤트별 효과 분석</h2>
+        
+        <div id="eventsContainer">
+            <!-- 이벤트 카드가 동적으로 생성됩니다 -->
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>최적화 전략 제안</h2>
+        
+        <div class="flex-row">
+            <div class="flex-col">
+                <h3>단기 휴면 사용자 (31-90일)</h3>
+                <div class="recommendations">
+                    <ul>
+                        <li><strong>즉각적인 복귀 보너스</strong>: 게임 복귀 시 첫날 높은 가치의 보너스 제공</li>
+                        <li><strong>손실 만회 프로모션</strong>: 이전 게임에서의 손실을 일부 보상해주는 프로모션</li>
+                        <li><strong>맞춤형 게임 추천</strong>: 이전 플레이 패턴 기반의 게임 추천</li>
+                        <li><strong>입금 보너스 강화</strong>: 첫 복귀 입금 시 추가 보너스율 적용</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flex-col">
+                <h3>중기 휴면 사용자 (91-365일)</h3>
+                <div class="recommendations">
+                    <ul>
+                        <li><strong>단계적 재참여 프로그램</strong>: 7일간 매일 로그인 보상 증가</li>
+                        <li><strong>복귀 미션 챌린지</strong>: 간단한 미션 완료 시 추가 보상 제공</li>
+                        <li><strong>온보딩 재경험</strong>: 새로운 기능 및 게임 소개 가이드 제공</li>
+                        <li><strong>복귀 전용 이벤트</strong>: 중기 휴면 사용자만을 위한 특별 이벤트</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-row">
+            <div class="flex-col">
+                <h3>장기 휴면 사용자 (365일 이상)</h3>
+                <div class="recommendations">
+                    <ul>
+                        <li><strong>강력한 복귀 패키지</strong>: 고가치 웰컴백 패키지 제공</li>
+                        <li><strong>VIP 상태 복원</strong>: 이전 VIP 레벨 임시 복원 및 유지 조건 제시</li>
+                        <li><strong>개인화된 연락</strong>: 직접적인 연락을 통한 특별 제안</li>
+                        <li><strong>신규 콘텐츠 강조</strong>: 휴면 기간 동안 추가된 새로운 게임 및 기능 소개</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flex-col">
+                <h3>입금 전환율 최적화 전략</h3>
+                <div class="recommendations">
+                    <ul>
+                        <li><strong>입금 단계 간소화</strong>: 복귀 사용자를 위한 간편 입금 경로 제공</li>
+                        <li><strong>첫 입금 독점 혜택</strong>: 복귀 후 첫 입금에 한정된 특별 혜택</li>
+                        <li><strong>단계별 입금 보너스</strong>: 입금 금액에 따른 보너스 증가 구조</li>
+                        <li><strong>맞춤형 타이밍</strong>: 게임 참여 후 3-5일 내 최적 시점에 입금 유도 메시지</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>실행 및 모니터링 계획</h2>
+        
+        <h3>즉시 실행 항목 (1-4주)</h3>
+        <ol>
+            <li>각 휴면 세그먼트별 특화된 이벤트 설계 및 개시</li>
+            <li>단기 휴면 사용자 대상 즉각적인 복귀 보너스 프로그램 시작</li>
+            <li>이벤트 참여 후 게임 플레이와 입금 전환 사이의 시간 간격 최적화 테스트</li>
+        </ol>
+        
+        <h3>중기 실행 항목 (1-3개월)</h3>
+        <ol>
+            <li>세그먼트별 A/B 테스트를 통한 최적 이벤트 유형 및 보상 금액 도출</li>
+            <li>재참여 사용자 행동 패턴 분석 및 예측 모델 개발</li>
+            <li>자동화된 세그먼트별 캠페인 시스템 구축</li>
+        </ol>
+        
+        <h3>성과 측정 지표</h3>
+        <ul>
+            <li><strong>이벤트 응답률</strong>: 이벤트 보상을 받은 사용자 비율</li>
+            <li><strong>게임 재참여율</strong>: 이벤트 후 게임에 참여한 사용자 비율</li>
+            <li><strong>게임 지속률</strong>: 재참여 후 30일간 게임을 지속한 사용자 비율</li>
+            <li><strong>입금 전환율</strong>: 재참여 사용자 중 입금을 진행한 비율</li>
+            <li><strong>ROI 및 LTV</strong>: 이벤트 투자 대비 수익률 및 사용자 생애 가치</li>
+        </ul>
+    </div>
+    
+    <footer>
+        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025년 5월 18일</p>
+        <p><a href="/index.html">메인 대시보드로 돌아가기</a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/report-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // API 서버 URL
+            const API_BASE_URL = 'http://localhost:5060/api';
+            
+            // 요소 참조
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const errorMessage = document.getElementById('errorMessage');
+            const eventSelect = document.getElementById('eventSelect');
+            const daysAfter = document.getElementById('daysAfter');
+            const playerStatus = document.getElementById('playerStatus');
+            const refreshDataBtn = document.getElementById('refreshDataBtn');
+            const overallSummary = document.getElementById('overallSummary');
+            const insightsList = document.getElementById('insightsList');
+            const eventsContainer = document.getElementById('eventsContainer');
+            const segmentTableBody = document.getElementById('segmentTableBody');
+            const segmentInsightsList = document.getElementById('segmentInsightsList');
+            
+            // 초기 데이터 로드
+            loadEventList();
+            loadEventEffectData();
+            loadSegmentData();
+            
+            // 새로고침 버튼 클릭 이벤트
+            refreshDataBtn.addEventListener('click', function() {
+                loadEventEffectData();
+                loadSegmentData();
+            });
+            
+            // 이벤트 선택 변경 이벤트
+            eventSelect.addEventListener('change', function() {
+                loadEventEffectData();
+            });
+            
+            // 분석 기간 변경 이벤트
+            daysAfter.addEventListener('change', function() {
+                loadEventEffectData();
+            });
+            
+            // 사용자 상태 변경 이벤트
+            playerStatus.addEventListener('change', function() {
+                loadEventEffectData();
+            });
+            
+            // 이벤트 목록 로드 함수
+            function loadEventList() {
+                fetch(`${API_BASE_URL}/event-list`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('API 응답 오류: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // 이벤트 선택 옵션 추가
+                        eventSelect.innerHTML = '<option value="">모든 이벤트</option>';
+                        
+                        data.events.forEach(event => {
+                            const option = document.createElement('option');
+                            option.value = event.id;
+                            option.textContent = `${event.name} (${event.rewarded_players}명)`;
+                            eventSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('이벤트 목록 로드 중 오류 발생:', error);
+                        errorMessage.textContent = '이벤트 목록을 불러오는 중 오류가 발생했습니다: ' + error.message;
+                        errorMessage.style.display = 'block';
+                    });
+            }
+            
+            // 이벤트 효과 데이터 로드 함수
+            function loadEventEffectData() {
+                // 로딩 표시
+                loadingSpinner.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                // 파라미터 구성
+                const params = new URLSearchParams({
+                    days: daysAfter.value,
+                    player_status: playerStatus.value
+                });
+                
+                if (eventSelect.value) {
+                    params.append('event_id', eventSelect.value);
+                }
+                
+                // API 호출
+                fetch(`${API_BASE_URL}/event-effect?${params.toString()}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('API 응답 오류: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // ���딩 숨김
+                        loadingSpinner.style.display = 'none';
+                        
+                        // 결과 처리
+                        updateOverallSummary(data.overall_summary);
+                        renderEventCards(data.events);
+                        renderConversionFunnelChart(data.overall_summary);
+                        
+                        // 필터링된 이벤트가 없는 경우
+                        if (data.events.length === 0) {
+                            eventsContainer.innerHTML = '<p class="error-message" style="display: block;">선택한 조건에 맞는 이벤트가 없습니다.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        // 오류 처리
+                        console.error('데이터 로드 중 오류 발생:', error);
+                        loadingSpinner.style.display = 'none';
+                        errorMessage.textContent = '데이터를 불러오는 중 오류가 발생했습니다: ' + error.message;
+                        errorMessage.style.display = 'block';
+                    });
+            }
+            
+            // 세그먼트 데이터 로드 함수
+            function loadSegmentData() {
+                fetch(`${API_BASE_URL}/dormant-segment-stats`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('API 응답 오류: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        renderSegmentTable(data.segments);
+                        renderSegmentChart(data.segments);
+                    })
+                    .catch(error => {
+                        console.error('세그먼트 데이터 로드 중 오류 발생:', error);
+                    });
+            }
+            
+            // 전체 요약 데이터 업데이트 함수
+            function updateOverallSummary(summary) {
+                document.getElementById('totalRewardedPlayers').textContent = `${summary.total_players_rewarded}명`;
+                document.getElementById('retentionRate').textContent = `${summary.overall_retention_rate}%`;
+                document.getElementById('playersPlayedCount').textContent = `${summary.total_players_played}명이 게임에 참여`;
+                document.getElementById('depositConversionRate').textContent = `${summary.overall_deposit_conversion_rate}%`;
+                document.getElementById('playersDepositedCount').textContent = `${summary.total_players_deposited}명이 입금 진행`;
+                
+                // ROI 색상 설정
+                const roiElement = document.getElementById('overallROI');
+                roiElement.textContent = `${summary.overall_roi}%`;
+                
+                if (summary.overall_roi > 0) {
+                    roiElement.style.color = '#28a745';
+                } else if (summary.overall_roi < 0) {
+                    roiElement.style.color = '#dc3545';
+                }
+            }
+            
+            // 이벤트 카드 렌더링 함수
+            function renderEventCards(events) {
+                eventsContainer.innerHTML = '';
+                
+                events.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    
+                    // ROI 클래스 결정
+                    const roiClass = event.roi > 0 ? 'tag-positive' : (event.roi < 0 ? 'tag-negative' : 'tag-neutral');
+                    
+                    card.innerHTML = `
+                        <h3>${event.event_name}</h3>
+                        <p>총 ${event.total_players}명의 사용자에게 ${formatNumber(event.total_rewards)}의 보상 지급</p>
+                        
+                        <div class="event-stats">
+                            <div class="event-stat">
+                                <div class="event-stat-value">${event.retention_rate}%</div>
+                                <div class="event-stat-label">게임 참여율</div>
+                            </div>
+                            <div class="event-stat">
+                                <div class="event-stat-value">${event.deposit_conversion_rate}%</div>
+                                <div class="event-stat-label">입금 전환율</div>
+                            </div>
+                            <div class="event-stat">
+                                <div class="event-stat-value ${roiClass}">${event.roi}%</div>
+                                <div class="event-stat-label">ROI</div>
+                            </div>
+                            <div class="event-stat">
+                                <div class="event-stat-value">${event.avg_days_to_play}일</div>
+                                <div class="event-stat-label">평균 첫 게임까지</div>
+                            </div>
+                            <div class="event-stat">
+                                <div class="event-stat-value">${event.avg_days_to_deposit}일</div>
+                                <div class="event-stat-label">평균 첫 입금까지</div>
+                            </div>
+                            <div class="event-stat">
+                                <div class="event-stat-value">${formatNumber(event.total_net_bet)}</div>
+                                <div class="event-stat-label">총 유효배팅</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    eventsContainer.appendChild(card);
+                    
+                    // 이벤트 카드 클릭 이벤트
+                    card.addEventListener('click', function() {
+                        eventSelect.value = event.event_id;
+                        loadEventEffectData();
+                    });
+                });
+            }
+            
+            // 전환 퍼널 차트 렌더링 함수
+            function renderConversionFunnelChart(summary) {
+                const ctx = document.getElementById('conversionFunnelChart').getContext('2d');
+                
+                // 기존 차트 제거
+                if (window.conversionChart) {
+                    window.conversionChart.destroy();
+                }
+                
+                const data = {
+                    labels: ['이벤트 지급', '게임 참여', '입금 전환'],
+                    datasets: [{
+                        data: [
+                            summary.total_players_rewarded,
+                            summary.total_players_played,
+                            summary.total_players_deposited
+                        ],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.5)',
+                            'rgba(46, 204, 113, 0.5)',
+                            'rgba(155, 89, 182, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(155, 89, 182, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                };
+                
+                const options = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const percentage = context.dataIndex === 0 ? 
+                                        '100%' : 
+                                        (context.dataIndex === 1 ? 
+                                            `${summary.overall_retention_rate}%` : 
+                                            `${summary.overall_deposit_conversion_rate}%`);
+                                    return `${label}: ${value}명 (${percentage})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '사용자 수'
+                            }
+                        }
+                    }
+                };
+                
+                // 차트 생성
+                window.conversionChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: options
+                });
+            }
+            
+            // 세그먼트 테이블 렌더링 함수
+            function renderSegmentTable(segments) {
+                segmentTableBody.innerHTML = '';
+                
+                segments.forEach(segment => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${segment.segment}</td>
+                        <td>${segment.user_count}명</td>
+                        <td>${segment.avg_play_days}일</td>
+                        <td>${formatNumber(segment.avg_valid_bet)}</td>
+                        <td>${segment.users_with_event}/${segment.user_count} (${Math.round(segment.users_with_event / segment.user_count * 100)}%)</td>
+                        <td>${segment.activation_rate}%</td>
+                        <td>${segment.deposit_rate}%</td>
+                    `;
+                    
+                    segmentTableBody.appendChild(row);
+                });
+            }
+            
+            // 세그먼트 차트 렌더링 함수
+            function renderSegmentChart(segments) {
+                const ctx = document.getElementById('dormantSegmentChart').getContext('2d');
+                
+                // 기존 차트 제거
+                if (window.segmentChart) {
+                    window.segmentChart.destroy();
+                }
+                
+                // 데이터 준비
+                const labels = segments.map(segment => segment.segment);
+                const userCounts = segments.map(segment => segment.user_count);
+                const activationRates = segments.map(segment => segment.activation_rate);
+                const depositRates = segments.map(segment => segment.deposit_rate);
+                
+                const data = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: '사용자 수',
+                            data: userCounts,
+                            backgroundColor: 'rgba(52, 152, 219, 0.5)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            type: 'line',
+                            label: '게임 재참여율',
+                            data: activationRates,
+                            backgroundColor: 'rgba(46, 204, 113, 0.5)',
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        },
+                        {
+                            type: 'line',
+                            label: '입금 전환율',
+                            data: depositRates,
+                            backgroundColor: 'rgba(155, 89, 182, 0.5)',
+                            borderColor: 'rgba(155, 89, 182, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                };
+                
+                const options = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '휴면 기간별 사용자 분포 및 전환율'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '사용자 수'
+                            },
+                            beginAtZero: true
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '전환율 (%)'
+                            },
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                };
+                
+                // 차트 생성
+                window.segmentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: options
+                });
+            }
+            
+            // 숫자 포맷팅 함수
+            function formatNumber(num) {
+                return new Intl.NumberFormat('ko-KR').format(Math.round(num));
+            }
+        });
+    </script>
+</body>
+</html>

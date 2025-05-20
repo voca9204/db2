@@ -64,3 +64,9 @@ ENV/
 # Sensitive configuration
 config/credentials.py
 config/secrets.py
+.env.local
+.env.development
+.env.production
+*.pem
+*_key.py
+*_secret.py

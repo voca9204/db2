@@ -1,0 +1,119 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'functions/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'firebase.json'
+      - '.firebaserc'
+  workflow_dispatch:
+    inputs:
+      comment:
+        description: 'Deployment comment'
+        required: false
+        default: 'Manual deployment to staging'
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: |
+          npm run test:unit
+          npm run test:integration
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Set environment variables for Firebase
+        run: |
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+          echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+      
+      - name: Set Firebase project
+        run: npx firebase use db888-staging
+      
+      - name: Set Firebase Functions configuration
+        run: |
+          npx firebase functions:config:set \
+            database.host="$DB_HOST" \
+            database.user="$DB_USER" \
+            database.password="$DB_PASSWORD" \
+            database.name="$DB_NAME" \
+            environment.name="staging"
+      
+      - name: Deploy Firebase Functions (Canary - 10%)
+        run: |
+          npx firebase deploy --only functions --config firebase.staging.json
+
+      - name: Run smoke tests on canary deployment
+        run: npm run test:verification:staging
+      
+      - name: Deploy Firebase Functions (Full)
+        if: success()
+        run: npx firebase deploy --only functions
+      
+      - name: Deploy Firebase Hosting
+        if: success()
+        run: npx firebase deploy --only hosting
+      
+      - name: Run post-deployment verification tests
+        if: success()
+        run: npm run test:e2e:staging
+      
+      - name: Notify deployment success
+        if: success()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_STAGING }}
+          slack-message: "🚀 Successfully deployed to Staging environment! Check it out: https://db888-staging.web.app"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      
+      - name: Notify deployment failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_STAGING }}
+          slack-message: "❌ Failed to deploy to Staging environment! Please check the logs: https://github.com/voca9204@gmail.com/db2/actions/runs/${{ github.run_id }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "Deployment failed, rolling back to previous version"
+          npx firebase functions:rollback
+          npx firebase hosting:rollback
+      
+      - name: Notify rollback
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_STAGING }}
+          slack-message: "⚠️ Deployment failed, rolled back to previous version on Staging environment."
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

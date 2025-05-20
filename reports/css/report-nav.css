@@ -1,0 +1,53 @@
+/* 보고서 네비게이션 스타일 */
+.report-nav {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.nav-button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-left: 10px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+.nav-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.nav-button.home {
+    background-color: #2c3e50;
+}
+
+.nav-button.home:hover {
+    background-color: #1a252f;
+}
+
+.nav-button i {
+    margin-right: 5px;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .report-nav {
+        position: static;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .nav-button {
+        display: block;
+        margin: 10px auto;
+        width: 80%;
+    }
+}

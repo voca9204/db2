@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Firebase
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+*-debug.log
+.runtimeconfig.json
+
+# Testing
+coverage/
+
+# Build artifacts
+dist/
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db

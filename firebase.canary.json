@@ -1,0 +1,43 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "function": "api"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs18",
+    "ignore": [
+      "**/node_modules/**",
+      "**/.git/**",
+      "**/test/**",
+      "firebase-debug.log"
+    ],
+    "predeploy": [
+      "npm --prefix functions run lint",
+      "npm --prefix functions run build"
+    ],
+    "codebase": {
+      "analyticsAPI": {
+        "predeploy": [
+          "npm --prefix functions run lint:analyticsAPI",
+          "npm --prefix functions run build:analyticsAPI"
+        ],
+        "trafficPercentage": 5
+      }
+    }
+  }
+}

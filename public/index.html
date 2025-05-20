@@ -1,49 +1,211 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB2 프로젝트 - 로딩 중...</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
-            flex-direction: column;
-        }
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        p {
-            color: #333;
-            font-size: 1.2rem;
-        }
-    </style>
-    <script>
-        // 페이지 로드 시 로그인 페이지로 리디렉션
-        window.onload = function() {
-            setTimeout(function() {
-                window.location.href = 'login.html';
-            }, 1000); // 1초 후 리디렉션
-        };
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DB2 - 고가치 사용자 분석 시스템</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f5f5f7;
+      color: #333;
+    }
+    
+    header {
+      background-color: #1a73e8;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    footer {
+      background-color: #f0f0f0;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.875rem;
+      color: #666;
+    }
+    
+    h1 {
+      margin-top: 0;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .api-status {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .status-indicator.loading {
+      background-color: #ffd600;
+    }
+    
+    .status-indicator.online {
+      background-color: #34a853;
+    }
+    
+    .status-indicator.offline {
+      background-color: #ea4335;
+    }
+    
+    .button {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: #1765cc;
+    }
+    
+    code {
+      font-family: 'Courier New', monospace;
+      background-color: #f0f0f0;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+    }
+  </style>
 </head>
 <body>
-    <div class="loader"></div>
-    <p>DB2 프로젝트 로딩 중...</p>
+  <header>
+    <h1>DB2 - 고가치 사용자 분석 시스템</h1>
+  </header>
+  
+  <main>
+    <div class="card">
+      <h2>시스템 상태</h2>
+      <p>현재 고가치 사용자 분석 시스템의 API 상태입니다:</p>
+      
+      <div class="api-status">
+        <div class="status-indicator loading" id="statusIndicator"></div>
+        <span id="statusText">상태 확인 중...</span>
+      </div>
+      
+      <p>최근 업데이트: <span id="lastUpdated">-</span></p>
+    </div>
+    
+    <div class="card">
+      <h2>데이터베이스 분석 시스템</h2>
+      <p>이 시스템은 고가치 사용자의 행동 분석과 이벤트 참여 효과를 추적하는 데이터 분석 도구입니다.</p>
+      <p>주요 기능:</p>
+      <ul>
+        <li>고가치 사용자 식별 및 세그먼트 분석</li>
+        <li>휴면 사용자 분석 및 재활성화 대상 추천</li>
+        <li>이벤트 효과 측정 및 ROI 분석</li>
+        <li>스케줄링된 자동 분석 작업</li>
+      </ul>
+      
+      <p>주요 보고서:</p>
+      <ul>
+        <li><a href="/high_value_users_report.html" target="_blank">고가치 사용자 종합 분석 보고서 (정적 버전)</a></li>
+        <li><a href="/api/v1/users/high-value/report?format=html" target="_blank">고가치 사용자 종합 분석 보고서 (API 버전)</a></li>
+        <li><a href="/api/v1/users/high-value/analysis" target="_blank">고가치 사용자 기본 분석 API</a></li>
+      </ul>
+      
+      <p>자세한 내용은 <a href="/docs" target="_blank">문서</a>를 참조하세요.</p>
+    </div>
+    
+    <div class="card">
+      <h2>API 테스트</h2>
+      <p>API 상태를 확인하려면 아래 버튼을 클릭하세요:</p>
+      <button class="button" id="checkStatusBtn">상태 확인</button>
+      <div id="apiResponse" style="margin-top: 1rem;"></div>
+      
+      <p style="margin-top: 1.5rem;">고가치 사용자 분석 API 엔드포인트:</p>
+      <ul>
+        <li><a href="/high_value_users_report.html" target="_blank">고가치 사용자 종합 분석 보고서 (정적 버전)</a></li>
+        <li><a href="/api/v1/users/high-value/report?format=html" target="_blank">고가치 사용자 종합 분석 보고서 (HTML)</a></li>
+        <li><a href="/api/v1/users/high-value/report" target="_blank">고가치 사용자 종합 분석 보고서 (JSON)</a></li>
+        <li><a href="/api/v1/users/high-value/analysis" target="_blank">고가치 사용자 기본 분석 API</a></li>
+      </ul>
+    </div>
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 DB2 고가치 사용자 분석 시스템</p>
+  </footer>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      checkApiStatus();
+      
+      document.getElementById('checkStatusBtn').addEventListener('click', function() {
+        checkApiStatus();
+      });
+      
+      // 10초마다 상태 자동 업데이트
+      setInterval(checkApiStatus, 10000);
+    });
+    
+    function checkApiStatus() {
+      const statusIndicator = document.getElementById('statusIndicator');
+      const statusText = document.getElementById('statusText');
+      const lastUpdated = document.getElementById('lastUpdated');
+      const apiResponse = document.getElementById('apiResponse');
+      
+      // 로딩 상태로 변경
+      statusIndicator.className = 'status-indicator loading';
+      statusText.textContent = '상태 확인 중...';
+      
+      fetch('/api/v1/health')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          // 성공 상태로 변경
+          statusIndicator.className = 'status-indicator online';
+          statusText.textContent = '온라인';
+          lastUpdated.textContent = new Date().toLocaleString();
+          
+          // 응답 데이터 표시
+          apiResponse.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+          // 오프라인 상태로 변경
+          statusIndicator.className = 'status-indicator offline';
+          statusText.textContent = '오프라인';
+          lastUpdated.textContent = new Date().toLocaleString();
+          
+          // 오류 메시지 표시
+          apiResponse.innerHTML = `<pre style="color: #ea4335;">Error: ${error.message}</pre>`;
+        });
+    }
+  </script>
 </body>
 </html>

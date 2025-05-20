@@ -1,0 +1,54 @@
+{
+  "connection": {
+    "success": true,
+    "error": null,
+    "timestamp": "2025-05-19T13:43:04.718Z",
+    "time": 27
+  },
+  "queries": [
+    {
+      "query": "SELECT 1 AS test",
+      "success": true,
+      "error": null,
+      "duration": 7,
+      "timestamp": "2025-05-19T13:43:04.746Z",
+      "result": [
+        {
+          "test": 1
+        }
+      ]
+    },
+    {
+      "query": "사용자 테이블 (users) 조회",
+      "success": true,
+      "alternativeTable": "users",
+      "sampleData": {
+        "id": 1,
+        "name": "Admin",
+        "loginId": "admin",
+        "group": 1,
+        "password": "$2b$10$U/JOkhJ9/r82wg4lb5DqPO37sRB.MgCNSbcRefQxyAlMQyuupSGIy",
+        "role": 49,
+        "state": 0,
+        "joinAt": "2022-09-18T03:26:25.000Z",
+        "leaveAt": null,
+        "signedAt": "2025-05-07T06:58:53.000Z",
+        "lastIp": "115.137.253.88"
+      },
+      "timestamp": "2025-05-19T13:43:04.805Z"
+    },
+    {
+      "query": "\n      SHOW TABLES LIKE '%user%'\n    ",
+      "success": true,
+      "error": null,
+      "duration": 10,
+      "timestamp": "2025-05-19T13:43:04.805Z",
+      "tables": [
+        "user_groups",
+        "user_sessions",
+        "users"
+      ],
+      "warning": "테이블 'user_groups'에 날짜/시간 관련 컬럼이 없습니다."
+    }
+  ]
+}

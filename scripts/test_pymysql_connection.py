@@ -7,6 +7,11 @@ MariaDB 패키지 대신 PyMySQL만을 사용하여 호환성 문제를 우회�
 """
 
 import sys
+import os
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 import time
 import logging
 from pathlib import Path
@@ -28,7 +33,7 @@ from pymysql.cursors import DictCursor
 DB_CONFIG = {
     "host": "211.248.190.46",
     "user": "hermes",
-    "password": "mcygicng!022",
+    "password": os.getenv("DB_PASSWORD", ""),
     "database": "hermes",
     "charset": "utf8mb4",
     "cursorclass": DictCursor

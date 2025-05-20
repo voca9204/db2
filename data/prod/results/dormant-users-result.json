@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "message": "Dormant high-value users API",
+  "params": {
+    "minNetBet": 50000,
+    "minInactiveDays": 30,
+    "limit": 10
+  },
+  "data": [
+    {
+      "userId": "user-101",
+      "userName": "Dormant User 1",
+      "netBet": 320000,
+      "lastActivity": "2025-03-15T08:45:00Z",
+      "inactiveDays": 65,
+      "playDays": 25
+    },
+    {
+      "userId": "user-102",
+      "userName": "Dormant User 2",
+      "netBet": 210000,
+      "lastActivity": "2025-02-20T16:10:00Z",
+      "inactiveDays": 88,
+      "playDays": 18
+    }
+  ]
+}

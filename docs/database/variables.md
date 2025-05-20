@@ -2,6 +2,30 @@
 
 이 문서는 Hermes 데이터베이스의 주요 변수들과 그 의미를 설명합니다. 필요에 따라 이 문서를 수정하고 확장해 나갈 수 있습니다.
 
+## 💥 중요: 데이터 표시 규칙
+
+### 결과 표시에서 제외해야 할 필드
+다음 필드는 개인정보 보호 및 내부 정책에 따라 결과 표시에서 제외해야 합니다:
+
+1. **players.id**: 내부 DB 사용자 ID (숫자)는 결과에 표시하지 마세요.
+2. **players.name**: 사용자의 실제 이름은 결과에 표시하지 마세요.
+
+대신 다음 필드를 사용하세요:
+- **players.userId**: 사용자의 유저명은 식별자로 사용 가능합니다.
+
+### 금액 표시 규칙
+- 모든 금액은 소수점 이하를 반올림하여 정수로 표시하세요.
+- 예: 123,456.78 → 123,457
+- 필요한 경우 천 단위 구분자(,)를 사용하여 가독성을 높이세요.
+- 보고서 작성 시에는 단위(원, KRW 등)를 명확히 표시하세요.
+
+### 쿼리 작성 시 유의사항
+- 모든 보고서 및 결과 표시에서 `id`와 `name` 필드는 제외하고 `userId` 필드만 표시하세요.
+- 사용자 식별이 필요한 조인 쿼리에서는 내부적으로 `id`를 사용할 수 있으나, 최종 결과에는 포함하지 마세요.
+- CSV 파일이나 보고서를 생성할 때도 위 규칙을 준수하세요.
+- 금액 데이터를 표시할 때는 ROUND() 함수를 사용하여 소수점 이하를 반올림하세요.
+- 예: `SELECT ROUND(total_valid_betting) AS total_valid_betting ...`
+
 ## 금융 거래 관련 변수
 
 ### money_flows 테이블
@@ -28,6 +52,9 @@
 
 | 변수명 | 값 | 설명 |
 |--------|-----|------|
+| userId | varchar(64) | 사용자 식별자 (유저명) - 결과 표시에 사용 |
+| id | int | 내부 DB ID (결과에 표시하지 말 것) |
+| name | varchar(20) | 사용자 실제 이름 (결과에 표시하지 말 것) |
 | status | 0 | 활성 상태 (추정) |
 | status | 1 | 제한된 상태 (추정) |
 | status | 8 | 특별 관리 상태 (추정) |
@@ -59,7 +86,25 @@
 | status | tinyint | 프로모션 참여 상태 (0: 진행 중, 1: 완료 등) |
 | appliedAt | timestamp | 실제 이벤트 금액이 사용자에게 지급된 시점. NULL이면 이벤트 지급이 아직 이루어지지 않음, 값이 있으면 실제 지급이 완료됨 |
 
+## 게임 관련 변수
+
+### game_scores 테이블
+
+| 변수명 | 값 | 설명 |
+|--------|-----|------|
+| gameDate | date | 게임 플레이 날짜 |
+| userId | varchar(32) | 사용자 식별자 (players.userId와 연결) |
+| betCount | smallint | 베팅 횟수 |
+| totalBet | float | 총 베팅 금액 |
+| netBet | float | 유효 베팅 금액 (분석에서 주로 사용) |
+| winLoss | float | 승패 금액 (양수: 승리, 음수: 패배) |
+| gameType | tinyint | 게임 유형 |
+
 ## 쿼리 작성 시 중요 고려사항
+
+### 사용자 식별 필드 사용
+- 쿼리 결과에는 반드시 `players.userId`만 포함시키고 `players.id`와 `players.name`은 제외하세요.
+- 조인 시에는 내부적으로 `id` 필드를 사용할 수 있지만, 최종 SELECT 목록에서는 제외하세요.
 
 ### promotion_players 테이블 활용
 
@@ -74,21 +119,22 @@
 3. **이벤트 분석 쿼리 예시**
 ```sql
 -- 실제 이벤트가 지급된 사용자 찾기
-SELECT player, COUNT(*) as promotion_count 
-FROM promotion_players 
-WHERE appliedAt IS NOT NULL 
-GROUP BY player;
+SELECT p.userId, COUNT(*) as promotion_count 
+FROM promotion_players pp
+JOIN players p ON pp.player = p.id
+WHERE pp.appliedAt IS NOT NULL 
+GROUP BY p.userId;
 
 -- 각 사용자의 첫 이벤트 지급 날짜 찾기
-SELECT player, MIN(appliedAt) as first_promotion_date
-FROM promotion_players
-WHERE appliedAt IS NOT NULL
-GROUP BY player;
+SELECT p.userId, MIN(pp.appliedAt) as first_promotion_date
+FROM promotion_players pp
+JOIN players p ON pp.player = p.id
+WHERE pp.appliedAt IS NOT NULL
+GROUP BY p.userId;
 
 -- 이벤트 지급 후 입금 기록이 있는 사용자 찾기
 SELECT
     pl.userId,
-    pl.id,
     (SELECT COUNT(*) FROM promotion_players pp WHERE pp.player = pl.id AND pp.appliedAt IS NOT NULL) AS promotion_count,
     (SELECT MIN(pp2.appliedAt) FROM promotion_players pp2 WHERE pp2.player = pl.id AND pp2.appliedAt IS NOT NULL) AS first_promotion_date,
     SUM(CASE WHEN mf.createdAt > (SELECT MIN(pp3.appliedAt) FROM promotion_players pp3 WHERE pp3.player = pl.id AND pp3.appliedAt IS NOT NULL) THEN mf.amount ELSE 0 END) AS deposit_after_promotion
@@ -96,7 +142,7 @@ FROM players pl
 JOIN money_flows mf ON pl.id = mf.player
 WHERE pl.id IN (SELECT player FROM promotion_players WHERE appliedAt IS NOT NULL)
 AND mf.type = 0 -- 입금
-GROUP BY pl.userId, pl.id
+GROUP BY pl.userId
 HAVING deposit_after_promotion > 0;
 ```
 

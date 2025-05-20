@@ -1,0 +1,84 @@
+{
+  "connection": {
+    "success": true,
+    "error": null,
+    "timestamp": "2025-05-19T13:43:58.693Z",
+    "time": 31
+  },
+  "queries": [
+    {
+      "query": "\n    SELECT \n      COUNT(*) AS total_users,\n      SUM(CASE WHEN state = 0 THEN 1 ELSE 0 END) AS active_users,\n      SUM(CASE WHEN state != 0 THEN 1 ELSE 0 END) AS inactive_users,\n      SUM(CASE WHEN DATEDIFF(NOW(), signedAt) <= 30 THEN 1 ELSE 0 END) AS recent_active_users\n    FROM \n      users\n  ",
+      "success": true,
+      "error": null,
+      "duration": 9,
+      "timestamp": "2025-05-19T13:43:58.725Z",
+      "result": {
+        "total_users": 70,
+        "active_users": "31",
+        "inactive_users": "39",
+        "recent_active_users": "18"
+      }
+    },
+    {
+      "query": "\n    SELECT \n      id, name, loginId, group, role, state, \n      joinAt, signedAt, lastIp\n    FROM \n      users\n    WHERE \n      signedAt IS NOT NULL\n    ORDER BY \n      signedAt DESC\n    LIMIT 5\n  ",
+      "success": false,
+      "error": {
+        "message": "You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'group, role, state, \n      joinAt, signedAt, lastIp\n    FROM \n      users\n   ...' at line 2",
+        "code": "ER_PARSE_ERROR",
+        "errno": 1064,
+        "sqlState": "42000",
+        "sqlMessage": "You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'group, role, state, \n      joinAt, signedAt, lastIp\n    FROM \n      users\n   ...' at line 2"
+      },
+      "duration": 0,
+      "timestamp": "2025-05-19T13:43:58.734Z"
+    },
+    {
+      "query": "\n    SELECT \n      id, name, loginId, group, role, state, \n      joinAt, signedAt, \n      DATEDIFF(NOW(), signedAt) AS inactive_days\n    FROM \n      users\n    WHERE \n      signedAt < DATE_SUB(NOW(), INTERVAL 90 DAY)\n      AND state = 0\n    ORDER BY \n      signedAt ASC\n    LIMIT 5\n  ",
+      "success": false,
+      "error": {
+        "message": "You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'group, role, state, \n      joinAt, signedAt, \n      DATEDIFF(NOW(), signedAt)...' at line 2",
+        "code": "ER_PARSE_ERROR",
+        "errno": 1064,
+        "sqlState": "42000",
+        "sqlMessage": "You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'group, role, state, \n      joinAt, signedAt, \n      DATEDIFF(NOW(), signedAt)...' at line 2"
+      },
+      "duration": 0,
+      "timestamp": "2025-05-19T13:43:58.741Z"
+    },
+    {
+      "query": "\n      SELECT *\n      FROM user_sessions\n      ORDER BY created_at DESC\n      LIMIT 5\n    ",
+      "success": false,
+      "error": {
+        "message": "Unknown column 'created_at' in 'order clause'",
+        "code": "ER_BAD_FIELD_ERROR",
+        "errno": 1054,
+        "sqlState": "42S22",
+        "sqlMessage": "Unknown column 'created_at' in 'order clause'"
+      },
+      "duration": 0,
+      "timestamp": "2025-05-19T13:43:58.766Z",
+      "tableStructure": [
+        {
+          "name": "id",
+          "type": "varchar(32)"
+        },
+        {
+          "name": "user",
+          "type": "int(10) unsigned"
+        },
+        {
+          "name": "role",
+          "type": "int(10) unsigned"
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp"
+        },
+        {
+          "name": "accessAt",
+          "type": "timestamp"
+        }
+      ]
+    }
+  ]
+}

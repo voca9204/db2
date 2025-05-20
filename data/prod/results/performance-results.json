@@ -1,0 +1,144 @@
+{
+  "activeUsers": {
+    "requests": 10,
+    "successCount": 10,
+    "failureCount": 0,
+    "totalDuration": 948,
+    "avgDuration": 94.8,
+    "minDuration": 76,
+    "maxDuration": 222,
+    "responseDetails": [
+      {
+        "request": 1,
+        "status": 200,
+        "duration": 222,
+        "userCount": 2
+      },
+      {
+        "request": 2,
+        "status": 200,
+        "duration": 84,
+        "userCount": 2
+      },
+      {
+        "request": 3,
+        "status": 200,
+        "duration": 76,
+        "userCount": 2
+      },
+      {
+        "request": 4,
+        "status": 200,
+        "duration": 85,
+        "userCount": 2
+      },
+      {
+        "request": 5,
+        "status": 200,
+        "duration": 84,
+        "userCount": 2
+      },
+      {
+        "request": 6,
+        "status": 200,
+        "duration": 77,
+        "userCount": 2
+      },
+      {
+        "request": 7,
+        "status": 200,
+        "duration": 76,
+        "userCount": 2
+      },
+      {
+        "request": 8,
+        "status": 200,
+        "duration": 77,
+        "userCount": 2
+      },
+      {
+        "request": 9,
+        "status": 200,
+        "duration": 85,
+        "userCount": 2
+      },
+      {
+        "request": 10,
+        "status": 200,
+        "duration": 82,
+        "userCount": 2
+      }
+    ]
+  },
+  "dormantUsers": {
+    "requests": 10,
+    "successCount": 10,
+    "failureCount": 0,
+    "totalDuration": 835,
+    "avgDuration": 83.5,
+    "minDuration": 76,
+    "maxDuration": 117,
+    "responseDetails": [
+      {
+        "request": 1,
+        "status": 200,
+        "duration": 117,
+        "userCount": 2
+      },
+      {
+        "request": 2,
+        "status": 200,
+        "duration": 79,
+        "userCount": 2
+      },
+      {
+        "request": 3,
+        "status": 200,
+        "duration": 85,
+        "userCount": 2
+      },
+      {
+        "request": 4,
+        "status": 200,
+        "duration": 77,
+        "userCount": 2
+      },
+      {
+        "request": 5,
+        "status": 200,
+        "duration": 84,
+        "userCount": 2
+      },
+      {
+        "request": 6,
+        "status": 200,
+        "duration": 76,
+        "userCount": 2
+      },
+      {
+        "request": 7,
+        "status": 200,
+        "duration": 77,
+        "userCount": 2
+      },
+      {
+        "request": 8,
+        "status": 200,
+        "duration": 86,
+        "userCount": 2
+      },
+      {
+        "request": 9,
+        "status": 200,
+        "duration": 78,
+        "userCount": 2
+      },
+      {
+        "request": 10,
+        "status": 200,
+        "duration": 76,
+        "userCount": 2
+      }
+    ]
+  }
+}
