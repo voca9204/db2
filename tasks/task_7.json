@@ -1,0 +1,14 @@
+{
+  "id": 7,
+  "title": "Event Effect Analysis Module",
+  "description": "Develop a module to analyze the effects of events on user behavior, including participation rates, ROI, and retention impact, with special focus on inactive users returning through events.",
+  "status": "done",
+  "dependencies": [
+    5,
+    6
+  ],
+  "priority": "medium",
+  "details": "The module has been implemented with the following components:\n\n1. src/analysis/user/inactive_event_analyzer.py - Module for analyzing event effects on inactive users\n2. src/visualization/inactive_event_dashboard.py - Dashboard for visualizing analysis results\n3. scripts/analyze_inactive_events.py - Script for running the analysis\n4. scripts/run_dashboard.py - Script for launching the dashboard\n\nThe implemented functionality includes:\n- Identification of inactive users\n- Analysis of event participation patterns\n- Analysis of deposit behavior after events\n- Conversion rate analysis by inactive period duration\n- Conversion rate analysis by event value\n- Visualization of analysis results and dashboard presentation\n\nThe original plan included creating src/analysis/event_effect.py with an EventEffectAnalyzer class, but the implementation evolved to focus specifically on inactive user analysis with a more comprehensive approach including visualization components.",
+  "testStrategy": "Tests have been implemented to verify:\n- Correct identification of inactive users\n- Accurate calculation of participation metrics\n- Proper analysis of post-event deposit behavior\n- Accurate conversion rate calculations by inactive period\n- Accurate conversion rate calculations by event value\n- Proper visualization of results",
+  "subtasks": []
+}

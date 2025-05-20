@@ -1,0 +1,32 @@
+# Task ID: 7
+# Title: Event Effect Analysis Module
+# Status: done
+# Dependencies: 5, 6
+# Priority: medium
+# Description: Develop a module to analyze the effects of events on user behavior, including participation rates, ROI, and retention impact, with special focus on inactive users returning through events.
+# Details:
+The module has been implemented with the following components:
+
+1. src/analysis/user/inactive_event_analyzer.py - Module for analyzing event effects on inactive users
+2. src/visualization/inactive_event_dashboard.py - Dashboard for visualizing analysis results
+3. scripts/analyze_inactive_events.py - Script for running the analysis
+4. scripts/run_dashboard.py - Script for launching the dashboard
+
+The implemented functionality includes:
+- Identification of inactive users
+- Analysis of event participation patterns
+- Analysis of deposit behavior after events
+- Conversion rate analysis by inactive period duration
+- Conversion rate analysis by event value
+- Visualization of analysis results and dashboard presentation
+
+The original plan included creating src/analysis/event_effect.py with an EventEffectAnalyzer class, but the implementation evolved to focus specifically on inactive user analysis with a more comprehensive approach including visualization components.
+
+# Test Strategy:
+Tests have been implemented to verify:
+- Correct identification of inactive users
+- Accurate calculation of participation metrics
+- Proper analysis of post-event deposit behavior
+- Accurate conversion rate calculations by inactive period
+- Accurate conversion rate calculations by event value
+- Proper visualization of results

@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "lastUpdated": "2025-05-19T20:50:35.832806",
+    "totalTasks": 17,
+    "completedTasks": 8
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Project Structure Setup",
+      "status": "done",
+      "file": "task_1.json"
+    },
+    {
+      "id": 2,
+      "title": "Database Connection Module",
+      "status": "done",
+      "file": "task_2.json"
+    },
+    {
+      "id": 3,
+      "title": "Database Schema Analysis Module",
+      "status": "done",
+      "file": "task_3.json"
+    },
+    {
+      "id": 4,
+      "title": "Database Variable Documentation System",
+      "status": "pending",
+      "file": "task_4.json"
+    },
+    {
+      "id": 5,
+      "title": "Query Execution and Management Module",
+      "status": "done",
+      "file": "task_5.json"
+    },
+    {
+      "id": 6,
+      "title": "User Behavior Analysis Module",
+      "status": "done",
+      "file": "task_6.json"
+    },
+    {
+      "id": 7,
+      "title": "Event Effect Analysis Module",
+      "status": "done",
+      "file": "task_7.json"
+    },
+    {
+      "id": 8,
+      "title": "Data Visualization Components",
+      "status": "done",
+      "file": "task_8.json"
+    },
+    {
+      "id": 9,
+      "title": "Report Generation System",
+      "status": "pending",
+      "file": "task_9.json"
+    },
+    {
+      "id": 10,
+      "title": "Interactive Dashboard Framework",
+      "status": "done",
+      "file": "task_10.json"
+    },
+    {
+      "id": 11,
+      "title": "Query Performance Analysis Tool",
+      "status": "pending",
+      "file": "task_11.json"
+    },
+    {
+      "id": 12,
+      "title": "Trend Analysis and Prediction Module",
+      "status": "pending",
+      "file": "task_12.json"
+    },
+    {
+      "id": 13,
+      "title": "User Authentication and Access Control",
+      "status": "in-progress",
+      "file": "task_13.json"
+    },
+    {
+      "id": 14,
+      "title": "Data Export and Sharing Module",
+      "status": "pending",
+      "file": "task_14.json"
+    },
+    {
+      "id": 15,
+      "title": "Database Schema Change Tracking",
+      "status": "pending",
+      "file": "task_15.json"
+    },
+    {
+      "id": 16,
+      "title": "Database Optimization and Analytics Enhancement",
+      "status": "pending",
+      "file": "task_16.json"
+    },
+    {
+      "id": 17,
+      "title": "Firebase Functions Migration for High-Value User Analytics API",
+      "status": "in-progress",
+      "file": "task_17.json"
+    }
+  ],
+  "groups": [
+    {
+      "name": "firebase",
+      "title": "Firebase Migration Tasks",
+      "file": "group_firebase.json"
+    },
+    {
+      "name": "analysis",
+      "title": "Data Analysis Tasks",
+      "file": "group_analysis.json"
+    },
+    {
+      "name": "database",
+      "title": "Database Related Tasks",
+      "file": "group_database.json"
+    }
+  ]
+}

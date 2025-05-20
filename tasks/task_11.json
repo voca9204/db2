@@ -1,0 +1,13 @@
+{
+  "id": 11,
+  "title": "Query Performance Analysis Tool",
+  "description": "Develop a tool to analyze and optimize database query performance, including execution time tracking and optimization recommendations.",
+  "details": "Create src/database/performance_analyzer.py with functionality to:\n- Track query execution times\n- Analyze query plans (EXPLAIN)\n- Identify slow queries and bottlenecks\n- Suggest optimization strategies (indexing, query rewriting)\n- Monitor database load and performance metrics\n\nImplement the following structure:\n```python\nclass QueryPerformanceAnalyzer:\n    def __init__(self, query_manager):\n        self.query_manager = query_manager\n        self.performance_log = []\n    \n    def analyze_query(self, query, params=None):\n        # Analyze query execution plan\n        # Execute query and track performance\n        pass\n    \n    def get_slow_queries(self, threshold_ms=1000):\n        # Identify slow queries from performance log\n        pass\n    \n    def suggest_optimizations(self, query):\n        # Suggest optimization strategies\n        pass\n    \n    def analyze_index_usage(self, table_name=None):\n        # Analyze index usage efficiency\n        pass\n    \n    def monitor_database_load(self, interval_seconds=60, duration_minutes=10):\n        # Monitor database load over time\n        pass\n```\n\nStore optimization-related queries in queries/performance/ directory.",
+  "testStrategy": "Create tests in tests/database/test_performance_analyzer.py to verify:\n- Accurate execution time tracking\n- Correct query plan analysis\n- Proper identification of slow queries\n- Relevant optimization suggestions\nUse sample queries with known performance characteristics for testing.",
+  "priority": "medium",
+  "dependencies": [
+    5
+  ],
+  "status": "pending",
+  "subtasks": []
+}

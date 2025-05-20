@@ -1,0 +1,376 @@
+{
+  "name": "analysis",
+  "title": "Data Analysis Tasks",
+  "taskCount": 11,
+  "tasks": [
+    {
+      "id": 3,
+      "title": "Database Schema Analysis Module",
+      "description": "Develop a module to analyze and document the structure of the Hermes database, including tables, fields, relationships, and constraints.",
+      "details": "Create src/database/schema_analyzer.py with functionality to:\n- Extract table definitions (CREATE TABLE statements)\n- Identify primary and foreign keys\n- Map relationships between tables\n- Document field types, constraints, and indexes\n- Generate schema visualization\n- Export schema documentation to various formats (Markdown, HTML, etc.)\n\nImplement the following classes:\n```python\nclass SchemaAnalyzer:\n    def __init__(self, db_connection):\n        self.connection = db_connection\n        self.tables = {}\n        self.relationships = []\n    \n    def analyze_schema(self):\n        # Extract all tables and their structures\n        pass\n    \n    def analyze_table(self, table_name):\n        # Analyze specific table structure\n        pass\n    \n    def identify_relationships(self):\n        # Find foreign key relationships\n        pass\n    \n    def generate_documentation(self, output_format='markdown'):\n        # Generate documentation in specified format\n        pass\n\nclass TableStructure:\n    def __init__(self, name):\n        self.name = name\n        self.fields = []\n        self.primary_key = None\n        self.foreign_keys = []\n        self.indexes = []\n        self.constraints = []\n```\n\nStore SQL queries for schema analysis in queries/schema/ directory.",
+      "testStrategy": "Create tests in tests/database/test_schema_analyzer.py to verify:\n- Correct extraction of table structures\n- Accurate identification of relationships\n- Proper documentation generation\n- Handling of edge cases (views, stored procedures, etc.)\nUse a test database with known schema for validation.",
+      "priority": "high",
+      "dependencies": [
+        2
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement TableStructure class and basic SchemaAnalyzer initialization",
+          "description": "Create the TableStructure class to represent database table structures and implement the initialization of the SchemaAnalyzer class.",
+          "dependencies": [],
+          "details": "Create the src/database/schema_analyzer.py file with the TableStructure class implementation. Include all the attributes specified in the task description (name, fields, primary_key, foreign_keys, indexes, constraints). Implement the SchemaAnalyzer.__init__ method to initialize the connection, tables dictionary, and relationships list. Create the queries/schema/ directory and add an initial empty __init__.py file to make it a proper package.",
+          "status": "done",
+          "testStrategy": "Write unit tests to verify that TableStructure objects can be properly instantiated with all required attributes and that SchemaAnalyzer initializes correctly with a database connection."
+        },
+        {
+          "id": 2,
+          "title": "Implement table structure analysis functionality",
+          "description": "Implement the analyze_table method to extract and store the structure of a specific database table.",
+          "dependencies": [
+            1
+          ],
+          "details": "Implement the analyze_table method in the SchemaAnalyzer class to query the database for information about a specific table. Create SQL queries in queries/schema/table_analysis.sql to extract table field definitions, primary keys, and constraints. The method should populate a TableStructure object with all the extracted information and store it in the tables dictionary. Handle different database field types appropriately.",
+          "status": "done",
+          "testStrategy": "Test with mock database connections to verify the method correctly extracts and stores table structure information. Include tests for various field types and constraints."
+        },
+        {
+          "id": 3,
+          "title": "Implement full schema analysis functionality",
+          "description": "Implement the analyze_schema method to extract all tables from the database and analyze each one.",
+          "dependencies": [
+            2
+          ],
+          "details": "Implement the analyze_schema method in the SchemaAnalyzer class to query the database for all table names and then call analyze_table for each table. Create SQL queries in queries/schema/schema_analysis.sql to extract the list of all tables in the database. The method should populate the tables dictionary with TableStructure objects for all tables in the database.",
+          "status": "done",
+          "testStrategy": "Test with mock database connections to verify the method correctly identifies all tables and calls analyze_table for each one. Verify the tables dictionary is properly populated."
+        },
+        {
+          "id": 4,
+          "title": "Implement relationship identification functionality",
+          "description": "Implement the identify_relationships method to detect and document foreign key relationships between tables.",
+          "dependencies": [
+            3
+          ],
+          "details": "Implement the identify_relationships method in the SchemaAnalyzer class to analyze foreign key constraints and build a list of table relationships. Create SQL queries in queries/schema/relationship_analysis.sql to extract foreign key information. The method should populate the relationships list with tuples or custom objects representing the relationships between tables (source table, target table, source column, target column).",
+          "status": "done",
+          "testStrategy": "Test with mock database connections containing tables with foreign key relationships. Verify the method correctly identifies all relationships and stores them in the relationships list."
+        },
+        {
+          "id": 5,
+          "title": "Implement documentation generation functionality",
+          "description": "Implement the generate_documentation method to create formatted documentation of the database schema.",
+          "dependencies": [
+            4
+          ],
+          "details": "Implement the generate_documentation method in the SchemaAnalyzer class to generate documentation in various formats (Markdown, HTML, etc.) based on the analyzed schema. Create template files for different output formats. The method should use the tables dictionary and relationships list to generate comprehensive documentation including table definitions, field types, constraints, and visualizations of table relationships. Implement support for at least Markdown format initially, with extensibility for other formats.",
+          "status": "done",
+          "testStrategy": "Test the method with a fully populated SchemaAnalyzer instance to verify it generates correct documentation in the specified format. Verify the documentation includes all tables, fields, relationships, and other schema elements."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Database Variable Documentation System",
+      "description": "Create a system to define and document the meaning of database variables, fields, and their relationships to support analysis and reporting.",
+      "details": "Create src/database/variable_documentation.py to:\n- Define a structured format for variable documentation\n- Create a system to store and retrieve variable definitions\n- Link variables to their usage in queries and reports\n- Support tagging and categorization of variables\n- Enable search and filtering of variable definitions\n\nImplement the following structure:\n```python\nclass VariableDocumentation:\n    def __init__(self, db_connection):\n        self.connection = db_connection\n        self.variables = {}\n    \n    def load_definitions(self, source_file=None):\n        # Load variable definitions from file or database\n        pass\n    \n    def add_definition(self, variable_name, definition, metadata=None):\n        # Add or update variable definition\n        pass\n    \n    def get_definition(self, variable_name):\n        # Retrieve variable definition\n        pass\n    \n    def export_definitions(self, output_format='markdown'):\n        # Export all definitions to specified format\n        pass\n    \n    def search_definitions(self, query):\n        # Search definitions by keyword\n        pass\n```\n\nCreate a documentation template in docs/database/variable_template.md\nImplement storage in either database or structured files in docs/database/variables/",
+      "testStrategy": "Write tests in tests/database/test_variable_documentation.py to verify:\n- Proper storage and retrieval of variable definitions\n- Correct formatting of documentation\n- Search functionality\n- Export capabilities\nTest with a sample set of variable definitions.",
+      "priority": "medium",
+      "dependencies": [
+        3
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 6,
+      "title": "User Behavior Analysis Module",
+      "description": "Develop a module to analyze user behavior patterns with a focus on inactive users, including activity levels, engagement metrics, and conversion rates.",
+      "status": "done",
+      "dependencies": [
+        5,
+        "11"
+      ],
+      "priority": "medium",
+      "details": "The module has been fully implemented in src/analysis/user/inactive_event_analyzer.py with the InactiveUserEventAnalyzer class. The implementation includes the following functionality:\n\n1. User Activity Metrics:\n   - Identify inactive users (get_inactive_users method) ✓\n   - Calculate users who haven't played for specific periods ✓\n   - Login frequency and session duration metrics (get_login_frequency(), get_session_duration() methods) ✓\n   - Integrated activity metrics analysis (analyze_activity_metrics() method) ✓\n\n2. User Engagement Patterns:\n   - Analyze event participation patterns (get_event_participants method) ✓\n   - Track deposit behavior after events (get_deposits_after_event method) ✓\n   - Feature usage and content interaction analysis (get_feature_usage(), get_content_interaction() methods) ✓\n   - Comprehensive user engagement analysis (analyze_user_engagement() method) ✓\n\n3. Conversion Tracking:\n   - Analyze conversion rates by inactive period (analyze_conversion_by_inactive_period method) ✓\n   - Analyze conversion rates by event amount (analyze_conversion_by_event_amount method) ✓\n   - General user journey funnel tracking (analyze_conversion_funnel() method) ✓\n\n4. User Segmentation:\n   - Segment inactive users based on inactivity duration ✓\n   - Expanded segmentation based on behavior patterns (expand_user_segmentation() method) ✓\n   - RFM analysis and behavior pattern-based segmentation ✓\n\n5. Retention Analysis:\n   - Cohort-based retention analysis (analyze_retention() method) ✓\n   - Event-based retention analysis (analyze_event_retention() method) ✓\n   - Retention and churn rate calculation and visualization ✓\n\nAll SQL queries for user analysis are stored in the queries/user/ directory.",
+      "testStrategy": "Tests have been implemented in tests/analysis/test_inactive_user_analyzer.py to verify:\n- Correct identification of inactive users\n- Proper event participation tracking\n- Accurate conversion rate calculations by inactive period and event amount\n- Proper segmentation of inactive users\n\nAdditional tests have been created in tests/analysis/test_user_behavior.py to verify:\n- Correct calculation of additional activity metrics\n- Proper funnel tracking for general user journeys\n- Accurate segmentation for broader behavior patterns\n- Retention calculation accuracy\n\nA test script (scripts/tests/test_retention_analysis.py) has been created to facilitate easy testing of the new functionality.\n\nAll tests use sample datasets that include realistic inactive user scenarios and event participation data.",
+      "subtasks": [
+        {
+          "id": 6.1,
+          "title": "Inactive User Analysis Implementation",
+          "description": "Implemented InactiveUserEventAnalyzer class with methods for identifying inactive users and analyzing their event participation and conversion",
+          "status": "completed"
+        },
+        {
+          "id": 6.2,
+          "title": "Implement Additional Activity Metrics",
+          "description": "Add methods to calculate login frequency and session duration metrics to complement existing inactive user identification",
+          "status": "done"
+        },
+        {
+          "id": 6.3,
+          "title": "Expand User Engagement Analysis",
+          "description": "Add methods to analyze feature usage and content interaction beyond event participation",
+          "status": "done"
+        },
+        {
+          "id": 6.4,
+          "title": "Implement General Conversion Funnel Tracking",
+          "description": "Create methods to track conversion through defined funnel steps for general user journeys",
+          "status": "done"
+        },
+        {
+          "id": 6.5,
+          "title": "Expand User Segmentation",
+          "description": "Implement additional segmentation methods based on broader behavior patterns beyond inactivity",
+          "status": "done"
+        },
+        {
+          "id": 6.6,
+          "title": "Implement Retention Analysis",
+          "description": "Create methods to analyze retention and churn patterns and calculate retention rates for user cohorts",
+          "status": "done"
+        },
+        {
+          "id": 6.7,
+          "title": "Create Comprehensive Test Suite",
+          "description": "Develop tests for both existing inactive user analysis and new functionality",
+          "status": "done"
+        },
+        {
+          "id": 7.7,
+          "title": "Inactive User Analysis Implementation",
+          "description": "Implemented InactiveUserEventAnalyzer class with methods for identifying inactive users and analyzing their event participation and conversion",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 6
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Event Effect Analysis Module",
+      "description": "Develop a module to analyze the effects of events on user behavior, including participation rates, ROI, and retention impact, with special focus on inactive users returning through events.",
+      "status": "done",
+      "dependencies": [
+        5,
+        6
+      ],
+      "priority": "medium",
+      "details": "The module has been implemented with the following components:\n\n1. src/analysis/user/inactive_event_analyzer.py - Module for analyzing event effects on inactive users\n2. src/visualization/inactive_event_dashboard.py - Dashboard for visualizing analysis results\n3. scripts/analyze_inactive_events.py - Script for running the analysis\n4. scripts/run_dashboard.py - Script for launching the dashboard\n\nThe implemented functionality includes:\n- Identification of inactive users\n- Analysis of event participation patterns\n- Analysis of deposit behavior after events\n- Conversion rate analysis by inactive period duration\n- Conversion rate analysis by event value\n- Visualization of analysis results and dashboard presentation\n\nThe original plan included creating src/analysis/event_effect.py with an EventEffectAnalyzer class, but the implementation evolved to focus specifically on inactive user analysis with a more comprehensive approach including visualization components.",
+      "testStrategy": "Tests have been implemented to verify:\n- Correct identification of inactive users\n- Accurate calculation of participation metrics\n- Proper analysis of post-event deposit behavior\n- Accurate conversion rate calculations by inactive period\n- Accurate conversion rate calculations by event value\n- Proper visualization of results",
+      "subtasks": []
+    },
+    {
+      "id": 8,
+      "title": "Data Visualization Components",
+      "description": "Develop reusable visualization components for charts, graphs, and tables to display analysis results, with a focus on inactive user event effect analysis.",
+      "status": "done",
+      "dependencies": [
+        6,
+        7
+      ],
+      "priority": "medium",
+      "details": "Create visualization components in the src/visualization/ directory with functionality to:\n- Generate various chart types (line, bar, pie, scatter, etc.)\n- Create interactive visualizations using Plotly and Dash\n- Format tables for data display with search, sorting, and filtering capabilities\n- Support customizable styling and theming\n- Enable export to various formats (PNG, PDF, SVG)\n\nImplemented components include:\n1. src/visualization/inactive_event_dashboard.py - Dash-based dashboard implementation\n2. src/visualization/assets/dashboard.css - Dashboard styling definitions\n3. scripts/run_dashboard.py - Dashboard execution script\n\nThe dashboard provides the following visualization features:\n- Conversion rate by inactive period (bar chart)\n- Conversion rate by event amount (bar chart)\n- ROI trend graph (line chart)\n- Converted user data table (with search, sort, and filtering functionality)\n- Summary statistics cards\n\nOriginal planned structure for components.py:\n```python\nclass VisualizationComponents:\n    def __init__(self, theme=None):\n        self.theme = theme or self._default_theme()\n    \n    def _default_theme(self):\n        # Define default styling theme\n        pass\n    \n    def line_chart(self, data, x_column, y_columns, title=None, **kwargs):\n        # Generate line chart\n        pass\n    \n    def bar_chart(self, data, x_column, y_columns, title=None, **kwargs):\n        # Generate bar chart\n        pass\n    \n    def pie_chart(self, data, value_column, label_column, title=None, **kwargs):\n        # Generate pie chart\n        pass\n    \n    def table(self, data, columns=None, formatting=None, **kwargs):\n        # Generate formatted table\n        pass\n    \n    def export_figure(self, figure, filename, format='png'):\n        # Export visualization to file\n        pass\n```\n\nCreate additional specialized visualization modules in src/visualization/ directory for specific analysis types as needed.",
+      "testStrategy": "Create tests in tests/visualization/ to verify:\n- Correct rendering of different chart types in the inactive user dashboard\n- Proper handling of different data formats\n- Styling and theming application\n- Interactive features of the dashboard (filtering, sorting, etc.)\n- Dashboard responsiveness and layout\n\nSpecifically test:\n- tests/visualization/test_inactive_event_dashboard.py to verify dashboard components\n- tests/visualization/test_dashboard_integration.py to verify end-to-end functionality\n\nUse sample datasets for testing and compare visual output against expected results.",
+      "subtasks": [
+        {
+          "id": 8.1,
+          "title": "Implement Dash-based dashboard for inactive user analysis",
+          "status": "completed",
+          "description": "Created src/visualization/inactive_event_dashboard.py with Dash implementation for visualizing inactive user event analysis results"
+        },
+        {
+          "id": 8.2,
+          "title": "Create dashboard styling",
+          "status": "completed",
+          "description": "Implemented src/visualization/assets/dashboard.css with styling definitions for the dashboard"
+        },
+        {
+          "id": 8.3,
+          "title": "Develop dashboard execution script",
+          "status": "completed",
+          "description": "Created scripts/run_dashboard.py to launch and run the dashboard application"
+        },
+        {
+          "id": 8.4,
+          "title": "Implement visualization components",
+          "status": "completed",
+          "description": "Implemented key visualization components including conversion rate charts, ROI trend graphs, data tables with interactive features, and summary statistics cards"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Report Generation System",
+      "description": "Develop a system for generating automated reports (daily, weekly, monthly) with analysis results and visualizations.",
+      "details": "Create src/reports/generator.py with functionality to:\n- Define report templates\n- Schedule automatic report generation\n- Combine analysis results and visualizations\n- Generate reports in various formats (HTML, PDF, Markdown)\n- Support parameterized reports\n\nImplement the following structure:\n```python\nclass ReportGenerator:\n    def __init__(self, query_manager, visualization_components):\n        self.query_manager = query_manager\n        self.viz = visualization_components\n        self.templates = self._load_templates()\n    \n    def _load_templates(self):\n        # Load report templates from templates directory\n        pass\n    \n    def generate_report(self, report_type, parameters=None, output_format='html'):\n        # Generate report based on template and parameters\n        pass\n    \n    def schedule_report(self, report_type, schedule, parameters=None):\n        # Schedule automatic report generation\n        pass\n    \n    def get_scheduled_reports(self):\n        # Get list of scheduled reports\n        pass\n    \n    def cancel_scheduled_report(self, report_id):\n        # Cancel scheduled report\n        pass\n```\n\nCreate report templates in reports/templates/ directory.\nImplement a scheduler using APScheduler or similar library.",
+      "testStrategy": "Create tests in tests/reports/test_generator.py to verify:\n- Correct report generation from templates\n- Proper parameter handling\n- Scheduling functionality\n- Output format correctness\nUse mock data and templates for testing.",
+      "priority": "medium",
+      "dependencies": [
+        6,
+        7,
+        8
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 10,
+      "title": "Interactive Dashboard Framework",
+      "description": "Develop a framework for creating interactive dashboards using Flask and Dash to display analysis results and visualizations.",
+      "status": "done",
+      "dependencies": [
+        8,
+        9
+      ],
+      "priority": "medium",
+      "details": "The dashboard framework has been implemented with the following files:\n\n1. src/visualization/inactive_event_dashboard.py - Dash-based dashboard framework and implementation\n2. src/visualization/assets/dashboard.css - Dashboard styling\n3. scripts/run_dashboard.py - Dashboard execution script\n\nThe current implementation provides:\n- Dashboard initialization and layout management\n- Data loading and processing\n- Interactive filters and controls (sliders, buttons, etc.)\n- Real-time data updates (callback functionality)\n- Visualization components including graphs and tables\n- Responsive layout\n\nThe InactiveUserEventDashboard class can be extended for various analysis dashboards.\n\nOriginal planned structure was:\n```python\nclass DashboardFramework:\n    def __init__(self, report_generator, query_manager):\n        self.report_generator = report_generator\n        self.query_manager = query_manager\n        self.app = self._initialize_app()\n    \n    def _initialize_app(self):\n        # Initialize Flask and Dash application\n        pass\n    \n    def add_page(self, page_name, layout_function):\n        # Add page to dashboard\n        pass\n    \n    def add_callback(self, outputs, inputs, state, callback_function):\n        # Add interactive callback\n        pass\n    \n    def create_filter_component(self, filter_type, data_source, **kwargs):\n        # Create reusable filter component\n        pass\n    \n    def create_visualization_component(self, viz_type, **kwargs):\n        # Create visualization component\n        pass\n    \n    def run_server(self, debug=False, port=8050):\n        # Run dashboard server\n        pass\n```\n\nFuture enhancements could include:\n- Creating a more generic base class from the InactiveUserEventDashboard implementation\n- Adding more reusable components\n- Implementing user authentication and session management\n- Supporting multiple dashboard pages",
+      "testStrategy": "Create tests in tests/visualization/test_dashboard.py to verify:\n- Proper initialization of Flask/Dash application\n- Correct rendering of components\n- Callback functionality\n- Filter behavior\n\nTest the existing implementation:\n- Test the InactiveUserEventDashboard class functionality\n- Verify data loading and processing\n- Test interactive components like sliders and buttons\n- Validate visualization rendering\n\nUse mock data and test with headless browser for interaction testing.",
+      "subtasks": [
+        {
+          "id": 10.1,
+          "title": "Implement Dash-based dashboard framework",
+          "status": "completed",
+          "description": "Created src/visualization/inactive_event_dashboard.py with InactiveUserEventDashboard class implementing core dashboard functionality"
+        },
+        {
+          "id": 10.2,
+          "title": "Create dashboard styling",
+          "status": "completed",
+          "description": "Implemented src/visualization/assets/dashboard.css for dashboard styling and responsive layout"
+        },
+        {
+          "id": 10.3,
+          "title": "Develop dashboard execution script",
+          "status": "completed",
+          "description": "Created scripts/run_dashboard.py to initialize and run the dashboard application"
+        },
+        {
+          "id": 10.4,
+          "title": "Document dashboard implementation",
+          "status": "completed",
+          "description": "Added documentation for dashboard usage, components, and extension points"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Query Performance Analysis Tool",
+      "description": "Develop a tool to analyze and optimize database query performance, including execution time tracking and optimization recommendations.",
+      "details": "Create src/database/performance_analyzer.py with functionality to:\n- Track query execution times\n- Analyze query plans (EXPLAIN)\n- Identify slow queries and bottlenecks\n- Suggest optimization strategies (indexing, query rewriting)\n- Monitor database load and performance metrics\n\nImplement the following structure:\n```python\nclass QueryPerformanceAnalyzer:\n    def __init__(self, query_manager):\n        self.query_manager = query_manager\n        self.performance_log = []\n    \n    def analyze_query(self, query, params=None):\n        # Analyze query execution plan\n        # Execute query and track performance\n        pass\n    \n    def get_slow_queries(self, threshold_ms=1000):\n        # Identify slow queries from performance log\n        pass\n    \n    def suggest_optimizations(self, query):\n        # Suggest optimization strategies\n        pass\n    \n    def analyze_index_usage(self, table_name=None):\n        # Analyze index usage efficiency\n        pass\n    \n    def monitor_database_load(self, interval_seconds=60, duration_minutes=10):\n        # Monitor database load over time\n        pass\n```\n\nStore optimization-related queries in queries/performance/ directory.",
+      "testStrategy": "Create tests in tests/database/test_performance_analyzer.py to verify:\n- Accurate execution time tracking\n- Correct query plan analysis\n- Proper identification of slow queries\n- Relevant optimization suggestions\nUse sample queries with known performance characteristics for testing.",
+      "priority": "medium",
+      "dependencies": [
+        5
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 12,
+      "title": "Trend Analysis and Prediction Module",
+      "description": "Develop a module for analyzing trends in user behavior and database metrics, and creating predictive models.",
+      "details": "Create src/analysis/trends.py with functionality to:\n- Identify trends in time series data\n- Apply statistical methods for trend analysis\n- Implement simple forecasting models\n- Detect anomalies and pattern changes\n- Visualize trends and predictions\n\nImplement the following structure:\n```python\nclass TrendAnalyzer:\n    def __init__(self, query_manager):\n        self.query_manager = query_manager\n    \n    def analyze_time_series(self, data, time_column, value_column, frequency=None):\n        # Analyze time series for trends\n        pass\n    \n    def detect_seasonality(self, data, time_column, value_column):\n        # Detect seasonal patterns\n        pass\n    \n    def forecast_values(self, data, time_column, value_column, periods=10, method='ets'):\n        # Forecast future values\n        pass\n    \n    def detect_anomalies(self, data, time_column, value_column, method='iqr'):\n        # Detect anomalies in time series\n        pass\n    \n    def visualize_trend(self, data, time_column, value_column, with_forecast=False, periods=10):\n        # Visualize trend with optional forecast\n        pass\n```\n\nUse statistical libraries like statsmodels for implementation.",
+      "testStrategy": "Create tests in tests/analysis/test_trends.py to verify:\n- Correct trend identification\n- Accurate seasonality detection\n- Reasonable forecast accuracy\n- Proper anomaly detection\n- Visualization correctness\nUse synthetic time series data with known patterns for testing.",
+      "priority": "low",
+      "dependencies": [
+        6,
+        7
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 14,
+      "title": "Data Export and Sharing Module",
+      "description": "Develop a module for exporting analysis results and reports in various formats and sharing them with other users or systems.",
+      "details": "Create src/utils/export.py with functionality to:\n- Export data in various formats (CSV, Excel, JSON)\n- Generate shareable links for reports and dashboards\n- Schedule automatic exports\n- Implement email delivery of reports\n- Support API access to data\n\nImplement the following structure:\n```python\nclass DataExporter:\n    def __init__(self, auth_system=None):\n        self.auth_system = auth_system\n    \n    def export_data(self, data, format='csv', filename=None):\n        # Export data in specified format\n        pass\n    \n    def generate_share_link(self, resource_id, expiration=None, permissions=None):\n        # Generate shareable link with optional expiration\n        pass\n    \n    def schedule_export(self, data_source, parameters, format, schedule, recipients=None):\n        # Schedule automatic export\n        pass\n    \n    def send_email(self, recipients, subject, body, attachments=None):\n        # Send email with optional attachments\n        pass\n    \n    def create_api_endpoint(self, data_source, parameters, auth_required=True):\n        # Create API endpoint for data access\n        pass\n```\n\nIntegrate with email service (SMTP or third-party API) for delivery.",
+      "testStrategy": "Create tests in tests/utils/test_export.py to verify:\n- Correct export in different formats\n- Proper link generation and validation\n- Scheduling functionality\n- Email sending (using mock service)\n- API endpoint creation and access control\nUse sample data for testing exports.",
+      "priority": "low",
+      "dependencies": [
+        9,
+        10
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 16,
+      "title": "Database Optimization and Analytics Enhancement",
+      "description": "Implement database optimization and analytics improvements by replacing MySQL MCP with a dedicated MariaDB connector, integrating visual analysis tools, and enhancing reporting UI with interactive components and caching mechanisms.",
+      "details": "This task involves several key components to address the current limitations with MariaDB and MySQL MCP:\n\n1. MariaDB Connector Implementation:\n   - Develop or integrate a dedicated MariaDB connector to replace the current MySQL MCP\n   - Implement a custom query builder and/or ORM layer optimized for MariaDB\n   - Support complex queries that are currently limited by MySQL MCP\n   - Ensure backward compatibility with existing database operations\n\n2. Database Analysis Tools Integration:\n   - Research and select appropriate visual database analysis tools compatible with MariaDB\n   - Integrate selected tools into the current system architecture\n   - Implement data extraction and transformation pipelines for analysis\n   - Create APIs to expose analysis capabilities to the frontend\n\n3. Interactive Reporting UI Enhancement:\n   - Develop interactive table components with sorting, filtering, and pagination\n   - Implement advanced visualization components (charts, graphs, heatmaps)\n   - Create responsive dashboard layouts for different screen sizes\n   - Ensure accessibility compliance for all new UI components\n\n4. Caching Mechanism Implementation:\n   - Design a multi-level caching strategy (memory, disk, distributed)\n   - Implement cache invalidation and refresh policies\n   - Add cache monitoring and statistics collection\n   - Optimize cache usage based on query patterns and data access frequency\n\nImplementation Considerations:\n- Maintain compatibility with existing systems through adapter patterns or facade interfaces\n- Use feature flags to enable gradual rollout and minimize system disruption\n- Implement comprehensive logging for performance metrics collection\n- Focus on user experience improvements with intuitive interfaces and responsive design\n- Document all new components and APIs thoroughly for future maintenance",
+      "testStrategy": "The testing strategy will verify both functional correctness and performance improvements:\n\n1. Unit Testing:\n   - Test MariaDB connector methods with mock database responses\n   - Verify query builder/ORM functionality with test cases covering simple and complex queries\n   - Test UI components in isolation with component testing frameworks\n   - Validate caching mechanisms with controlled cache scenarios\n\n2. Integration Testing:\n   - Test database connector integration with existing application code\n   - Verify analysis tools integration with real database instances\n   - Test UI components interaction with backend APIs\n   - Validate caching behavior in integrated environments\n\n3. Performance Testing:\n   - Establish baseline performance metrics before implementation\n   - Measure query execution times before and after connector implementation\n   - Test system performance under various load conditions\n   - Measure cache hit/miss rates and response time improvements\n   - Conduct stress tests to identify bottlenecks\n\n4. User Experience Testing:\n   - Conduct usability testing with representative users\n   - Collect feedback on new UI components and visualizations\n   - Measure task completion times for common analysis workflows\n   - Evaluate user satisfaction with new reporting capabilities\n\n5. Regression Testing:\n   - Verify that existing functionality continues to work correctly\n   - Test backward compatibility with legacy code and interfaces\n   - Ensure data integrity is maintained during and after migration\n\n6. Acceptance Criteria:\n   - Query execution time improved by at least 30% for complex queries\n   - Analysis capabilities support at least 5 new types of data visualizations\n   - UI response time for data-heavy reports improved by at least 50%\n   - Cache hit rate of at least 80% for frequently accessed data\n   - No regression in existing functionality\n   - Positive user feedback on new analysis and reporting capabilities",
+      "status": "pending",
+      "dependencies": [],
+      "priority": "medium",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement MariaDB Dedicated Connector",
+          "description": "Replace the current MySQL MCP with a dedicated MariaDB connector using the mariadb package to leverage MariaDB-specific features and improve database connectivity.",
+          "dependencies": [],
+          "details": "1. Install and configure the mariadb package\n2. Create a connection pool manager for efficient connection handling\n3. Implement a database adapter layer to abstract connection details\n4. Develop utility functions for common database operations\n5. Create migration scripts to ensure smooth transition from MySQL MCP\n6. Add comprehensive error handling and connection retry mechanisms\n7. Implement connection monitoring and logging for performance analysis",
+          "status": "done",
+          "testStrategy": "Create unit tests for connection management, integration tests for database operations, and performance benchmarks comparing old vs new connector. Include stress tests to verify stability under high load."
+        },
+        {
+          "id": 2,
+          "title": "Develop SQLAlchemy-based ORM Layer",
+          "description": "Implement an Object-Relational Mapping (ORM) layer using SQLAlchemy to support complex queries and provide a more intuitive interface for database operations.",
+          "dependencies": [],
+          "details": "1. Define SQLAlchemy models corresponding to database tables\n2. Implement model relationships and constraints\n3. Create a query builder interface for complex query construction\n4. Develop transaction management utilities\n5. Add support for database migrations using Alembic\n6. Implement data validation and type conversion\n7. Create documentation for the ORM API with usage examples",
+          "status": "done",
+          "testStrategy": "Write unit tests for model definitions, integration tests for query operations, and performance tests comparing raw SQL vs ORM queries. Include tests for transaction handling and edge cases."
+        },
+        {
+          "id": 3,
+          "title": "Implement Interactive Data Table Components",
+          "description": "Develop advanced interactive table components with sorting, filtering, and pagination capabilities to enhance the reporting UI and improve user experience.",
+          "dependencies": [],
+          "details": "1. Create reusable table component with configurable columns\n2. Implement client-side sorting for multiple columns\n3. Add filtering capabilities with support for different data types\n4. Develop server-side pagination with configurable page sizes\n5. Implement row selection and bulk actions\n6. Add export functionality (CSV, Excel, PDF)\n7. Ensure responsive design for different screen sizes\n8. Implement keyboard navigation and accessibility features",
+          "status": "done",
+          "testStrategy": "Conduct unit tests for component logic, integration tests with API endpoints, UI tests for interaction patterns, and accessibility tests to ensure WCAG compliance."
+        },
+        {
+          "id": 4,
+          "title": "Integrate Advanced Data Visualization Tools",
+          "description": "Integrate Plotly, D3.js or similar libraries to create interactive charts, graphs, and dashboards for enhanced data analysis and visualization.",
+          "dependencies": [],
+          "details": "1. Evaluate and select appropriate visualization libraries\n2. Create wrapper components for common chart types (bar, line, pie, etc.)\n3. Implement data transformation utilities for visualization-ready formats\n4. Develop interactive features (tooltips, zooming, filtering)\n5. Create dashboard layouts with draggable and resizable components\n6. Implement theme support for consistent styling\n7. Add export and sharing capabilities for visualizations\n8. Optimize rendering performance for large datasets",
+          "status": "done",
+          "testStrategy": "Perform unit tests for data transformation logic, visual regression tests for chart rendering, performance tests with large datasets, and usability testing with actual users."
+        },
+        {
+          "id": 5,
+          "title": "Implement Redis-based Query Caching Mechanism",
+          "description": "Develop a multi-level caching strategy using Redis to cache frequently used query results, improving performance and reducing database load.",
+          "dependencies": [],
+          "details": "1. Set up Redis integration with appropriate configuration\n2. Implement cache key generation based on query parameters\n3. Develop cache storage and retrieval mechanisms\n4. Create intelligent cache invalidation strategies\n5. Implement TTL (Time-To-Live) policies based on data volatility\n6. Add cache statistics and monitoring\n7. Develop cache warming mechanisms for critical queries\n8. Create a cache management interface for manual operations",
+          "status": "pending",
+          "testStrategy": "Conduct unit tests for caching logic, integration tests with the database layer, performance benchmarks to measure improvement, and stress tests to verify behavior under high load."
+        },
+        {
+          "id": 6,
+          "title": "Integrate Database Schema Visualization Tool",
+          "description": "Implement a database schema visualization tool to provide clear visual representation of the database structure, relationships, and dependencies.",
+          "details": "1. Research and select appropriate database schema visualization tools (e.g., SchemaSpy, dbdiagram.io integration, or custom solution)\n2. Implement automated schema extraction from the MariaDB database\n3. Create visual representation of tables, columns, and relationships\n4. Add interactive features for exploring and navigating the schema\n5. Implement search functionality for finding tables and fields quickly\n6. Provide documentation generation capabilities from the schema\n7. Enable schema comparison for tracking changes over time\n8. Integrate with the existing project structure and web interface",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 16
+        },
+        {
+          "id": 7,
+          "title": "Develop Performance Benchmarking Tools",
+          "description": "Develop a performance benchmarking tool to measure and compare database and application performance before and after optimization efforts.",
+          "details": "1. Design a comprehensive benchmarking framework tailored to the project\n2. Implement query execution time measurement for various query types\n3. Create tools to simulate different user loads and access patterns\n4. Develop metrics collection for database operations (reads, writes, joins, etc.)\n5. Implement visualization of performance data with historical comparison\n6. Add automatic bottleneck detection and recommendation engine\n7. Create scheduled benchmark runs for continuous monitoring\n8. Implement reporting capabilities to track optimization progress over time\n9. Develop configuration options for customizing benchmarks to specific needs",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 16
+        }
+      ]
+    }
+  ]
+}

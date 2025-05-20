@@ -1,0 +1,52 @@
+# Task ID: 5
+# Title: Query Execution and Management Module
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Develop a module for executing SQL queries against the database with performance tracking, parameterization, and result management.
+# Details:
+Create src/database/query_manager.py with functionality to:
+- Execute SQL queries with parameter binding
+- Measure and log query execution time
+- Handle query results (conversion to Pandas DataFrame, etc.)
+- Manage query templates and parameterization
+- Implement query caching for performance
+- Handle large result sets efficiently
+
+Implement the following structure:
+```python
+class QueryManager:
+    def __init__(self, db_connection):
+        self.connection = db_connection
+        self.query_cache = {}
+        self.performance_log = []
+    
+    def execute_query(self, query, params=None, use_cache=True):
+        # Execute query with parameters
+        # Track execution time
+        # Return results as appropriate data structure
+        pass
+    
+    def execute_from_file(self, file_path, params=None):
+        # Load query from file and execute
+        pass
+    
+    def load_query_template(self, template_name):
+        # Load query template from queries directory
+        pass
+    
+    def get_performance_stats(self, query_pattern=None):
+        # Get performance statistics for queries
+        pass
+```
+
+Organize SQL query files in the queries/ directory by category (user/, event/, schema/).
+
+# Test Strategy:
+Create tests in tests/database/test_query_manager.py to verify:
+- Correct query execution and result handling
+- Parameter binding security (SQL injection prevention)
+- Performance tracking accuracy
+- Caching functionality
+- Large result set handling
+Use mock database responses for testing.

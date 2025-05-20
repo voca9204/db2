@@ -1,0 +1,53 @@
+# Task ID: 9
+# Title: Report Generation System
+# Status: pending
+# Dependencies: 6, 7, 8
+# Priority: medium
+# Description: Develop a system for generating automated reports (daily, weekly, monthly) with analysis results and visualizations.
+# Details:
+Create src/reports/generator.py with functionality to:
+- Define report templates
+- Schedule automatic report generation
+- Combine analysis results and visualizations
+- Generate reports in various formats (HTML, PDF, Markdown)
+- Support parameterized reports
+
+Implement the following structure:
+```python
+class ReportGenerator:
+    def __init__(self, query_manager, visualization_components):
+        self.query_manager = query_manager
+        self.viz = visualization_components
+        self.templates = self._load_templates()
+    
+    def _load_templates(self):
+        # Load report templates from templates directory
+        pass
+    
+    def generate_report(self, report_type, parameters=None, output_format='html'):
+        # Generate report based on template and parameters
+        pass
+    
+    def schedule_report(self, report_type, schedule, parameters=None):
+        # Schedule automatic report generation
+        pass
+    
+    def get_scheduled_reports(self):
+        # Get list of scheduled reports
+        pass
+    
+    def cancel_scheduled_report(self, report_id):
+        # Cancel scheduled report
+        pass
+```
+
+Create report templates in reports/templates/ directory.
+Implement a scheduler using APScheduler or similar library.
+
+# Test Strategy:
+Create tests in tests/reports/test_generator.py to verify:
+- Correct report generation from templates
+- Proper parameter handling
+- Scheduling functionality
+- Output format correctness
+Use mock data and templates for testing.

@@ -1,0 +1,39 @@
+{
+  "id": 8,
+  "title": "Data Visualization Components",
+  "description": "Develop reusable visualization components for charts, graphs, and tables to display analysis results, with a focus on inactive user event effect analysis.",
+  "status": "done",
+  "dependencies": [
+    6,
+    7
+  ],
+  "priority": "medium",
+  "details": "Create visualization components in the src/visualization/ directory with functionality to:\n- Generate various chart types (line, bar, pie, scatter, etc.)\n- Create interactive visualizations using Plotly and Dash\n- Format tables for data display with search, sorting, and filtering capabilities\n- Support customizable styling and theming\n- Enable export to various formats (PNG, PDF, SVG)\n\nImplemented components include:\n1. src/visualization/inactive_event_dashboard.py - Dash-based dashboard implementation\n2. src/visualization/assets/dashboard.css - Dashboard styling definitions\n3. scripts/run_dashboard.py - Dashboard execution script\n\nThe dashboard provides the following visualization features:\n- Conversion rate by inactive period (bar chart)\n- Conversion rate by event amount (bar chart)\n- ROI trend graph (line chart)\n- Converted user data table (with search, sort, and filtering functionality)\n- Summary statistics cards\n\nOriginal planned structure for components.py:\n```python\nclass VisualizationComponents:\n    def __init__(self, theme=None):\n        self.theme = theme or self._default_theme()\n    \n    def _default_theme(self):\n        # Define default styling theme\n        pass\n    \n    def line_chart(self, data, x_column, y_columns, title=None, **kwargs):\n        # Generate line chart\n        pass\n    \n    def bar_chart(self, data, x_column, y_columns, title=None, **kwargs):\n        # Generate bar chart\n        pass\n    \n    def pie_chart(self, data, value_column, label_column, title=None, **kwargs):\n        # Generate pie chart\n        pass\n    \n    def table(self, data, columns=None, formatting=None, **kwargs):\n        # Generate formatted table\n        pass\n    \n    def export_figure(self, figure, filename, format='png'):\n        # Export visualization to file\n        pass\n```\n\nCreate additional specialized visualization modules in src/visualization/ directory for specific analysis types as needed.",
+  "testStrategy": "Create tests in tests/visualization/ to verify:\n- Correct rendering of different chart types in the inactive user dashboard\n- Proper handling of different data formats\n- Styling and theming application\n- Interactive features of the dashboard (filtering, sorting, etc.)\n- Dashboard responsiveness and layout\n\nSpecifically test:\n- tests/visualization/test_inactive_event_dashboard.py to verify dashboard components\n- tests/visualization/test_dashboard_integration.py to verify end-to-end functionality\n\nUse sample datasets for testing and compare visual output against expected results.",
+  "subtasks": [
+    {
+      "id": 8.1,
+      "title": "Implement Dash-based dashboard for inactive user analysis",
+      "status": "completed",
+      "description": "Created src/visualization/inactive_event_dashboard.py with Dash implementation for visualizing inactive user event analysis results"
+    },
+    {
+      "id": 8.2,
+      "title": "Create dashboard styling",
+      "status": "completed",
+      "description": "Implemented src/visualization/assets/dashboard.css with styling definitions for the dashboard"
+    },
+    {
+      "id": 8.3,
+      "title": "Develop dashboard execution script",
+      "status": "completed",
+      "description": "Created scripts/run_dashboard.py to launch and run the dashboard application"
+    },
+    {
+      "id": 8.4,
+      "title": "Implement visualization components",
+      "status": "completed",
+      "description": "Implemented key visualization components including conversion rate charts, ROI trend graphs, data tables with interactive features, and summary statistics cards"
+    }
+  ]
+}

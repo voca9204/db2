@@ -1,0 +1,15 @@
+{
+  "id": 9,
+  "title": "Report Generation System",
+  "description": "Develop a system for generating automated reports (daily, weekly, monthly) with analysis results and visualizations.",
+  "details": "Create src/reports/generator.py with functionality to:\n- Define report templates\n- Schedule automatic report generation\n- Combine analysis results and visualizations\n- Generate reports in various formats (HTML, PDF, Markdown)\n- Support parameterized reports\n\nImplement the following structure:\n```python\nclass ReportGenerator:\n    def __init__(self, query_manager, visualization_components):\n        self.query_manager = query_manager\n        self.viz = visualization_components\n        self.templates = self._load_templates()\n    \n    def _load_templates(self):\n        # Load report templates from templates directory\n        pass\n    \n    def generate_report(self, report_type, parameters=None, output_format='html'):\n        # Generate report based on template and parameters\n        pass\n    \n    def schedule_report(self, report_type, schedule, parameters=None):\n        # Schedule automatic report generation\n        pass\n    \n    def get_scheduled_reports(self):\n        # Get list of scheduled reports\n        pass\n    \n    def cancel_scheduled_report(self, report_id):\n        # Cancel scheduled report\n        pass\n```\n\nCreate report templates in reports/templates/ directory.\nImplement a scheduler using APScheduler or similar library.",
+  "testStrategy": "Create tests in tests/reports/test_generator.py to verify:\n- Correct report generation from templates\n- Proper parameter handling\n- Scheduling functionality\n- Output format correctness\nUse mock data and templates for testing.",
+  "priority": "medium",
+  "dependencies": [
+    6,
+    7,
+    8
+  ],
+  "status": "pending",
+  "subtasks": []
+}

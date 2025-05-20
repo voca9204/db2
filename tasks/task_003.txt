@@ -1,0 +1,90 @@
+# Task ID: 3
+# Title: Database Schema Analysis Module
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Develop a module to analyze and document the structure of the Hermes database, including tables, fields, relationships, and constraints.
+# Details:
+Create src/database/schema_analyzer.py with functionality to:
+- Extract table definitions (CREATE TABLE statements)
+- Identify primary and foreign keys
+- Map relationships between tables
+- Document field types, constraints, and indexes
+- Generate schema visualization
+- Export schema documentation to various formats (Markdown, HTML, etc.)
+
+Implement the following classes:
+```python
+class SchemaAnalyzer:
+    def __init__(self, db_connection):
+        self.connection = db_connection
+        self.tables = {}
+        self.relationships = []
+    
+    def analyze_schema(self):
+        # Extract all tables and their structures
+        pass
+    
+    def analyze_table(self, table_name):
+        # Analyze specific table structure
+        pass
+    
+    def identify_relationships(self):
+        # Find foreign key relationships
+        pass
+    
+    def generate_documentation(self, output_format='markdown'):
+        # Generate documentation in specified format
+        pass
+
+class TableStructure:
+    def __init__(self, name):
+        self.name = name
+        self.fields = []
+        self.primary_key = None
+        self.foreign_keys = []
+        self.indexes = []
+        self.constraints = []
+```
+
+Store SQL queries for schema analysis in queries/schema/ directory.
+
+# Test Strategy:
+Create tests in tests/database/test_schema_analyzer.py to verify:
+- Correct extraction of table structures
+- Accurate identification of relationships
+- Proper documentation generation
+- Handling of edge cases (views, stored procedures, etc.)
+Use a test database with known schema for validation.
+
+# Subtasks:
+## 1. Implement TableStructure class and basic SchemaAnalyzer initialization [done]
+### Dependencies: None
+### Description: Create the TableStructure class to represent database table structures and implement the initialization of the SchemaAnalyzer class.
+### Details:
+Create the src/database/schema_analyzer.py file with the TableStructure class implementation. Include all the attributes specified in the task description (name, fields, primary_key, foreign_keys, indexes, constraints). Implement the SchemaAnalyzer.__init__ method to initialize the connection, tables dictionary, and relationships list. Create the queries/schema/ directory and add an initial empty __init__.py file to make it a proper package.
+
+## 2. Implement table structure analysis functionality [done]
+### Dependencies: 3.1
+### Description: Implement the analyze_table method to extract and store the structure of a specific database table.
+### Details:
+Implement the analyze_table method in the SchemaAnalyzer class to query the database for information about a specific table. Create SQL queries in queries/schema/table_analysis.sql to extract table field definitions, primary keys, and constraints. The method should populate a TableStructure object with all the extracted information and store it in the tables dictionary. Handle different database field types appropriately.
+
+## 3. Implement full schema analysis functionality [done]
+### Dependencies: 3.2
+### Description: Implement the analyze_schema method to extract all tables from the database and analyze each one.
+### Details:
+Implement the analyze_schema method in the SchemaAnalyzer class to query the database for all table names and then call analyze_table for each table. Create SQL queries in queries/schema/schema_analysis.sql to extract the list of all tables in the database. The method should populate the tables dictionary with TableStructure objects for all tables in the database.
+
+## 4. Implement relationship identification functionality [done]
+### Dependencies: 3.3
+### Description: Implement the identify_relationships method to detect and document foreign key relationships between tables.
+### Details:
+Implement the identify_relationships method in the SchemaAnalyzer class to analyze foreign key constraints and build a list of table relationships. Create SQL queries in queries/schema/relationship_analysis.sql to extract foreign key information. The method should populate the relationships list with tuples or custom objects representing the relationships between tables (source table, target table, source column, target column).
+
+## 5. Implement documentation generation functionality [done]
+### Dependencies: 3.4
+### Description: Implement the generate_documentation method to create formatted documentation of the database schema.
+### Details:
+Implement the generate_documentation method in the SchemaAnalyzer class to generate documentation in various formats (Markdown, HTML, etc.) based on the analyzed schema. Create template files for different output formats. The method should use the tables dictionary and relationships list to generate comprehensive documentation including table definitions, field types, constraints, and visualizations of table relationships. Implement support for at least Markdown format initially, with extensibility for other formats.
+

@@ -1,0 +1,163 @@
+# Task ID: 13
+# Title: User Authentication and Access Control
+# Status: in-progress
+# Dependencies: 10
+# Priority: high
+# Description: Implement a system for user authentication, authorization, and access control to protect sensitive data and functionality by integrating with Firebase Authentication.
+# Details:
+Migrate authentication functionality to Firebase Authentication as part of the Firebase Functions migration:
+
+1. Firebase Authentication Integration:
+   - Migrate authentication from src/utils/auth.py to Firebase Authentication
+   - Implement email/password, Google account, and custom token authentication
+   - Convert session management to Firebase token-based authentication
+   - Implement JWT token validation and authentication state persistence
+
+2. Role-Based Access Control (RBAC):
+   - Define user roles using Firebase Authentication Custom Claims
+   - Implement granular roles: Admin, Analyst, User, etc.
+   - Implement data access control using Firestore security rules
+   - Create permission verification middleware for API endpoints
+
+3. API Security Enhancement:
+   - Apply authentication middleware to Firebase Functions HTTP triggers
+   - Convert API key authentication to JWT token-based authentication
+   - Implement rate limiting and request validation
+   - Configure CORS and security headers
+
+4. Activity Logging and Auditing:
+   - Configure Firebase Authentication activity logs
+   - Store user activity logs in Firestore
+   - Implement security event detection and notifications using Cloud Functions
+   - Create audit log analysis and dashboard
+   - Generate daily security reports with authentication and API access statistics
+   - Provide admin interfaces for log searching and analysis
+
+5. Migration Strategy:
+   - Migrate existing user accounts to Firebase Authentication
+   - Support both existing and new authentication during transition
+   - Transfer user role and permission information
+   - Update authentication token issuance and validation systems
+
+Implemented so far:
+- Firebase Authentication initial setup and integration
+- OAuth provider (Google) authentication integration
+- Basic role-based access control implementation
+- Authentication middleware for Firebase Functions HTTP triggers
+- Email/password-based account management
+- Authentication middleware for API endpoints with role-based access control
+- Rate limiting middleware to prevent API abuse
+- Security headers and CORS configuration for API endpoints
+- Activity logging middleware for tracking user actions
+- Security event detection for abnormal login patterns
+- Daily security report generation via scheduled Cloud Functions
+
+# Test Strategy:
+Create tests in tests/utils/test_auth.py and tests/firebase/test_auth.py to verify:
+- Proper authentication with Firebase Authentication
+- Correct JWT token validation and handling
+- Role-based permission checking with Custom Claims
+- Rejection of invalid credentials
+- Firestore security rules effectiveness
+- Activity logging in Firestore
+- Migration of user accounts from existing system to Firebase
+- Rate limiting functionality and request throttling
+- Security headers and CORS configuration effectiveness
+- API middleware authentication and authorization
+- Security event detection and alerting functionality
+- Daily security report generation accuracy
+- Audit log API endpoints functionality and access control
+
+Use Firebase Local Emulator Suite for testing Firebase Authentication and Firestore security rules.
+
+# Subtasks:
+## 13.1. Firebase Authentication Integration [in-progress]
+### Dependencies: None
+### Description: Set up and integrate Firebase Authentication, implement email/password and OAuth authentication methods.
+### Details:
+
+
+## 13.2. Role-Based Access Control Implementation [in-progress]
+### Dependencies: None
+### Description: Implement role-based access control using Firebase Custom Claims and Firestore security rules.
+### Details:
+
+
+## 13.3. API Security Enhancement [in-progress]
+### Dependencies: None
+### Description: Apply authentication middleware to Firebase Functions, implement JWT validation, rate limiting, and security headers.
+### Details:
+
+
+## 13.4. Activity Logging System [in-progress]
+### Dependencies: None
+### Description: Implement comprehensive activity logging in Firestore and create audit mechanisms.
+### Details:
+
+
+## 13.5. User Account Migration Tool [not-started]
+### Dependencies: None
+### Description: Develop a tool to migrate existing user accounts to Firebase Authentication while preserving roles and permissions.
+### Details:
+
+
+## 13.6. Admin Dashboard User Management [not-started]
+### Dependencies: None
+### Description: Add user management functionality to the admin dashboard for role assignment and account management.
+### Details:
+
+
+## 14.6. API Security Enhancement [in-progress]
+### Dependencies: None
+### Description: Apply authentication middleware to Firebase Functions, implement JWT validation, rate limiting, and security headers.
+### Details:
+
+
+## 13.7. JWT Token Renewal Mechanism [not-started]
+### Dependencies: None
+### Description: Implement a mechanism for refreshing JWT tokens to maintain user sessions securely.
+### Details:
+
+
+## 13.8. API Key to JWT Token Migration [not-started]
+### Dependencies: None
+### Description: Develop support code for gradual transition from API key authentication to JWT token-based authentication.
+### Details:
+
+
+## 13.9. Content Security Policy Enhancement [not-started]
+### Dependencies: None
+### Description: Strengthen Content Security Policy settings to prevent XSS and other injection attacks.
+### Details:
+
+
+## 13.10. XSS and CSRF Protection [not-started]
+### Dependencies: None
+### Description: Implement defenses against Cross-Site Scripting and Cross-Site Request Forgery attacks.
+### Details:
+
+
+## 13.11. API Security Testing [not-started]
+### Dependencies: None
+### Description: Conduct comprehensive security testing and vulnerability analysis for API endpoints.
+### Details:
+
+
+## 13.12. Security Event Detection and Alerting [in-progress]
+### Dependencies: None
+### Description: Implement detection of abnormal access patterns and security events with admin alerting system.
+### Details:
+
+
+## 13.13. Daily Security Report Generation [in-progress]
+### Dependencies: None
+### Description: Create scheduled Cloud Function to generate daily security reports with authentication and API access statistics.
+### Details:
+
+
+## 13.14. Audit Log Analysis Dashboard [in-progress]
+### Dependencies: None
+### Description: Develop API endpoints and interfaces for searching, filtering, and analyzing audit logs and security events.
+### Details:
+
+

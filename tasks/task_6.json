@@ -1,0 +1,66 @@
+{
+  "id": 6,
+  "title": "User Behavior Analysis Module",
+  "description": "Develop a module to analyze user behavior patterns with a focus on inactive users, including activity levels, engagement metrics, and conversion rates.",
+  "status": "done",
+  "dependencies": [
+    5,
+    "11"
+  ],
+  "priority": "medium",
+  "details": "The module has been fully implemented in src/analysis/user/inactive_event_analyzer.py with the InactiveUserEventAnalyzer class. The implementation includes the following functionality:\n\n1. User Activity Metrics:\n   - Identify inactive users (get_inactive_users method) ✓\n   - Calculate users who haven't played for specific periods ✓\n   - Login frequency and session duration metrics (get_login_frequency(), get_session_duration() methods) ✓\n   - Integrated activity metrics analysis (analyze_activity_metrics() method) ✓\n\n2. User Engagement Patterns:\n   - Analyze event participation patterns (get_event_participants method) ✓\n   - Track deposit behavior after events (get_deposits_after_event method) ✓\n   - Feature usage and content interaction analysis (get_feature_usage(), get_content_interaction() methods) ✓\n   - Comprehensive user engagement analysis (analyze_user_engagement() method) ✓\n\n3. Conversion Tracking:\n   - Analyze conversion rates by inactive period (analyze_conversion_by_inactive_period method) ✓\n   - Analyze conversion rates by event amount (analyze_conversion_by_event_amount method) ✓\n   - General user journey funnel tracking (analyze_conversion_funnel() method) ✓\n\n4. User Segmentation:\n   - Segment inactive users based on inactivity duration ✓\n   - Expanded segmentation based on behavior patterns (expand_user_segmentation() method) ✓\n   - RFM analysis and behavior pattern-based segmentation ✓\n\n5. Retention Analysis:\n   - Cohort-based retention analysis (analyze_retention() method) ✓\n   - Event-based retention analysis (analyze_event_retention() method) ✓\n   - Retention and churn rate calculation and visualization ✓\n\nAll SQL queries for user analysis are stored in the queries/user/ directory.",
+  "testStrategy": "Tests have been implemented in tests/analysis/test_inactive_user_analyzer.py to verify:\n- Correct identification of inactive users\n- Proper event participation tracking\n- Accurate conversion rate calculations by inactive period and event amount\n- Proper segmentation of inactive users\n\nAdditional tests have been created in tests/analysis/test_user_behavior.py to verify:\n- Correct calculation of additional activity metrics\n- Proper funnel tracking for general user journeys\n- Accurate segmentation for broader behavior patterns\n- Retention calculation accuracy\n\nA test script (scripts/tests/test_retention_analysis.py) has been created to facilitate easy testing of the new functionality.\n\nAll tests use sample datasets that include realistic inactive user scenarios and event participation data.",
+  "subtasks": [
+    {
+      "id": 6.1,
+      "title": "Inactive User Analysis Implementation",
+      "description": "Implemented InactiveUserEventAnalyzer class with methods for identifying inactive users and analyzing their event participation and conversion",
+      "status": "completed"
+    },
+    {
+      "id": 6.2,
+      "title": "Implement Additional Activity Metrics",
+      "description": "Add methods to calculate login frequency and session duration metrics to complement existing inactive user identification",
+      "status": "done"
+    },
+    {
+      "id": 6.3,
+      "title": "Expand User Engagement Analysis",
+      "description": "Add methods to analyze feature usage and content interaction beyond event participation",
+      "status": "done"
+    },
+    {
+      "id": 6.4,
+      "title": "Implement General Conversion Funnel Tracking",
+      "description": "Create methods to track conversion through defined funnel steps for general user journeys",
+      "status": "done"
+    },
+    {
+      "id": 6.5,
+      "title": "Expand User Segmentation",
+      "description": "Implement additional segmentation methods based on broader behavior patterns beyond inactivity",
+      "status": "done"
+    },
+    {
+      "id": 6.6,
+      "title": "Implement Retention Analysis",
+      "description": "Create methods to analyze retention and churn patterns and calculate retention rates for user cohorts",
+      "status": "done"
+    },
+    {
+      "id": 6.7,
+      "title": "Create Comprehensive Test Suite",
+      "description": "Develop tests for both existing inactive user analysis and new functionality",
+      "status": "done"
+    },
+    {
+      "id": 7.7,
+      "title": "Inactive User Analysis Implementation",
+      "description": "Implemented InactiveUserEventAnalyzer class with methods for identifying inactive users and analyzing their event participation and conversion",
+      "details": "",
+      "status": "done",
+      "dependencies": [],
+      "parentTaskId": 6
+    }
+  ]
+}

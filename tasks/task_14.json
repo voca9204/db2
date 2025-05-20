@@ -1,0 +1,14 @@
+{
+  "id": 14,
+  "title": "Data Export and Sharing Module",
+  "description": "Develop a module for exporting analysis results and reports in various formats and sharing them with other users or systems.",
+  "details": "Create src/utils/export.py with functionality to:\n- Export data in various formats (CSV, Excel, JSON)\n- Generate shareable links for reports and dashboards\n- Schedule automatic exports\n- Implement email delivery of reports\n- Support API access to data\n\nImplement the following structure:\n```python\nclass DataExporter:\n    def __init__(self, auth_system=None):\n        self.auth_system = auth_system\n    \n    def export_data(self, data, format='csv', filename=None):\n        # Export data in specified format\n        pass\n    \n    def generate_share_link(self, resource_id, expiration=None, permissions=None):\n        # Generate shareable link with optional expiration\n        pass\n    \n    def schedule_export(self, data_source, parameters, format, schedule, recipients=None):\n        # Schedule automatic export\n        pass\n    \n    def send_email(self, recipients, subject, body, attachments=None):\n        # Send email with optional attachments\n        pass\n    \n    def create_api_endpoint(self, data_source, parameters, auth_required=True):\n        # Create API endpoint for data access\n        pass\n```\n\nIntegrate with email service (SMTP or third-party API) for delivery.",
+  "testStrategy": "Create tests in tests/utils/test_export.py to verify:\n- Correct export in different formats\n- Proper link generation and validation\n- Scheduling functionality\n- Email sending (using mock service)\n- API endpoint creation and access control\nUse sample data for testing exports.",
+  "priority": "low",
+  "dependencies": [
+    9,
+    10
+  ],
+  "status": "pending",
+  "subtasks": []
+}

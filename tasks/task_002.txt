@@ -1,0 +1,86 @@
+# Task ID: 2
+# Title: Database Connection Module
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Develop a module for managing database connections to the Hermes database system, including connection setup, maintenance, and error handling.
+# Details:
+Create src/database/connection.py with the following components:
+- Connection pool management using PyMySQL
+- Configuration loading from environment variables or config files
+- Secure credential handling with encryption
+- Connection retry mechanism with exponential backoff
+- Error handling and logging
+- Context manager for connection handling
+
+Example code structure:
+```python
+class DatabaseConnection:
+    def __init__(self, config_path=None):
+        self.config = self._load_config(config_path)
+        self.connection_pool = None
+        
+    def _load_config(self, config_path):
+        # Load configuration from file or environment variables
+        # Decrypt credentials if needed
+        pass
+        
+    def connect(self):
+        # Establish connection pool
+        pass
+        
+    def get_connection(self):
+        # Get connection from pool
+        pass
+        
+    def __enter__(self):
+        # Context manager entry
+        return self.get_connection()
+        
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # Context manager exit with proper cleanup
+        pass
+```
+
+Create src/config/database.py for configuration settings.
+
+# Test Strategy:
+Write unit tests in tests/database/test_connection.py to verify:
+- Successful connection to test database
+- Proper error handling for connection failures
+- Connection pool management
+- Credential encryption/decryption
+- Context manager functionality
+Use mock database for testing to avoid dependency on production database.
+
+# Subtasks:
+## 1. Create Configuration Module [done]
+### Dependencies: None
+### Description: Implement the database configuration module to handle loading settings from environment variables or config files with secure credential handling.
+### Details:
+Create src/config/database.py with functions to load database configuration from environment variables (using os.environ) and/or config files (JSON/YAML). Implement credential decryption using a secure method like Fernet encryption from cryptography library. Include configuration parameters for host, port, database name, username, password, connection pool size, timeout settings, and retry parameters.
+
+## 2. Implement Connection Pool Management [done]
+### Dependencies: None
+### Description: Create the core connection pool functionality using PyMySQL to efficiently manage database connections.
+### Details:
+In src/database/connection.py, implement the DatabaseConnection class with methods to initialize and manage a connection pool. Use PyMySQL's connection pooling capabilities or implement a custom pool. Include methods for creating the pool (connect()), acquiring connections (get_connection()), and releasing connections back to the pool. Ensure thread safety for concurrent access to the connection pool.
+
+## 3. Develop Retry Mechanism with Exponential Backoff [done]
+### Dependencies: None
+### Description: Implement a robust retry mechanism with exponential backoff to handle temporary connection failures.
+### Details:
+Add a retry decorator or method that implements exponential backoff for connection attempts. Start with a base delay (e.g., 100ms) and increase exponentially with each retry up to a maximum delay and maximum number of retries. Include jitter to prevent synchronized retries. Handle specific recoverable database exceptions while allowing critical errors to propagate.
+
+## 4. Implement Error Handling and Logging [done]
+### Dependencies: 2.3
+### Description: Create comprehensive error handling and logging for database connection issues.
+### Details:
+Implement error handling for different types of database exceptions (connection errors, query errors, timeout errors, etc.). Create custom exception classes if needed. Set up detailed logging using the Python logging module to record connection events, retries, and errors with appropriate severity levels. Include contextual information in logs such as connection parameters (excluding credentials) and operation being performed.
+
+## 5. Create Context Manager for Connection Handling [done]
+### Dependencies: 2.3
+### Description: Implement context manager functionality for the DatabaseConnection class to ensure proper resource management.
+### Details:
+Implement the __enter__ and __exit__ methods in the DatabaseConnection class to support the 'with' statement pattern. The __enter__ method should return a database connection from the pool, and the __exit__ method should properly close or return the connection to the pool, handling any exceptions that occurred. Include transaction management capabilities such as commit on successful exit and rollback on exceptions.
+
