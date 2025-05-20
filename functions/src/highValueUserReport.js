@@ -47,7 +47,7 @@ exports.highValueUserReport = functions.https.onRequest((req, res) => {
 
       // 요청 파라미터 처리
       const minPlayDays = parseInt(req.query.minPlayDays || '7', 10);
-      const minNetBet = parseInt(req.query.minNetBet || '50000', 10);
+      const minNetBet = parseInt(req.query.minNetBet || '40000', 10); // 50000에서 40000으로 낮춤 (최대값 41130 미만)
       const format = req.query.format || 'json'; // 'json' 또는 'html'
       const showDetails = req.query.details === 'true'; // 상세 분석 결과 포함 여부
 

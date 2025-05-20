@@ -304,11 +304,12 @@ exports.dormantUsers = functions.https.onRequest(async (req, res) => {
       JOIN game_scores gs ON p.id = gs.userId
       GROUP BY p.userId
       HAVING SUM(gs.netBet) >= ?
+      AND DATEDIFF(CURRENT_DATE, MAX(gs.gameDate)) >= ?
       LIMIT ?
     `;
     
     console.log('쿼리 실행 중...');
-    const [rows, fields] = await connection.query(query, [minNetBet, limit]);
+    const [rows, fields] = await connection.query(query, [minNetBet, minInactiveDays, limit]);
     console.log(`쿼리 결과: ${rows.length}개 행 반환됨`);
     
     // 연결 해제
