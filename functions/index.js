@@ -88,7 +88,7 @@ exports.activeUsers = functions.https.onRequest(async (req, res) => {
     `);
     console.log('game_scores 샘플 데이터:', sampleGameScore[0]);
     
-    // 원래 조인 조건으로 복원한 쿼리 (p.id = gs.userId)
+    // 단순화된 쿼리 (필수 조건만 유지)
     const query = `
       SELECT 
         p.userId,
@@ -100,8 +100,6 @@ exports.activeUsers = functions.https.onRequest(async (req, res) => {
       JOIN game_scores gs ON p.id = gs.userId
       GROUP BY p.userId
       HAVING SUM(gs.netBet) >= ?
-      AND DATEDIFF(CURRENT_DATE, MAX(gs.gameDate)) < 30
-      ORDER BY lastActivity DESC
       LIMIT ?
     `;
     
@@ -294,7 +292,7 @@ exports.dormantUsers = functions.https.onRequest(async (req, res) => {
     const [dateResult] = await connection.query(dateTest);
     console.log('날짜 테스트 결과:', dateResult[0]);
     
-    // 원래 조인 조건으로 복원한 쿼리 (p.id = gs.userId)
+    // 단순화된 쿼리 (필수 조건만 유지)
     const query = `
       SELECT 
         p.userId,
@@ -306,13 +304,11 @@ exports.dormantUsers = functions.https.onRequest(async (req, res) => {
       JOIN game_scores gs ON p.id = gs.userId
       GROUP BY p.userId
       HAVING SUM(gs.netBet) >= ?
-      AND DATEDIFF(CURRENT_DATE, MAX(gs.gameDate)) >= ?
-      ORDER BY inactiveDays DESC
       LIMIT ?
     `;
     
     console.log('쿼리 실행 중...');
-    const [rows, fields] = await connection.query(query, [minNetBet, minInactiveDays, limit]);
+    const [rows, fields] = await connection.query(query, [minNetBet, limit]);
     console.log(`쿼리 결과: ${rows.length}개 행 반환됨`);
     
     // 연결 해제
