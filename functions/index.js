@@ -97,7 +97,7 @@ exports.activeUsers = functions.https.onRequest(async (req, res) => {
         DATEDIFF(CURRENT_DATE, MAX(gs.gameDate)) as inactiveDays,
         ROUND(SUM(gs.netBet)) as netBet
       FROM players p
-      JOIN game_scores gs ON p.id = gs.userId
+      JOIN game_scores gs ON p.userId = gs.userId
       GROUP BY p.userId
       HAVING SUM(gs.netBet) >= ?
       LIMIT ?
@@ -301,7 +301,7 @@ exports.dormantUsers = functions.https.onRequest(async (req, res) => {
         DATEDIFF(CURRENT_DATE, MAX(gs.gameDate)) as inactiveDays,
         ROUND(SUM(gs.netBet)) as netBet
       FROM players p
-      JOIN game_scores gs ON p.id = gs.userId
+      JOIN game_scores gs ON p.userId = gs.userId
       GROUP BY p.userId
       HAVING SUM(gs.netBet) >= ?
       AND DATEDIFF(CURRENT_DATE, MAX(gs.gameDate)) >= ?
