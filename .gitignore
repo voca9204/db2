@@ -72,6 +72,6 @@ config/secrets.py
 *_key.py
 *_secret.py
 
-# Temporarily commented out for pushing to GitHub
-# tasks.json
-# tasks/ 
+# Added by Claude Task Master
+tasks.json
+tasks/ 
