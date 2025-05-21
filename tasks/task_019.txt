@@ -1,6 +1,6 @@
 # Task ID: 19
 # Title: Implement Personalized Event Recommendation System for Inactive User Segments
-# Status: pending
+# Status: in-progress
 # Dependencies: 18
 # Priority: high
 # Description: Develop a system that analyzes user data to recommend optimal event types and reward sizes for different inactive user segments, providing personalized event recommendations to increase re-engagement and conversion rates.
@@ -78,3 +78,123 @@ Testing should be comprehensive and include:
    - Recommendations must be generated within 500ms per user
    - ROI predictions must achieve at least 80% accuracy when compared to actual results
    - System must handle the entire inactive user base without performance degradation
+
+# Subtasks:
+## 1. 데이터 통합 및 전처리 파이프라인 구현 [in-progress]
+### Dependencies: None
+### Description: 사용자 세그먼트 데이터 및 이벤트 참여 이력을 통합하고 전처리하는 데이터 파이프라인을 구현합니다.
+### Details:
+이 서브태스크에서는 다음 작업을 수행합니다:
+
+1. Task #18의 사용자 세그먼트 데이터 접근 인터페이스 구현
+2. 이벤트 참여 및 반응 데이터 수집 및 전처리 파이프라인 개발
+3. 사용자 프로필 데이터 강화를 위한 데이터 통합 레이어 구현
+4. 데이터 검증 및 품질 관리 프로세스 구축
+5. 효율적인 데이터 접근을 위한 캐싱 메커니즘 구현
+6. 데이터 업데이트 스케줄링 및 자동화 설정
+
+구현 시 promotion_players 테이블의 reward 및 appliedAt 필드를 활용하여 이벤트 참여 및 보상 데이터를 수집하고, money_flows 테이블의 입금 데이터를 활용하여 전환 지표를 계산합니다.
+
+## 2. 이벤트 유형 매칭 알고리즘 개발 [pending]
+### Dependencies: None
+### Description: 데이터 기반 사용자 세그먼트별 이벤트 유형 매칭 알고리즘을 개발합니다.
+### Details:
+이 서브태스크에서는 다음 작업을 수행합니다:
+
+1. 사용자 세그먼트와 이벤트 유형 간의 상관관계 분석
+2. 사용자 세그먼트별 과거 이벤트 반응 패턴 분석
+3. 협업 필터링(Collaborative Filtering) 알고리즘 구현
+   - 사용자-이벤트 매트릭스 구성
+   - 유사 사용자 식별 로직 개발
+   - 이벤트 유형 선호도 예측 모델 구현
+4. 콘텐츠 기반 필터링(Content-based Filtering) 알고리즘 구현
+   - 이벤트 특성 벡터 구성
+   - 사용자 프로필 벡터 구성
+   - 유사도 계산 로직 개발
+5. 하이브리드 추천 시스템 구현
+   - 협업 필터링과 콘텐츠 기반 필터링 결합
+   - 가중치 최적화 로직 개발
+6. 세그먼트 수준의 A/B 테스트 설계 및 구현
+
+각 사용자 세그먼트(예: 고액 지출 휴면 사용자, 사회적 게이머 등)에 대해 가장 효과적인 이벤트 유형(보너스 유형, 프로모션 유형 등)을 매칭하는 알고리즘을 개발합니다.
+
+## 3. 최적 보상 크기 예측 모델 개발 [pending]
+### Dependencies: None
+### Description: 사용자 세그먼트별 최적의 보상 크기를 예측하는 모델을 개발합니다.
+### Details:
+이 서브태스크에서는 다음 작업을 수행합니다:
+
+1. 보상 크기와 사용자 전환율 간의 상관관계 분석
+2. 사용자 세그먼트별 최적 보상 크기 예측 모델 개발
+   - 회귀 모델(선형, 랜덤 포레스트, 그래디언트 부스팅 등) 구현
+   - 모델 하이퍼파라미터 최적화
+   - 교차 검증을 통한 모델 성능 평가
+3. 투자수익률(ROI) 최적화 모델 구현
+   - 보상 크기별 ROI 예측 모델 개발
+   - 세그먼트별 ROI 최대화 로직 구현
+4. 사용자 가치 기반 보상 예산 할당 시스템 구현
+   - 사용자 잠재 가치 점수와 보상 크기 연계
+   - 예산 제약 조건 하에서의 최적화 로직
+5. 실시간 보상 크기 조정 메커니즘 개발
+   - 사용자 반응에 따른 동적 보상 조정
+   - A/B 테스트 기반 보상 크기 최적화
+
+hermes_variables.md에 명시된 대로 모든 금액은 소수점 이하를 반올림하여 정수로 표시하고, promotion_players 테이블의 reward 필드를 활용하여 보상 크기와 전환율 사이의 관계를 분석합니다.
+
+## 4. 추천 API 및 통합 인터페이스 개발 [pending]
+### Dependencies: None
+### Description: 개인화된 이벤트 추천 API 및 통합 인터페이스를 개발합니다.
+### Details:
+이 서브태스크에서는 다음 작업을 수행합니다:
+
+1. RESTful API 설계 및 개발
+   - 사용자/세그먼트 기반 추천 엔드포인트 구현
+   - 벌크 추천 엔드포인트 구현 (다수 사용자 대상)
+   - 필터링 및 제약조건 지원 기능 개발
+2. API 성능 최적화
+   - 응답 시간 최소화를 위한 캐싱 구현
+   - 비동기 처리를 통한 대규모 추천 처리
+   - 부하 분산 및 확장성 설계
+3. 인증 및 권한 관리
+   - API 접근 제어 구현
+   - 권한 수준별 기능 제한 설정
+4. 통합 인터페이스 개발
+   - 마케팅 시스템 연동 인터페이스 구현
+   - 알림 시스템 연동 인터페이스 구현
+   - 이벤트 관리 시스템 연동 구현
+5. 문서화 및 예제 코드 작성
+   - API 문서 자동화 (Swagger/OpenAPI)
+   - 예제 코드 및 사용 가이드 작성
+   - 오류 처리 및 문제 해결 가이드 제공
+
+API는 Task #18의 비활성 사용자 타겟팅 시스템과 통합되어야 하며, 추천된 이벤트를 실행하기 위한 마케팅 및 알림 시스템과의 연동 인터페이스도 제공해야 합니다.
+
+## 5. 성능 측정 및 피드백 시스템 구현 [pending]
+### Dependencies: None
+### Description: 추천 성능 분석 및 지속적 개선을 위한 피드백 시스템을 구현합니다.
+### Details:
+이 서브태스크에서는 다음 작업을 수행합니다:
+
+1. 추천 성능 측정 메트릭 정의 및 구현
+   - 클릭률(CTR), 전환율, ROI 등 핵심 성과 지표 정의
+   - 메트릭 수집 및 집계 시스템 구현
+   - 실시간 대시보드 구축
+2. A/B 테스트 프레임워크 개발
+   - 테스트 그룹 할당 알고리즘 구현
+   - 통계적 유의성 분석 로직 개발
+   - 테스트 결과 시각화 도구 제작
+3. 피드백 루프 구현
+   - 사용자 반응 데이터 수집 메커니즘 구축
+   - 실시간 모델 업데이트 시스템 개발
+   - 추천 알고리즘 자동 조정 로직 구현
+4. 자동화된 모델 재학습 시스템 구현
+   - 모델 성능 모니터링 및 재학습 트리거 설정
+   - 정기적 배치 학습 프로세스 자동화
+   - 모델 버전 관리 시스템 구축
+5. 장기 성능 추적 및 분석 시스템 개발
+   - 시계열 분석을 통한 추천 시스템 성능 추적
+   - 세그먼트별 성능 변화 추적 및 분석
+   - 비즈니스 KPI와의 연관성 분석
+
+이 피드백 시스템은 추천 모델의 성능을 지속적으로 모니터링하고 최적화하여, 시간이 지남에 따라 더 효과적인 이벤트 추천이 이루어질 수 있도록 합니다.
+

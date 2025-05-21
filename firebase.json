@@ -3,7 +3,10 @@
     "source": "functions",
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint"
-    ]
+    ],
+    "codebase": "default",
+    "runtime": "nodejs18",
+    "gen": 2
   },
   "hosting": {
     "public": "public",
@@ -34,6 +37,10 @@
         "function": "dormantUsers"
       },
       {
+        "source": "/api/highValueUsersApi/**",
+        "function": "highValueUsersApi"
+      },
+      {
         "source": "/api/v1/health",
         "function": "healthCheck"
       },
@@ -47,19 +54,28 @@
       }
     ]
   },
+  "firestore": {
+    "indexes": "firestore.indexes.json"
+  },
   "emulators": {
     "functions": {
-      "port": 6001
+      "port": 11001
     },
     "hosting": {
-      "port": 5000
+      "port": 11002
     },
     "ui": {
       "enabled": true,
-      "port": 4000
+      "port": 11003
     },
     "firestore": {
-      "port": 8080
+      "port": 11004
+    },
+    "hub": {
+      "port": 11005
+    },
+    "logging": {
+      "port": 11006
     }
   }
 }

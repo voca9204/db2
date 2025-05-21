@@ -1,211 +1,570 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DB2 - 고가치 사용자 분석 시스템</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      background-color: #f5f5f7;
-      color: #333;
-    }
-    
-    header {
-      background-color: #1a73e8;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    main {
-      flex: 1;
-      padding: 2rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
-    footer {
-      background-color: #f0f0f0;
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.875rem;
-      color: #666;
-    }
-    
-    h1 {
-      margin-top: 0;
-    }
-    
-    .card {
-      background-color: white;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-    
-    .api-status {
-      display: flex;
-      align-items: center;
-      margin-top: 1rem;
-    }
-    
-    .status-indicator {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-right: 8px;
-    }
-    
-    .status-indicator.loading {
-      background-color: #ffd600;
-    }
-    
-    .status-indicator.online {
-      background-color: #34a853;
-    }
-    
-    .status-indicator.offline {
-      background-color: #ea4335;
-    }
-    
-    .button {
-      background-color: #1a73e8;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.2s;
-    }
-    
-    .button:hover {
-      background-color: #1765cc;
-    }
-    
-    code {
-      font-family: 'Courier New', monospace;
-      background-color: #f0f0f0;
-      padding: 0.2rem 0.4rem;
-      border-radius: 3px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 프로젝트 - 문서 인덱스</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+        }
+        
+        header h1 {
+            color: white;
+            margin: 0;
+        }
+        
+        header p {
+            margin: 10px 0 0;
+            color: #ecf0f1;
+            font-size: 1.1em;
+        }
+        
+        .query-list {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .query-list h2 {
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .query-list ol {
+            padding-left: 25px;
+            margin: 0;
+        }
+        
+        .query-list li {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .query-list li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .query-link {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .query-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .query-description {
+            color: #555;
+            margin: 5px 0;
+        }
+        
+        .query-meta {
+            color: #777;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section h2 {
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        .file-links {
+            margin-top: 15px;
+        }
+        
+        .file-links a {
+            display: inline-block;
+            background-color: #f1f8ff;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d1e4ff;
+            transition: all 0.2s ease;
+        }
+        
+        .file-links a:hover {
+            background-color: #e1f0ff;
+            color: #2980b9;
+        }
+        
+        .icon {
+            margin-right: 5px;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .upcoming {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .sub-list {
+            list-style-type: lower-alpha;
+            padding-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+        
+        .sub-list li {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted #eee;
+        }
+        
+        .sub-list li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: #f0f4f8;
+            color: #5a6e8c;
+            font-size: 0.85em;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-right: 5px;
+            border: 1px solid #d8e2f0;
+        }
+        
+        .tag-event {
+            background-color: #ebf7ed;
+            color: #28a745;
+            border-color: #c3e6cb;
+        }
+        
+        .tag-user {
+            background-color: #f8f9fb;
+            color: #6c757d;
+            border-color: #d6d8db;
+        }
+        
+        .tag-payment {
+            background-color: #fff5e6;
+            color: #fd7e14;
+            border-color: #ffecd2;
+        }
+        
+        .tag-dormant {
+            background-color: #f2f2f2;
+            color: #6610f2;
+            border-color: #d8d8d8;
+        }
+        
+        .tag-revenue {
+            background-color: #e2f0ff;
+            color: #007bff;
+            border-color: #b8daff;
+        }
+        
+        .tag-retention {
+            background-color: #e6faf8;
+            color: #17a2b8;
+            border-color: #c2e9e6;
+        }
+        
+        .tag-engagement {
+            background-color: #fef8e6;
+            color: #ffc107;
+            border-color: #feebc2;
+        }
+        
+        .tag-performance {
+            background-color: #f8eafb;
+            color: #6f42c1;
+            border-color: #e5d2ee;
+        }
+        
+        .tag-filter {
+            margin: 10px 0 20px;
+        }
+        
+        .tag-filter-label {
+            margin-right: 10px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .tag-filter-pill {
+            display: inline-block;
+            background-color: #f8f9fa;
+            color: #495057;
+            padding: 5px 12px;
+            border-radius: 16px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s;
+        }
+        
+        .tag-filter-pill:hover, .tag-filter-pill.active {
+            background-color: #3498db;
+            color: #fff;
+            border-color: #3498db;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>DB2 - 고가치 사용자 분석 시스템</h1>
-  </header>
-  
-  <main>
-    <div class="card">
-      <h2>시스템 상태</h2>
-      <p>현재 고가치 사용자 분석 시스템의 API 상태입니다:</p>
-      
-      <div class="api-status">
-        <div class="status-indicator loading" id="statusIndicator"></div>
-        <span id="statusText">상태 확인 중...</span>
-      </div>
-      
-      <p>최근 업데이트: <span id="lastUpdated">-</span></p>
+    <header>
+        <h1>DB2 프로젝트 - 문서 인덱스</h1>
+        <p>데이터베이스 분석 및 문서 관리 프로젝트</p>
+        <p>업데이트: 2025년 5월 18일</p>
+    </header>
+    
+    <div class="section">
+        <h2>보고서 검색 및 필터링</h2>
+        <p>태그를 클릭하여 관련 보고서 필터링:</p>
+        <div class="tag-filter">
+            <span class="tag-filter-pill" data-tag="all">전체</span>
+            <span class="tag-filter-pill" data-tag="event">이벤트</span>
+            <span class="tag-filter-pill" data-tag="user">사용자</span>
+            <span class="tag-filter-pill" data-tag="payment">결제</span>
+            <span class="tag-filter-pill" data-tag="dormant">휴면</span>
+            <span class="tag-filter-pill" data-tag="revenue">매출</span>
+            <span class="tag-filter-pill" data-tag="retention">유지율</span>
+            <span class="tag-filter-pill" data-tag="engagement">참여도</span>
+            <span class="tag-filter-pill" data-tag="performance">성능</span>
+        </div>
     </div>
     
-    <div class="card">
-      <h2>데이터베이스 분석 시스템</h2>
-      <p>이 시스템은 고가치 사용자의 행동 분석과 이벤트 참여 효과를 추적하는 데이터 분석 도구입니다.</p>
-      <p>주요 기능:</p>
-      <ul>
-        <li>고가치 사용자 식별 및 세그먼트 분석</li>
-        <li>휴면 사용자 분석 및 재활성화 대상 추천</li>
-        <li>이벤트 효과 측정 및 ROI 분석</li>
-        <li>스케줄링된 자동 분석 작업</li>
-      </ul>
-      
-      <p>주요 보고서:</p>
-      <ul>
-        <li><a href="/high_value_users_report.html" target="_blank">고가치 사용자 종합 분석 보고서 (정적 버전)</a></li>
-        <li><a href="/api/v1/users/high-value/report?format=html" target="_blank">고가치 사용자 종합 분석 보고서 (API 버전)</a></li>
-        <li><a href="/api/v1/users/high-value/analysis" target="_blank">고가치 사용자 기본 분석 API</a></li>
-      </ul>
-      
-      <p>자세한 내용은 <a href="/docs" target="_blank">문서</a>를 참조하세요.</p>
+    <div class="query-list" data-report-type="comprehensive">
+        <h2>1. 종합분석보고서</h2>
+        <ol>
+            <li class="report-item" data-tags="event,revenue,engagement">
+                <a href="reports/event_analysis/event_analysis_reference.html" class="query-link">
+                    이벤트 지급 분석 종합 보고서
+                </a>
+                <p class="query-description">
+                    이벤트 지급 효과에 대한 포괄적인 분석 결과와 시각화 자료를 포함한 종합 보고서입니다.
+                </p>
+                <p class="query-meta">
+                    <span class="icon">📊</span>분석 결과: 448명의 사용자 | 
+                    <span class="icon">📅</span>분석일: 2025-05-17 |
+                    <span class="tag tag-event">이벤트</span>
+                    <span class="tag tag-revenue">매출</span>
+                    <span class="tag tag-engagement">참여도</span>
+                </p>
+            </li>
+            <li class="report-item" data-tags="dormant,strategy,revenue,retention">
+                <a href="reports/strategies/dormant_user_reactivation_strategy.html" class="query-link">
+                    휴면 사용자 재활성화 및 입금 유도를 위한 이벤트 지급 전략
+                </a>
+                <p class="query-description">
+                    데이터 분석을 바탕으로 휴면 사용자 재활성화를 위한 최적의 이벤트 지급 전략과 세그먼트별 접근 방식을 제시합니다.
+                </p>
+                <p class="query-meta">
+                    <span class="icon">📈</span>최대 ROI: 18.88배 | 
+                    <span class="icon">👥</span>타겟 사용자: 1,482명 | 
+                    <span class="icon">📅</span>작성일: 2025-05-18 |
+                    <span class="tag tag-dormant">휴면</span>
+                    <span class="tag tag-revenue">매출</span>
+                    <span class="tag tag-retention">유지율</span>
+                </p>
+            </li>
+        </ol>
     </div>
     
-    <div class="card">
-      <h2>API 테스트</h2>
-      <p>API 상태를 확인하려면 아래 버튼을 클릭하세요:</p>
-      <button class="button" id="checkStatusBtn">상태 확인</button>
-      <div id="apiResponse" style="margin-top: 1rem;"></div>
-      
-      <p style="margin-top: 1.5rem;">고가치 사용자 분석 API 엔드포인트:</p>
-      <ul>
-        <li><a href="/high_value_users_report.html" target="_blank">고가치 사용자 종합 분석 보고서 (정적 버전)</a></li>
-        <li><a href="/api/v1/users/high-value/report?format=html" target="_blank">고가치 사용자 종합 분석 보고서 (HTML)</a></li>
-        <li><a href="/api/v1/users/high-value/report" target="_blank">고가치 사용자 종합 분석 보고서 (JSON)</a></li>
-        <li><a href="/api/v1/users/high-value/analysis" target="_blank">고가치 사용자 기본 분석 API</a></li>
-      </ul>
+    <div class="query-list" data-report-type="query">
+        <h2>2. 이벤트 분석 보고서</h2>
+        <ol>
+            <li class="report-item" data-tags="user,dormant,payment,event">
+                <a href="reports/user_analysis/inactive_event_deposit_analysis.html" class="query-link">
+                    장기 미접속 & 이벤트 후 입금 사용자 종합 분석
+                </a>
+                <p class="query-description">
+                    금일 기준으로 10일 동안 게임을 하지 않은 사용자 중, 이벤트 지급을 받은 후 입금 기록이 있는 사용자를 분석합니다.
+                </p>
+                <p class="query-meta">
+                    <span class="icon">👥</span>분석 결과: 128명의 사용자 | 
+                    <span class="icon">📅</span>분석일: 2025-05-17 |
+                    <span class="tag tag-user">사용자</span>
+                    <span class="tag tag-dormant">휴면</span>
+                    <span class="tag tag-payment">결제</span>
+                    <span class="tag tag-event">이벤트</span>
+                </p>
+            </li>
+            <li class="report-item" data-tags="event,payment,engagement">
+                <span class="query-link">이벤트 지급 분석: 입금 없이 배팅한 프로모션 수혜자</span>
+                <p class="query-description">
+                    이벤트 지급을 받고 첫 이벤트 지급 이후 유효 배팅이 있으면서 입금 기록이 없는 사용자를 분석합니다.
+                </p>
+                <ol class="sub-list">
+                    <li class="report-item" data-tags="event,payment,engagement">
+                        <a href="reports/event_analysis/event_payment_analysis.html" class="query-link">
+                            2회 이상 이벤트 받은 사용자 세부 분석
+                        </a>
+                        <p class="query-description">
+                            이벤트 지급을 2회 이상 받고, 첫 이벤트 지급 이후 유효 배팅이 있으면서 입금 기록이 없는 사용자를 분석합니다.
+                        </p>
+                        <p class="query-meta">
+                            <span class="icon">👥</span>분석 결과: 6명의 사용자 | 
+                            <span class="icon">📅</span>분석일: 2025-05-17 |
+                            <span class="tag tag-event">이벤트</span>
+                            <span class="tag tag-payment">결제</span>
+                            <span class="tag tag-engagement">참여도</span>
+                        </p>
+                    </li>
+                    <li class="report-item" data-tags="event,payment,engagement,revenue">
+                        <a href="reports/event_analysis/event_payment_analysis_1plus.html" class="query-link">
+                            1회 이상 이벤트 받은 사용자 세부 분석
+                        </a>
+                        <p class="query-description">
+                            이벤트 지급을 1회 이상 받고, 첫 이벤트 지급 이후 유효 배팅이 있으면서 입금 기록이 없는 사용자를 분석합니다.
+                            이벤트 지급 효율 검증과 마케팅 전략 수립에 중요한 데이터를 제공합니다.
+                        </p>
+                        <p class="query-meta">
+                            <span class="icon">👥</span>분석 결과: 92명의 사용자 | 
+                            <span class="icon">📅</span>분석일: 2025-05-18 | 
+                            <span class="icon">📊</span>이벤트 효율: 지급액 대비 11.35배 배팅 |
+                            <span class="tag tag-event">이벤트</span>
+                            <span class="tag tag-payment">결제</span>
+                            <span class="tag tag-engagement">참여도</span>
+                            <span class="tag tag-revenue">매출</span>
+                        </p>
+                    </li>
+                    <li class="report-item" data-tags="event,revenue,retention">
+                        <a href="reports/event_analysis/event_analysis_comprehensive.html" class="query-link">
+                            이벤트 지급 효과 종합 분석 보고서 (최신)
+                        </a>
+                        <p class="query-description">
+                            전체 이벤트 지급 현황 및 효과에 대한 상세 분석, 인사이트, 그리고 개선 제안을 담은 포괄적인 보고서입니다.
+                        </p>
+                        <p class="query-meta">
+                            <span class="icon">📊</span>분석 결과: 275명 활성 사용자 | 
+                            <span class="icon">📅</span>분석일: 2025-05-18 |
+                            <span class="tag tag-event">이벤트</span>
+                            <span class="tag tag-revenue">매출</span>
+                            <span class="tag tag-retention">유지율</span>
+                        </p>
+                    </li>
+                </ol>
+            </li>
+        </ol>
     </div>
-  </main>
-  
-  <footer>
-    <p>&copy; 2025 DB2 고가치 사용자 분석 시스템</p>
-  </footer>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      checkApiStatus();
-      
-      document.getElementById('checkStatusBtn').addEventListener('click', function() {
-        checkApiStatus();
-      });
-      
-      // 10초마다 상태 자동 업데이트
-      setInterval(checkApiStatus, 10000);
-    });
     
-    function checkApiStatus() {
-      const statusIndicator = document.getElementById('statusIndicator');
-      const statusText = document.getElementById('statusText');
-      const lastUpdated = document.getElementById('lastUpdated');
-      const apiResponse = document.getElementById('apiResponse');
-      
-      // 로딩 상태로 변경
-      statusIndicator.className = 'status-indicator loading';
-      statusText.textContent = '상태 확인 중...';
-      
-      fetch('/api/v1/health')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          // 성공 상태로 변경
-          statusIndicator.className = 'status-indicator online';
-          statusText.textContent = '온라인';
-          lastUpdated.textContent = new Date().toLocaleString();
-          
-          // 응답 데이터 표시
-          apiResponse.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-        })
-        .catch(error => {
-          // 오프라인 상태로 변경
-          statusIndicator.className = 'status-indicator offline';
-          statusText.textContent = '오프라인';
-          lastUpdated.textContent = new Date().toLocaleString();
-          
-          // 오류 메시지 표시
-          apiResponse.innerHTML = `<pre style="color: #ea4335;">Error: ${error.message}</pre>`;
+    <div class="query-list" data-report-type="user">
+        <h2>3. 사용자 분석 보고서</h2>
+        <ol>
+            <li class="report-item" data-tags="user,engagement,revenue">
+                <a href="reports/user_analysis/high_value_users_analysis.html" class="query-link">
+                    고가치 사용자 종합 분석 보고서
+                </a>
+                <p class="query-description">
+                    7일 이상 게임 기록이 있고 전체 유효배팅이 50,000 이상인 고가치 사용자 분석과 세그먼트별 전략 제안
+                </p>
+                <p class="query-meta">
+                    <span class="icon">👥</span>분석 결과: 731명의 고가치 사용자 | 
+                    <span class="icon">📅</span>분석일: 2025-05-18 |
+                    <span class="tag tag-user">사용자</span>
+                    <span class="tag tag-revenue">매출</span>
+                    <span class="tag tag-engagement">참여도</span>
+                </p>
+            </li>
+            
+            <li class="report-item" data-tags="user,engagement,revenue">
+                <a href="/high_value_users_report.html" class="query-link">
+                    3.1 고가치 사용자 종합 분석 보고서 (정적 버전)
+                </a>
+                <p class="query-description">
+                    고가치 사용자 종합 분석 보고서의 정적 버전입니다. Firebase Functions 버전이 준비되는 동안 참고하실 수 있습니다.
+                </p>
+                <p class="query-meta">
+                    <span class="icon">📊</span>인터랙티브 대시보드 |
+                    <span class="icon">📅</span>2025-05-20 기준 |
+                    <span class="tag tag-user">사용자</span>
+                    <span class="tag tag-revenue">매출</span>
+                    <span class="tag tag-engagement">참여도</span>
+                </p>
+            </li>
+            
+            <li class="report-item" data-tags="user,engagement,revenue">
+                <a href="https://asia-northeast3-db888-67827.cloudfunctions.net/getDetailedHighValueUserReport?format=html" class="query-link">
+                    3.2 고가치 사용자 종합 분석 보고서 (Firebase Functions)
+                </a>
+                <p class="query-description">
+                    Firebase Functions를 통해 실시간으로 생성되는 고가치 사용자 종합 분석 보고서입니다. 다양한 필터 옵션을 지원합니다.
+                </p>
+                <p class="query-meta">
+                    <span class="icon">🔄</span>실시간 데이터 |
+                    <span class="icon">⚙️</span>파라미터 지원 |
+                    <span class="tag tag-user">사용자</span>
+                    <span class="tag tag-revenue">매출</span>
+                    <span class="tag tag-engagement">참여도</span>
+                </p>
+                <p>
+                    <b>API 옵션:</b>
+                    <a href="https://asia-northeast3-db888-67827.cloudfunctions.net/getSimplifiedHighValueUserReport" target="_blank">간소화 버전(JSON)</a> |
+                    <a href="https://asia-northeast3-db888-67827.cloudfunctions.net/getPaginatedHighValueUserReport" target="_blank">페이지네이션 버전(JSON)</a> |
+                    <a href="https://asia-northeast3-db888-67827.cloudfunctions.net/getDetailedHighValueUserReport" target="_blank">상세 버전(JSON)</a>
+                </p>
+            </li>
+            
+            <li class="report-item" data-tags="user,retention">
+                <span class="query-link upcoming">고액 배팅 플레이어 보유율 분석</span>
+                <p class="query-description">
+                    월 평균 배팅액이 500만원 이상인 플레이어들의 접속 패턴 및 보유율 분석
+                </p>
+                <p class="query-meta upcoming">
+                    <span class="icon">⏳</span>분석 예정 |
+                    <span class="tag tag-user">사용자</span>
+                    <span class="tag tag-retention">유지율</span>
+                </p>
+            </li>
+            
+            <li class="report-item" data-tags="user,dormant,retention">
+                <span class="query-link upcoming">장기 미접속 사용자 복귀 패턴 분석</span>
+                <p class="query-description">
+                    최근 90일 이상 미접속 상태에서 복귀한 사용자들의 패턴과 복귀 트리거 요인 분석
+                </p>
+                <p class="query-meta upcoming">
+                    <span class="icon">⏳</span>분석 예정 |
+                    <span class="tag tag-user">사용자</span>
+                    <span class="tag tag-dormant">휴면</span>
+                    <span class="tag tag-retention">유지율</span>
+                </p>
+            </li>
+            
+            <li class="report-item" data-tags="event,revenue,engagement">
+                <span class="query-link upcoming">프로모션 ROI 분석 및 최적화</span>
+                <p class="query-description">
+                    각 프로모션 유형별 투자 수익률(ROI) 및 사용자 참여율 최적화 전략
+                </p>
+                <p class="query-meta upcoming">
+                    <span class="icon">⏳</span>분석 예정 |
+                    <span class="tag tag-event">이벤트</span>
+                    <span class="tag tag-revenue">매출</span>
+                    <span class="tag tag-engagement">참여도</span>
+                </p>
+            </li>
+        </ol>
+    </div>
+    
+
+
+    <div class="section">
+        <h2>데이터베이스 문서</h2>
+        <p>Hermes 데이터베이스는 게임 사용자 관리, 사용자 활동 추적, 금융 거래 및 고객 관리 기능을 위한 시스템입니다.</p>
+        
+        <div class="file-links">
+            <a href="reports/database/hermes_tables.html"><span class="icon">📋</span>전체 테이블 구조</a>
+            <a href="hermes_variables.md"><span class="icon">📄</span>데이터베이스 변수 정의 및 설명</a>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>보고서 시스템</h2>
+        <p>보고서 분류 시스템 및 프로젝트 상태 문서</p>
+        
+        <div class="file-links">
+            <a href="reports/README.md"><span class="icon">📑</span>보고서 분류 시스템 설명</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 DB2 프로젝트 팀 | 마지막 업데이트: 2025년 5월 18일</p>
+        <p><a href="reports/index.html">이전 분석 결과 인덱스 페이지 보기</a></p>
+    </footer>
+
+    <script>
+        // 태그 필터링 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterPills = document.querySelectorAll('.tag-filter-pill');
+            const reportItems = document.querySelectorAll('.report-item');
+            
+            // 필터 클릭 이벤트
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', function() {
+                    const tag = this.getAttribute('data-tag');
+                    
+                    // 활성화된 필터 업데이트
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 보고서 필터링
+                    reportItems.forEach(item => {
+                        if (tag === 'all') {
+                            item.style.display = '';
+                        } else {
+                            const itemTags = item.getAttribute('data-tags').split(',');
+                            if (itemTags.includes(tag)) {
+                                item.style.display = '';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                    });
+                    
+                    // 모든 보고서가 숨겨진 섹션을 확인하고 처리
+                    document.querySelectorAll('.query-list').forEach(section => {
+                        const visibleItems = section.querySelectorAll('.report-item[style=""]').length;
+                        const visibleSubItems = section.querySelectorAll('.sub-list .report-item[style=""]').length;
+                        
+                        // 보고서 아이템이 모두 숨겨져 있는지 확인
+                        const allHidden = (visibleItems === 0 && visibleSubItems === 0);
+                        
+                        // 섹션 내 보고서가 모두 숨겨져 있을 때 섹션도 숨김
+                        section.style.display = allHidden ? 'none' : '';
+                    });
+                });
+            });
+            
+            // 기본적으로 '전체' 필터 활성화
+            document.querySelector('.tag-filter-pill[data-tag="all"]').classList.add('active');
         });
-    }
-  </script>
+    </script>
 </body>
 </html>

@@ -47,6 +47,11 @@
             background-color: #f1f8ff;
             font-weight: 600;
             color: #2c3e50;
+            cursor: pointer;
+        }
+        
+        th:hover {
+            background-color: #e1effe;
         }
         
         tbody tr:hover {
@@ -152,6 +157,155 @@
         .recommendations h3 {
             margin-top: 0;
             color: #28a745;
+        }
+        
+        /* 새로 추가된 스타일 */
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn:disabled {
+            background-color: #b3b3b3;
+            cursor: not-allowed;
+        }
+        
+        .loading-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .pagination-btn {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            color: #3498db;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .pagination-btn:disabled {
+            color: #b3b3b3;
+            cursor: not-allowed;
+        }
+        
+        .pagination-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .page-size-selector select {
+            padding: 6px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -306,8 +460,40 @@
     
     <!-- 사용자 목록 섹션 -->
     <div class="section">
-        <h2>고가치 사용자 목록 (상위 10명)</h2>
-        <table>
+        <h2>고가치 사용자 목록</h2>
+        
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="userStatus">상태:</label>
+                <select id="userStatus">
+                    <option value="all">모두</option>
+                    <option value="active">활성</option>
+                    <option value="dormant">휴면</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="minBetting">최소 베팅액:</label>
+                <input type="number" id="minBetting" value="50000" min="0" step="10000">
+            </div>
+            <div class="filter-group">
+                <label for="userSearch">검색:</label>
+                <input type="text" id="userSearch" placeholder="유저명 검색...">
+            </div>
+            <button id="applyFilters" class="btn">필터 적용</button>
+            <button id="exportCsv" class="btn" style="margin-left: 10px; background-color: #28a745;">CSV 내보내기</button>
+        </div>
+        
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="spinner"></div>
+            <p>데이터를 불러오는 중...</p>
+        </div>
+        
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <p>데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.</p>
+            <button id="retryButton" class="btn">다시 시도</button>
+        </div>
+        
+        <table id="userTable">
             <thead>
                 <tr>
                     <th>순위</th>
@@ -319,99 +505,34 @@
                     <th>상태</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>gamer728</td>
-                    <td>24</td>
-                    <td>1,254,800</td>
-                    <td>2025-05-12</td>
-                    <td>8</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>playpro365</td>
-                    <td>21</td>
-                    <td>982,450</td>
-                    <td>2025-05-15</td>
-                    <td>5</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>gameking03</td>
-                    <td>18</td>
-                    <td>845,600</td>
-                    <td>2025-03-12</td>
-                    <td>69</td>
-                    <td><span class="tag tag-dormant">휴면</span></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>winner2025</td>
-                    <td>19</td>
-                    <td>782,500</td>
-                    <td>2025-05-08</td>
-                    <td>12</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>lucky777</td>
-                    <td>16</td>
-                    <td>758,200</td>
-                    <td>2025-05-18</td>
-                    <td>2</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>topplayer2</td>
-                    <td>20</td>
-                    <td>732,450</td>
-                    <td>2025-05-01</td>
-                    <td>19</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>gamer465</td>
-                    <td>15</td>
-                    <td>695,800</td>
-                    <td>2025-04-02</td>
-                    <td>48</td>
-                    <td><span class="tag tag-dormant">휴면</span></td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>bestbets</td>
-                    <td>14</td>
-                    <td>658,350</td>
-                    <td>2025-05-16</td>
-                    <td>4</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>vipuser89</td>
-                    <td>16</td>
-                    <td>635,120</td>
-                    <td>2025-05-10</td>
-                    <td>10</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>luckystar</td>
-                    <td>17</td>
-                    <td>618,750</td>
-                    <td>2025-05-05</td>
-                    <td>15</td>
-                    <td><span class="tag tag-active">활성</span></td>
-                </tr>
+            <tbody id="userTableBody">
+                <!-- 데이터가 여기에 동적으로 로드됩니다 -->
             </tbody>
         </table>
+        
+        <div class="pagination-container">
+            <div class="pagination-info">
+                <span id="paginationInfo">총 0명의 사용자 중 0-0명 표시</span>
+            </div>
+            <div class="pagination-controls">
+                <button id="firstPage" class="pagination-btn" disabled>&laquo;</button>
+                <button id="prevPage" class="pagination-btn" disabled>&lsaquo;</button>
+                <div id="pageNumbers" class="page-numbers">
+                    <!-- 페이지 번호가 여기에 동적으로 로드됩니다 -->
+                </div>
+                <button id="nextPage" class="pagination-btn" disabled>&rsaquo;</button>
+                <button id="lastPage" class="pagination-btn" disabled>&raquo;</button>
+            </div>
+            <div class="page-size-selector">
+                <label for="pageSize">페이지당 항목:</label>
+                <select id="pageSize">
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+        </div>
     </div>
     
     <!-- 권장 전략 섹션 -->
@@ -445,5 +566,465 @@
         <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025-05-20</p>
         <p><a href="/">홈페이지로 돌아가기</a></p>
     </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM 요소 참조 변수
+            const userTableBody = document.getElementById('userTableBody');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const retryButton = document.getElementById('retryButton');
+            
+            const userStatus = document.getElementById('userStatus');
+            const minBetting = document.getElementById('minBetting');
+            const userSearch = document.getElementById('userSearch');
+            const applyFilters = document.getElementById('applyFilters');
+            const exportCsv = document.getElementById('exportCsv');
+            
+            const firstPageBtn = document.getElementById('firstPage');
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
+            const lastPageBtn = document.getElementById('lastPage');
+            const pageNumbers = document.getElementById('pageNumbers');
+            const pageSizeSelect = document.getElementById('pageSize');
+            const paginationInfo = document.getElementById('paginationInfo');
+            
+            // 상태 관리 변수
+            let currentPage = 1;
+            let pageSize = parseInt(pageSizeSelect.value, 10);
+            let totalPages = 1;
+            let totalUsers = 0;
+            let userData = [];
+            let sortField = 'netBet';
+            let sortOrder = 'desc';
+            
+            // API 엔드포인트 URL
+            const API_BASE_URL = '/highValueUsersApi';
+            
+            // 초기 데이터 로드
+            loadUserData();
+            
+            // 이벤트 리스너 등록
+            applyFilters.addEventListener('click', function() {
+                currentPage = 1;
+                loadUserData();
+            });
+            
+            retryButton.addEventListener('click', loadUserData);
+            
+            // CSV 내보내기 버튼
+            exportCsv.addEventListener('click', function() {
+                exportUserDataToCsv();
+            });
+            
+            pageSizeSelect.addEventListener('change', function() {
+                pageSize = parseInt(this.value, 10);
+                currentPage = 1;
+                loadUserData();
+            });
+            
+            firstPageBtn.addEventListener('click', function() {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadUserData();
+                }
+            });
+            
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadUserData();
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadUserData();
+                }
+            });
+            
+            lastPageBtn.addEventListener('click', function() {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadUserData();
+                }
+            });
+            
+            // 테이블 헤더에 정렬 기능 추가
+            document.querySelectorAll('#userTable th').forEach(header => {
+                header.addEventListener('click', function() {
+                    const columnName = getColumnName(this.textContent);
+                    
+                    if (columnName) {
+                        if (sortField === columnName) {
+                            sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                        } else {
+                            sortField = columnName;
+                            sortOrder = 'desc';
+                        }
+                        
+                        currentPage = 1;
+                        loadUserData();
+                    }
+                });
+            });
+            
+            // 테이블 열 이름을 API 파라미터로 변환
+            function getColumnName(headerText) {
+                const mapping = {
+                    '유저명': 'userName',
+                    '플레이 일수': 'playDays',
+                    '총 유효배팅': 'netBet',
+                    '마지막 플레이': 'lastActivity',
+                    '경과일수': 'inactiveDays'
+                };
+                
+                return mapping[headerText];
+            }
+            
+            // 사용자 데이터를 CSV로 내보내기
+            function exportUserDataToCsv() {
+                // 필터 적용
+                const statusFilter = userStatus.value;
+                const minBettingValue = parseInt(minBetting.value, 10);
+                const searchTerm = userSearch.value.trim();
+                
+                // CSV 내보내기 URL 생성
+                let exportUrl = `${API_BASE_URL}/export/csv?minNetBet=${minBettingValue}`;
+                
+                if (statusFilter !== 'all') {
+                    exportUrl += `&type=${statusFilter}`;
+                }
+                
+                if (searchTerm) {
+                    exportUrl += `&search=${encodeURIComponent(searchTerm)}`;
+                }
+                
+                // 새 탭에서 URL 열기 (다운로드 트리거)
+                window.open(exportUrl, '_blank');
+            }
+            
+            // 사용자 데이터 불러오기
+            function loadUserData() {
+                // 로딩 상태 표시
+                userTableBody.innerHTML = '';
+                loadingIndicator.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                
+                // 필터 적용
+                const statusFilter = userStatus.value;
+                const minBettingValue = parseInt(minBetting.value, 10);
+                const searchTerm = userSearch.value.trim();
+                
+                // 실제 API 호출 코드
+                // API 엔드포인트 결정
+                let endpoint = '';
+                let params = new URLSearchParams();
+                
+                if (statusFilter === 'active' || statusFilter === 'all') {
+                    endpoint = API_BASE_URL + '/active';
+                } else if (statusFilter === 'dormant') {
+                    endpoint = API_BASE_URL + '/dormant';
+                }
+                
+                // 쿼리 파라미터 설정
+                params.append('page', currentPage);
+                params.append('limit', pageSize);
+                params.append('minNetBet', minBettingValue);
+                params.append('sortBy', sortField);
+                params.append('sortOrder', sortOrder);
+                
+                if (searchTerm) {
+                    params.append('search', searchTerm);
+                }
+                
+                // API 호출
+                const url = endpoint + '?' + params.toString();
+                console.log("API 호출 URL:", url);
+                
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('서버 오류가 발생했습니다.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // 데이터 저장
+                        console.log("API 응답 데이터:", data);
+                        
+                        // 응답 형식에 따라 데이터 추출
+                        userData = data.data || [];
+                        
+                        // 데이터 포맷 변환이 필요한 경우
+                        userData = userData.map(user => ({
+                            userId: user.userId,
+                            userName: user.userId, // userId를 userName으로도 사용
+                            playDays: user.loginCount || 0,
+                            netBet: user.netBet || 0,
+                            lastActivity: user.lastActivity || '',
+                            inactiveDays: user.inactiveDays || 0
+                        }));
+                        
+                        totalUsers = data.count || userData.length;
+                        totalPages = Math.ceil(totalUsers / pageSize) || 1;
+                        
+                        // 테이블 업데이트
+                        updateTable();
+                        
+                        // 페이지네이션 업데이트
+                        updatePagination();
+                        
+                        // 로딩 상태 숨김
+                        loadingIndicator.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        
+                        // 오류 발생 시 샘플 데이터 사용 (폴백)
+                        console.log("API 오류 발생, 샘플 데이터 사용");
+                        
+                        // 샘플 데이터 가져오기
+                        let allData = getSampleData();
+                        
+                        // 필터링 적용
+                        if (statusFilter !== 'all') {
+                            const isActive = statusFilter === 'active';
+                            allData = allData.filter(user => 
+                                isActive ? user.inactiveDays <= 30 : user.inactiveDays > 30
+                            );
+                        }
+                        
+                        userData = allData;
+                        totalUsers = userData.length;
+                        totalPages = Math.ceil(totalUsers / pageSize) || 1;
+                        
+                        // 테이�� 업데이트
+                        updateTable();
+                        
+                        // 페이지네이션 업데이트
+                        updatePagination();
+                        
+                        // 오류 메시지 표시
+                        loadingIndicator.style.display = 'none';
+                        errorMessage.style.display = 'block';
+                    });
+                    
+                // 샘플 데이터 사용 코드는 주석 처리
+                /*
+                setTimeout(() => {
+                    // 샘플 데이터 가져오기
+                    let allData = getSampleData();
+                    
+                    // 필터링 및 기타 처리...
+                    
+                    // 테이블 업데이트
+                    updateTable();
+                    
+                    // 페이지네이션 업데이트
+                    updatePagination();
+                    
+                    // 로딩 상태 숨김
+                    loadingIndicator.style.display = 'none';
+                }, 500);
+                */
+                        userData = data.users || [];
+                        totalUsers = data.total || 0;
+                        totalPages = data.pages || 1;
+                        
+                        // 테이블 업데이트
+                        updateTable();
+                        
+                        // 페이지네이션 업데이트
+                        updatePagination();
+                        
+                        // 로딩 상태 숨김
+                        loadingIndicator.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        
+                        // 오류 메시지 표시
+                        loadingIndicator.style.display = 'none';
+                        errorMessage.style.display = 'block';
+                    });
+                */
+            }
+            
+            // 테이블 업데이트
+            function updateTable() {
+                userTableBody.innerHTML = '';
+                
+                if (userData.length === 0) {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = `<td colspan="7" style="text-align: center;">조건에 맞는 사용자가 없습니다.</td>`;
+                    userTableBody.appendChild(emptyRow);
+                    return;
+                }
+                
+                userData.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    const rank = (currentPage - 1) * pageSize + index + 1;
+                    
+                    // 플레이 일자 포맷팅
+                    let lastActivity = '-';
+                    if (user.lastActivity) {
+                        lastActivity = new Date(user.lastActivity).toISOString().split('T')[0];
+                    }
+                    
+                    // 상태 결정
+                    const status = user.inactiveDays <= 30 ? 'active' : 'dormant';
+                    const statusLabel = status === 'active' ? '활성' : '휴면';
+                    
+                    row.innerHTML = `
+                        <td>${rank}</td>
+                        <td>${user.userName || user.userId || '알 수 없음'}</td>
+                        <td>${user.playDays || 0}</td>
+                        <td>${(user.netBet || 0).toLocaleString()}</td>
+                        <td>${lastActivity}</td>
+                        <td>${user.inactiveDays || 0}</td>
+                        <td><span class="tag tag-${status}">${statusLabel}</span></td>
+                    `;
+                    
+                    userTableBody.appendChild(row);
+                });
+            }
+            
+            // 페이지네이션 업데이트
+            function updatePagination() {
+                // 페이지 정보 업데이트
+                const start = (currentPage - 1) * pageSize + 1;
+                const end = Math.min(currentPage * pageSize, totalUsers);
+                paginationInfo.textContent = `총 ${totalUsers}명의 사용자 중 ${start}-${end}명 표시`;
+                
+                // 페이지 버튼 상태 업데이트
+                firstPageBtn.disabled = currentPage === 1;
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+                lastPageBtn.disabled = currentPage === totalPages;
+                
+                // 페이지 번호 생성
+                pageNumbers.innerHTML = '';
+                
+                const maxPageNumbers = 5;
+                const pageRange = getPageRange(currentPage, totalPages, maxPageNumbers);
+                
+                for (let i = pageRange.start; i <= pageRange.end; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.textContent = i;
+                    pageBtn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+                    
+                    pageBtn.addEventListener('click', function() {
+                        if (currentPage !== i) {
+                            currentPage = i;
+                            loadUserData();
+                        }
+                    });
+                    
+                    pageNumbers.appendChild(pageBtn);
+                }
+            }
+            
+            // 페이지 범위 계산
+            function getPageRange(current, total, max) {
+                let start = Math.max(1, current - Math.floor(max / 2));
+                let end = start + max - 1;
+                
+                if (end > total) {
+                    end = total;
+                    start = Math.max(1, end - max + 1);
+                }
+                
+                return { start, end };
+            }
+            
+            // 샘플 데이터 (API 호출 실패 시 사용)
+            function getSampleData() {
+                return [
+                    {
+                        userId: 'gamer728',
+                        userName: 'gamer728',
+                        playDays: 24,
+                        netBet: 1254800,
+                        lastActivity: '2025-05-12',
+                        inactiveDays: 8
+                    },
+                    {
+                        userId: 'playpro365',
+                        userName: 'playpro365',
+                        playDays: 21,
+                        netBet: 982450,
+                        lastActivity: '2025-05-15',
+                        inactiveDays: 5
+                    },
+                    {
+                        userId: 'gameking03',
+                        userName: 'gameking03',
+                        playDays: 18,
+                        netBet: 845600,
+                        lastActivity: '2025-03-12',
+                        inactiveDays: 69
+                    },
+                    {
+                        userId: 'winner2025',
+                        userName: 'winner2025',
+                        playDays: 19,
+                        netBet: 782500,
+                        lastActivity: '2025-05-08',
+                        inactiveDays: 12
+                    },
+                    {
+                        userId: 'lucky777',
+                        userName: 'lucky777',
+                        playDays: 16,
+                        netBet: 758200,
+                        lastActivity: '2025-05-18',
+                        inactiveDays: 2
+                    },
+                    {
+                        userId: 'topplayer2',
+                        userName: 'topplayer2',
+                        playDays: 20,
+                        netBet: 732450,
+                        lastActivity: '2025-05-01',
+                        inactiveDays: 19
+                    },
+                    {
+                        userId: 'gamer465',
+                        userName: 'gamer465',
+                        playDays: 15,
+                        netBet: 695800,
+                        lastActivity: '2025-04-02',
+                        inactiveDays: 48
+                    },
+                    {
+                        userId: 'bestbets',
+                        userName: 'bestbets',
+                        playDays: 14,
+                        netBet: 658350,
+                        lastActivity: '2025-05-16',
+                        inactiveDays: 4
+                    },
+                    {
+                        userId: 'vipuser89',
+                        userName: 'vipuser89',
+                        playDays: 16,
+                        netBet: 635120,
+                        lastActivity: '2025-05-10',
+                        inactiveDays: 10
+                    },
+                    {
+                        userId: 'luckystar',
+                        userName: 'luckystar',
+                        playDays: 17,
+                        netBet: 618750,
+                        lastActivity: '2025-05-05',
+                        inactiveDays: 15
+                    }
+                ].slice(0, pageSize);
+            }
+        });
+    </script>
 </body>
 </html>

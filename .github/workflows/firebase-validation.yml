@@ -1,0 +1,131 @@
+name: Firebase Validation
+
+# 실행 조건: main 브랜치 또는 dev 브랜치로의 push, 또는 이 브랜치들로의 PR
+on:
+  push:
+    branches: [ main, dev ]
+    paths:
+      - 'firebase.json'
+      - 'firestore.rules'
+      - 'firestore.indexes.json'
+      - 'storage.rules'
+      - 'functions/**'
+      - 'scripts/validation/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'firebase.json'
+      - 'firestore.rules'
+      - 'firestore.indexes.json'
+      - 'storage.rules'
+      - 'functions/**'
+      - 'scripts/validation/**'
+  # 수동 트리거 옵션
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Firebase Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'scripts/validation/package.json'
+
+      - name: Install dependencies
+        working-directory: scripts/validation
+        run: npm install
+
+      - name: Setup Firebase CLI
+        run: |
+          npm install -g firebase-tools
+          # GitHub Actions는 환경 변수에 접근할 수 있도록 구성
+          if [ "${{ secrets.FIREBASE_TOKEN }}" != "" ]; then
+            firebase use --token ${{ secrets.FIREBASE_TOKEN }} db888
+          fi      - name: Run validation
+        working-directory: scripts/validation
+        run: node validate.js --all --report
+        env:
+          FIREBASE_PROJECT_ID: db888
+          NODE_ENV: ci
+
+      - name: Store validation reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: validation-reports
+          path: scripts/validation/reports/*
+          retention-days: 14
+
+      # PR에 검증 결과 댓글 달기
+      - name: Comment PR with validation results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const reportsDir = path.join(process.env.GITHUB_WORKSPACE, 'scripts/validation/reports');
+            
+            // 가장 최신 보고서 찾기
+            const files = fs.readdirSync(reportsDir);
+            if (files.length === 0) {
+              console.log('No validation reports found');
+              return;
+            }
+            
+            // 타임스탬프 기준으로 정렬하여 최신 파일 찾기
+            const latestFile = files.sort().reverse()[0];
+            const reportPath = path.join(reportsDir, latestFile);
+            const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+            
+            // PR 댓글 작성
+            const summary = report.summary;
+            let comment = `## Firebase 검증 결과\n\n`;            
+            if (summary.success) {
+              comment += `✅ **성공**: 모든 검증을 통과했습니다!\n\n`;
+            } else {
+              comment += `❌ **실패**: 일부 검증에 실패했습니다.\n\n`;
+            }
+            
+            comment += `### 요약\n`;
+            comment += `- 오류: ${summary.errors || 0}개\n`;
+            comment += `- 경고: ${summary.warnings || 0}개\n`;
+            comment += `- 권장사항: ${summary.recommendations || 0}개\n\n`;
+            
+            // 개별 검증 결과 요약
+            comment += `### 검증 항목\n`;
+            for (const name in report.results) {
+              const validation = report.results[name];
+              const icon = validation.success ? '✅' : '❌';
+              comment += `- ${icon} **${validation.name}**: ${validation.success ? '통과' : '실패'}\n`;
+            }
+            
+            // 가장 중요한 이슈 표시 (최대 5개)
+            if (report.issues && report.issues.length > 0) {
+              comment += `\n### 주요 이슈\n`;
+              report.issues.slice(0, 5).forEach((issue, i) => {
+                comment += `${i + 1}. ${issue}\n`;
+              });
+              
+              if (report.issues.length > 5) {
+                comment += `... 외 ${report.issues.length - 5}개 이슈\n`;
+              }
+            }
+            
+            comment += `\n전체 보고서는 워크플로우 아티팩트에서 확인하실 수 있습니다.`;
+            
+            // PR에 댓글 추가
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

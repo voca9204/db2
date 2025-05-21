@@ -1,0 +1,26 @@
+{
+  "name": "firebase-validation-framework",
+  "version": "1.0.0",
+  "description": "Firebase 변경 검증 프레임워크",
+  "main": "validate.js",
+  "scripts": {
+    "validate": "node validate.js --all",
+    "validate:schema": "node validate.js --schema",
+    "validate:rules": "node validate.js --rules",
+    "validate:functions": "node validate.js --functions",
+    "validate:indexes": "node validate.js --indexes",
+    "validate:environments": "node validate.js --environments",
+    "generate-templates": "node validate.js --schema --generate-templates",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^9.4.1",
+    "deep-equal": "^2.2.0",
+    "firebase-admin": "^11.5.0",
+    "glob": "^9.3.0",
+    "js-yaml": "^4.1.0"
+  }
+}

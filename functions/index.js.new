@@ -1,0 +1,50 @@
+/**
+ * Firebase Functions - DB2 프로젝트
+ * 
+ * Firebase Functions를 통해 제공되는 API 엔드포인트들을 정의합니다.
+ */
+
+// 환경 변수 로드
+require('dotenv').config();
+
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+const { getFirebaseApp } = require('./src/firebase/firebase-admin');
+
+// Firebase 초기화 (싱글턴 패턴)
+getFirebaseApp();
+
+// 고가치 사용자 분석 API 임포트
+const highValueUsersAnalysis = require('./src/highValueUsersAnalysis').highValueUsersAnalysis;
+const highValueUserReport = require('./src/highValueUserReport').highValueUserReport;
+
+// API 엔드포인트 내보내기
+exports.highValueUsersAnalysis = highValueUsersAnalysis;
+exports.highValueUserReport = highValueUserReport;
+
+// 데이터베이스 연결 테스트 함수 추가
+const testDbConnection = require('./src/testDbConnection').testDbConnection;
+exports.testDbConnection = testDbConnection;
+
+// Hello World 함수 추가
+const helloWorld = require('./src/helloWorld').helloWorld;
+exports.helloWorld = helloWorld;
+
+// 기본 상태 확인 엔드포인트
+exports.healthCheck = functions.https.onRequest((req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    message: 'DB2 Analytics API is running',
+    version: '1.0.0'
+  });
+});
+
+// 새로 작성한 활성 고가치 사용자 API 및 휴면 고가치 사용자 API 임포트
+const { activeUsers } = require('./src/active-users');
+
+// 새 구현 함수 내보내기
+exports.activeUsers = activeUsers;
+
+// 기존 activesUsers 및 dormantUsers 함수 코드는 삭제하거나 주석 처리해야 합니다.
+// 기존 함수 코드는 index.js의 나머지 부분에 있습니다.

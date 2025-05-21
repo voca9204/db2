@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-05-20T17:43:47.700Z",
+  "backupType": "config-only",
+  "backupComponents": [
+    "config",
+    "functions",
+    "hosting"
+  ],
+  "user": "voca",
+  "notes": "초기 설정 백업"
+}

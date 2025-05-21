@@ -1,6 +1,6 @@
 # Task ID: 5
 # Title: Query Execution and Management Module
-# Status: done
+# Status: in-progress
 # Dependencies: 2
 # Priority: high
 # Description: Develop a module for executing SQL queries against the database with performance tracking, parameterization, and result management.

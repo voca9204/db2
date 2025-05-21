@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 기본 규칙: 인증된 사용자만 접근 가능
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // 고가치 사용자 컬렉션
+    match /highValueUsers/{userId} {
+      // 관리자 및 분석가 역할을 가진 사용자만 읽기 가능
+      allow read: if request.auth != null && 
+                    (request.auth.token.admin == true || 
+                     request.auth.token.analyst == true);
+      
+      // 관리자만 쓰기 가능
+      allow write: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 이벤트 컬렉션
+    match /events/{eventId} {
+      // 인증된 모든 사용자가 읽기 가능
+      allow read: if request.auth != null;
+      
+      // 관리자만 쓰기 가능
+      allow write: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 분석 결과 컬렉션
+    match /analyticsResults/{documentId} {
+      // 관리자 및 분석가 역할을 가진 사용자만 접근 가능
+      allow read: if request.auth != null && 
+                    (request.auth.token.admin == true || 
+                     request.auth.token.analyst == true);
+      
+      // 관리자만 쓰기 가능
+      allow write: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 사용자 세그먼트 컬렉션
+    match /userSegments/{documentId} {
+      // 관리자 및 분석가 역할을 가진 사용자만 접근 가능
+      allow read: if request.auth != null && 
+                    (request.auth.token.admin == true || 
+                     request.auth.token.analyst == true);
+      
+      // 관리자만 쓰기 가능
+      allow write: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 전환율 메트릭 컬렉션
+    match /conversionMetrics/{documentId} {
+      // 관리자 및 분석가 역할을 가진 사용자만 접근 가능
+      allow read: if request.auth != null && 
+                    (request.auth.token.admin == true || 
+                     request.auth.token.analyst == true);
+      
+      // 관리자만 쓰기 가능
+      allow write: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 테스트 컬렉션 (에뮬레이터 전용)
+    match /test/{documentId} {
+      // 모든 접근 허용 (개발 환경에서만)
+      allow read, write: if true;
+    }
+  }
+}

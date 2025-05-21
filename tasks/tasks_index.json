@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "lastUpdated": "2025-05-19T20:50:35.832806",
-    "totalTasks": 17,
-    "completedTasks": 8
+    "lastUpdated": "2025-05-21T00:00:00.000000",
+    "totalTasks": 24,
+    "completedTasks": 11
   },
   "tasks": [
     {
@@ -106,6 +106,48 @@
       "title": "Firebase Functions Migration for High-Value User Analytics API",
       "status": "in-progress",
       "file": "task_17.json"
+    },
+    {
+      "id": 18,
+      "title": "Inactive User Targeting System Development",
+      "status": "pending",
+      "file": "task_18.json"
+    },
+    {
+      "id": 19,
+      "title": "Implement Personalized Event Recommendation System for Inactive User Segments",
+      "status": "pending",
+      "file": "task_19.json"
+    },
+    {
+      "id": 20,
+      "title": "Implement Automated Event Effectiveness Monitoring System",
+      "status": "pending",
+      "file": "task_20.json"
+    },
+    {
+      "id": 21,
+      "title": "Implement Inactive User Re-engagement Campaign Management System",
+      "status": "pending",
+      "file": "task_21.json"
+    },
+    {
+      "id": 22,
+      "title": "Resolve Firebase Functions Migration Issues and Prepare for Deployment",
+      "status": "done",
+      "file": "task_22.json"
+    },
+    {
+      "id": 23,
+      "title": "Resolve Firebase Functions Deployment Issues and Complete High-Value User Analysis Report Migration",
+      "status": "done",
+      "file": "task_23.json"
+    },
+    {
+      "id": 24,
+      "title": "Task #24: Implement Systematic Approach for Firebase Functions Deployment and High-Value User Analysis Report Migration",
+      "status": "done",
+      "file": "task_24.json"
     }
   ],
   "groups": [

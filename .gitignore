@@ -71,3 +71,7 @@ config/secrets.py
 *.pem
 *_key.py
 *_secret.py
+
+# Added by Claude Task Master
+tasks.json
+tasks/ 

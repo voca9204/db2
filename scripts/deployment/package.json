@@ -1,0 +1,22 @@
+{
+  "name": "firebase-deployment-tools",
+  "version": "1.0.0",
+  "description": "Firebase 배포 관리 도구",
+  "main": "index.js",
+  "scripts": {
+    "update-flags": "node update-feature-flags.js",
+    "update-flags:dev": "node update-feature-flags.js --env=development",
+    "update-flags:stage": "node update-feature-flags.js --env=staging",
+    "update-flags:prod": "node update-feature-flags.js --env=production --dry-run",
+    "update-flags:prod:apply": "node update-feature-flags.js --env=production",
+    "rollback": "node rollback.js",
+    "rollback:dev": "node rollback.js --env=development --backup-id=latest --components=all",
+    "rollback:stage": "node rollback.js --env=staging --backup-id=latest --components=all",
+    "rollback:prod:simulate": "node rollback.js --env=production --backup-id=latest --components=all --dry-run",
+    "rollback:prod": "node rollback.js --env=production --backup-id=latest --components=all"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "firebase-admin": "^11.8.0"
+  }
+}

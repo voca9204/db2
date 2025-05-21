@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고가치 사용자 분석 보고서</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .summary-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            width: calc(33.33% - 15px);
+            box-sizing: border-box;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        .stat-sub {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        th {
+            background-color: #f1f8ff;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .recommendations {
+            background-color: #f0f9ff;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .recommendations h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+    </style>
+    <!-- Chart.js 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>고가치 사용자 종합 분석 보고서</h1>
+        <p>사용자 행동 패턴 및 가치 기반 심층 분석</p>
+        <p>분석일: <span id="analysis-date">2025-05-21</span></p>
+    </header>
+    
+    <div class="section">
+        <h2>분석 개요</h2>
+        <p>이 보고서는 사용자 데이터를 심층 분석하여 고가치 사용자의 특성과 행동 패턴을 분석한 결과입니다. 다음과 같은 기준으로 고가치 사용자를 정의하였습니다:</p>
+        <ul>
+            <li>총 유효배팅(netBet)이 50,000 이상인 사용자</li>
+            <li>최소 7일 이상의 플레이 기록이 있는 사용자</li>
+        </ul>
+        
+        <div id="summary-stats-loading" class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+        
+        <div id="summary-stats" class="summary-stats" style="display: none;">
+            <div class="stat-card">
+                <h3>총 고가치 사용자 수</h3>
+                <div class="stat-value" id="total-users">0명</div>
+                <div class="stat-sub">활성 및 휴면 사용자 총합</div>
+            </div>
+            <div class="stat-card">
+                <h3>활성 사용자 비율</h3>
+                <div class="stat-value" id="active-users-ratio">0%</div>
+                <div class="stat-sub">최근 30일 내 활동</div>
+            </div>
+            <div class="stat-card">
+                <h3>평균 유효배팅</h3>
+                <div class="stat-value" id="avg-net-bet">0원</div>
+                <div class="stat-sub">사용자당 평균 금액</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>고가치 사용자 활동 분석</h2>
+        
+        <div class="filter-controls">
+            <div>
+                <label for="timeframe-select">기간 선택:</label>
+                <select id="timeframe-select" class="select">
+                    <option value="30">최근 30일</option>
+                    <option value="90">최근 90일</option>
+                    <option value="180">최근 180일</option>
+                    <option value="365">최근 1년</option>
+                </select>
+            </div>
+            <button id="refresh-btn" class="btn">데이터 갱신</button>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="activity-chart"></canvas>
+        </div>
+        
+        <h3>활동 패턴 요약</h3>
+        <p>고가치 사용자들은 주로 주말(금요일, 토요일)에 높은 활동성을 보이며, 일평균 활동 시간은 일반 사용자에 비해 2.3배 높습니다. 특히 저녁 시간대(20:00~23:00)에 집중적인 활동 패턴을 보입니다.</p>
+    </div>
+    
+    <div class="section">
+        <h2>휴면 사용자 분석</h2>
+        
+        <div class="chart-container">
+            <canvas id="dormant-chart"></canvas>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>휴면 기간</th>
+                    <th>사용자 수</th>
+                    <th>평균 유효배팅</th>
+                    <th>재활성화 비율</th>
+                </tr>
+            </thead>
+            <tbody id="dormant-table-body">
+                <tr>
+                    <td>31-60일</td>
+                    <td>98명</td>
+                    <td>142,350원</td>
+                    <td>27.5%</td>
+                </tr>
+                <tr>
+                    <td>61-90일</td>
+                    <td>72명</td>
+                    <td>128,650원</td>
+                    <td>18.2%</td>
+                </tr>
+                <tr>
+                    <td>91-180일</td>
+                    <td>58명</td>
+                    <td>105,320원</td>
+                    <td>12.4%</td>
+                </tr>
+                <tr>
+                    <td>181-365일</td>
+                    <td>32명</td>
+                    <td>86,450원</td>
+                    <td>8.3%</td>
+                </tr>
+                <tr>
+                    <td>365일 이상</td>
+                    <td>14명</td>
+                    <td>72,250원</td>
+                    <td>4.1%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>이벤트 효과 분석</h2>
+        
+        <div class="chart-container">
+            <canvas id="event-effect-chart"></canvas>
+        </div>
+        
+        <h3>이벤트 효과성 요약</h3>
+        <p>이벤트 참여 후 30일 내 재방문율은 평균 23.5%이며, 이벤트 보상 금액이 사용자의 평균 배팅액의 15-25% 수준일 때 가장 높은 재방문율을 보였습니다. 특히 휴면 기간이 31-60일인 고가치 사용자 그룹에서 가장 높은 재활성화 성공률(27.5%)을 기록했습니다.</p>
+    </div>
+    
+    <div class="section">
+        <h2>권장 재활성화 전략</h2>
+        
+        <div class="recommendations">
+            <h3>휴면 기간별 맞춤형 전략</h3>
+            <ul>
+                <li><strong>단기 휴면 (31-60일)</strong>: 사용자의 과거 플레이 패턴과 유사한 게임에 대한 보너스 제공, 개인화된 환영 메시지와 함께 중간 규모의 이벤트 보상(평균 배팅액의 20%) 제공</li>
+                <li><strong>중기 휴면 (61-180일)</strong>: 새로운 게임 소개와 함께 복귀 보너스 패키지 제공, 단계적 보상 구조(초기 보상 + 활동 기반 추가 보상)로 장기적 참여 유도</li>
+                <li><strong>장기 휴면 (180일 이상)</strong>: 대규모 복귀 패키지 제공(평균 배팅액의 30-40%), 새로운 기능 소개와 함께 VIP 혜택 강조, 개인 매니저 배정 고려</li>
+            </ul>
+        </div>
+        
+        <div class="recommendations">
+            <h3>고가치 사용자 세그먼트별 접근 방식</h3>
+            <ul>
+                <li><strong>소셜 플레이어</strong>: 멀티플레이어 이벤트 및 친구 초대 보너스 강조, 사회적 연결성 활용</li>
+                <li><strong>고액 베팅 사용자</strong>: 프리미엄 이벤트 및 전용 쿠폰, 1:1 VIP 서비스 제공</li>
+                <li><strong>주말 플레이어</strong>: 금요일-일요일 집중 이벤트 타겟팅, 주말 전용 보너스 강조</li>
+                <li><strong>저녁 시간대 사용자</strong>: 저녁 시간(20:00-23:00) 특별 이벤트 및 보너스 타임 제공</li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025-05-21</p>
+        <p><a href="/">홈페이지로 돌아가기</a> | <a href="/high_value_users_report.html">사용자 목록 보기</a></p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 오늘 날짜 표시
+            const today = new Date();
+            document.getElementById('analysis-date').textContent = today.toISOString().split('T')[0];
+            
+            // API 데이터 로드 시뮬레이션
+            setTimeout(function() {
+                document.getElementById('summary-stats-loading').style.display = 'none';
+                document.getElementById('summary-stats').style.display = 'flex';
+                
+                // 요약 통계 데이터 업데이트
+                document.getElementById('total-users').textContent = '731명';
+                document.getElementById('active-users-ratio').textContent = '62.5%';
+                document.getElementById('avg-net-bet').textContent = '185,420원';
+                
+                // 차트 렌더링
+                renderActivityChart();
+                renderDormantChart();
+                renderEventEffectChart();
+            }, 1000);
+            
+            // 새로고침 버튼 이벤트
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                const timeframe = document.getElementById('timeframe-select').value;
+                alert(`${timeframe}일 기준으로 데이터를 갱신합니다.`);
+                
+                // API 호출 및 데이터 갱신 로직 추가
+            });
+            
+            // 활동 패턴 차트 렌더링
+            function renderActivityChart() {
+                const ctx = document.getElementById('activity-chart').getContext('2d');
+                const activityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['월', '화', '수', '목', '금', '토', '일'],
+                        datasets: [{
+                            label: '고가치 사용자 활동',
+                            data: [65, 70, 82, 85, 120, 135, 110],
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: '일반 사용자 활동',
+                            data: [30, 35, 40, 45, 55, 60, 50],
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '요일별 사용자 활동 패턴'
+                            },
+                            legend: {
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: '활동 지수'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 휴면 사용자 차트 렌더링
+            function renderDormantChart() {
+                const ctx = document.getElementById('dormant-chart').getContext('2d');
+                const dormantChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['31-60일', '61-90일', '91-180일', '181-365일', '365일 이상'],
+                        datasets: [{
+                            label: '재활성화 비율',
+                            data: [27.5, 18.2, 12.4, 8.3, 4.1],
+                            backgroundColor: 'rgba(46, 204, 113, 0.6)',
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '휴면 기간별 재활성화 비율'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: '재활성화 비율 (%)'
+                                },
+                                beginAtZero: true,
+                                max: 30
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 이벤트 효과 차트 렌더링
+            function renderEventEffectChart() {
+                const ctx = document.getElementById('event-effect-chart').getContext('2d');
+                const eventEffectChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: '이벤트 효과',
+                            data: [
+                                {x: 5, y: 10.2},
+                                {x: 10, y: 15.8},
+                                {x: 15, y: 22.5},
+                                {x: 20, y: 24.3},
+                                {x: 25, y: 23.8},
+                                {x: 30, y: 21.5},
+                                {x: 35, y: 18.2},
+                                {x: 40, y: 17.9},
+                                {x: 45, y: 16.3},
+                                {x: 50, y: 15.8}
+                            ],
+                            backgroundColor: 'rgba(155, 89, 182, 0.7)',
+                            borderColor: 'rgba(155, 89, 182, 1)',
+                            borderWidth: 1,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '이벤트 보상 비율과 재방문율의 관계'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `보상 비율: ${context.raw.x}%, 재방문율: ${context.raw.y}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '보상 금액 / 평균 배팅액 (%)'
+                                },
+                                min: 0,
+                                max: 55
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: '30일 내 재방문율 (%)'
+                                },
+                                min: 0,
+                                max: 30
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

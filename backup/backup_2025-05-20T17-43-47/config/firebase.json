@@ -1,0 +1,74 @@
+{
+  "functions": {
+    "source": "functions",
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run lint"
+    ],
+    "codebase": "default",
+    "runtime": "nodejs18",
+    "gen": 2
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/v1/users/high-value/analysis",
+        "function": "highValueUsersAnalysis"
+      },
+      {
+        "source": "/api/v1/users/high-value/report",
+        "function": "highValueUserReport"
+      },
+      {
+        "source": "/highValueUserReport",
+        "function": "highValueUserReport"
+      },
+      {
+        "source": "/api/v1/users/high-value/active",
+        "function": "activeUsers"
+      },
+      {
+        "source": "/api/v1/users/high-value/dormant",
+        "function": "dormantUsers"
+      },
+      {
+        "source": "/api/v1/health",
+        "function": "healthCheck"
+      },
+      {
+        "source": "/api/v1/test/db",
+        "function": "testDbConnection"
+      },
+      {
+        "source": "/api/v1/hello",
+        "function": "helloWorld"
+      }
+    ]
+  },
+  "emulators": {
+    "functions": {
+      "port": 11001
+    },
+    "hosting": {
+      "port": 11002
+    },
+    "ui": {
+      "enabled": true,
+      "port": 11003
+    },
+    "firestore": {
+      "port": 11004
+    },
+    "hub": {
+      "port": 11005
+    },
+    "logging": {
+      "port": 11006
+    }
+  }
+}

@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고가치 사용자 분석 보고서</title>
+    <link rel="stylesheet" href="/reports/css/report-nav.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        header h1 {
+            color: white;
+            margin: 0;
+        }
+        
+        header p {
+            margin: 10px 0 0;
+            color: #ecf0f1;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section h2 {
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            flex: 1 1 200px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 0 10px 15px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            margin: 0 0 10px;
+            font-size: 1em;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .stat-sub {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        table th.sortable:hover {
+            background-color: #e9ecef;
+        }
+        
+        table th.sortable::after {
+            content: "\25B2";
+            position: absolute;
+            right: 10px;
+            color: #adb5bd;
+            font-size: 0.8em;
+        }
+        
+        table th.sortable.sort-desc::after {
+            content: "\25BC";
+            color: #495057;
+        }
+        
+        table th.sortable.sort-asc::after {
+            content: "\25B2";
+            color: #495057;
+        }
+        
+        table tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+        
+        .comparison-table {
+            margin-top: 20px;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            text-align: center;
+        }
+        
+        .comparison-table th:first-child, .comparison-table td:first-child {
+            text-align: left;
+        }
+        
+        .status-active {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-dormant {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            height: 300px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .pagination-btn {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #fff;
+            color: #3498db;
+        }
+        
+        .pagination-btn:hover, .pagination-btn.active {
+            background-color: #3498db;
+            color: #fff;
+            border-color: #3498db;
+        }
+        
+        .pagination-btn.disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            background-color: #e9ecef;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            margin-right: 5px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .tag-active {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        .tag-dormant {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .insights {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .insights h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        
+        .recommendations {
+            background-color: #f0f9ff;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .recommendations h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        
+        .recommendations ul, .insights ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .recommendations li, .insights li {
+            margin-bottom: 8px;
+        }
+        
+        .recommendations li:last-child, .insights li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .search-filter {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .search-filter input {
+            flex: 2;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .search-filter select {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .search-filter button {
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .search-filter button:hover {
+            background-color: #2980b9;
+        }
+        
+        .per-page-select {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .per-page-select label {
+            margin-right: 5px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .per-page-select select {
+            padding: 6px 10px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state p {
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        
+        .error-message {
+            background-color: #fff5f5;
+            color: #e53e3e;
+            padding: 10px 15px;
+            border-radius: 4px;
+            border-left: 4px solid #e53e3e;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        #refreshButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #refreshButton i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>고가치 사용자 분석 보고서</h1>
+        <p>7일 이상 게임 기록 및 유효배팅 50,000 이상 사용자 분석</p>
+        <p>분석일: 2025년 5월 21일</p>
+    </header>
+    
+    <div class="section">
+        <h2>분석 개요</h2>
+        <p>본 보고서는 다음 조건을 만족하는 고가치 사용자에 대한 분석 결과입니다:</p>
+        <ul>
+            <li>7일 이상 게임 기록이 있는 사용자</li>
+            <li>전체 유효배팅(netBet)의 합이 50,000 이상인 사용자</li>
+        </ul>
+        
+        <div class="summary-stats">
+            <div class="stat-card">
+                <h3>총 고가치 사용자 수</h3>
+                <div class="stat-value" id="totalUsers">731명</div>
+                <div class="stat-sub">모든 활성 및 휴면 사용자</div>
+            </div>
+            <div class="stat-card">
+                <h3>활성 사용자 비율</h3>
+                <div class="stat-value" id="activePercentage">17.0%</div>
+                <div class="stat-sub" id="activeCount">124명 (최근 30일 내 활동)</div>
+            </div>
+            <div class="stat-card">
+                <h3>휴면 사용자 비율</h3>
+                <div class="stat-value" id="dormantPercentage">83.0%</div>
+                <div class="stat-sub" id="dormantCount">607명 (30일 이상 미활동)</div>
+            </div>
+            <div class="stat-card">
+                <h3>평균 플레이 일수</h3>
+                <div class="stat-value" id="avgPlayDays">78일</div>
+                <div class="stat-sub">전체 사용자 기준</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>활성 vs 휴면 사용자 비교</h2>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>지표</th>
+                    <th>활성 사용자 (124명)</th>
+                    <th>휴면 사용자 (607명)</th>
+                    <th>차이</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>평균 플레이 일수</td>
+                    <td>137일</td>
+                    <td>66일</td>
+                    <td>+108%</td>
+                </tr>
+                <tr>
+                    <td>평균 유효배팅 금액</td>
+                    <td>8,511,679</td>
+                    <td>4,531,555</td>
+                    <td>+88%</td>
+                </tr>
+                <tr>
+                    <td>최대 유효배팅 금액</td>
+                    <td>420,278,943 (jiaw189)</td>
+                    <td>298,261,509 (ja2138)</td>
+                    <td>+41%</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="insights">
+            <h3>주요 인사이트</h3>
+            <ul>
+                <li>활성 고가치 사용자는 휴면 사용자보다 <strong>평균 플레이 일수가 2배 이상</strong> 높으며, 이는 장기적인 충성도의 중요한 지표입니다.</li>
+                <li>활성 고가치 사용자의 <strong>평균 유효배팅 금액</strong>은 휴면 사용자보다 <strong>88% 높은</strong> 8,511,679으로, 활성 상태가 베팅 활동과 강한 상관관계가 있음을 보여줍니다.</li>
+                <li>활성 사용자는 전체 고가치 사용자의 17%에 불과하지만, 총 베팅 금액에서 차지하는 비중은 더 높습니다.</li>
+                <li>최고 베팅 금액을 기록한 사용자 'jiaw189'는 활성 상태를 유지하고 있어, VIP 관리의 중요성을 보여줍니다.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>고가치 사용자 목록 (전체 목록)</h2>
+        
+        <div class="error-message" id="errorMessage">
+            데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.
+        </div>
+        
+        <div class="search-filter">
+            <input type="text" id="userSearchInput" placeholder="유저명으로 검색...">
+            <select id="statusFilter">
+                <option value="all">모든 상태</option>
+                <option value="active">활성 사용자</option>
+                <option value="dormant">휴면 사용자</option>
+            </select>
+            <select id="sortField">
+                <option value="netBet">유효배팅 순</option>
+                <option value="loginCount">플레이 일수 순</option>
+                <option value="lastActivity">마지막 플레이 순</option>
+                <option value="inactiveDays">경과일수 순</option>
+            </select>
+            <select id="sortDirection">
+                <option value="desc">내림차순</option>
+                <option value="asc">오름차순</option>
+            </select>
+            <button id="searchButton" class="btn">검색</button>
+            <button id="exportButton" class="btn btn-secondary">CSV 내보내기</button>
+            <button id="refreshButton" class="btn"><i>🔄</i> 새로고침</button>
+            
+            <div class="per-page-select">
+                <label for="perPage">표시 항목:</label>
+                <select id="perPage">
+                    <option value="10">10개</option>
+                    <option value="20">20개</option>
+                    <option value="50">50개</option>
+                    <option value="100">100개</option>
+                </select>
+            </div>
+        </div>
+        
+        <p>데이터베이스에서 직접 조���한 고가치 사용자 목록입니다. 검색 및 필터링 기능을 사용하여 원하는 데이터를 찾을 수 있습니다.</p>
+        
+        <div class="loading-spinner" id="loadingSpinner"></div>
+        
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th class="sortable" data-sort="userId">유저명</th>
+                    <th class="sortable" data-sort="loginCount">플레이 일수</th>
+                    <th class="sortable" data-sort="netBet">총 유효배팅</th>
+                    <th class="sortable" data-sort="lastActivity">마지막 플레이</th>
+                    <th class="sortable" data-sort="inactiveDays">경과일수</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <!-- 데이터가 여기에 동적으로 로드됩니다 -->
+            </tbody>
+        </table>
+        
+        <div class="pagination" id="tablePagination">
+            <!-- 페이지네이션은 JavaScript로 생성됩니다 -->
+        </div>
+        
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <h3>검색 결과가 없습니다</h3>
+            <p>검색어 또는 필터 조건을 변경해보세요.</p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>휴면 기간별 사용자 분포</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>휴면 기간</th>
+                    <th>사용자 수</th>
+                    <th>비율</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>31-60일</td>
+                    <td>39명</td>
+                    <td>6.4%</td>
+                </tr>
+                <tr>
+                    <td>61-90일</td>
+                    <td>35명</td>
+                    <td>5.8%</td>
+                </tr>
+                <tr>
+                    <td>91-180일</td>
+                    <td>49명</td>
+                    <td>8.1%</td>
+                </tr>
+                <tr>
+                    <td>181-365일</td>
+                    <td>53명</td>
+                    <td>8.7%</td>
+                </tr>
+                <tr>
+                    <td>365일 이상</td>
+                    <td>431명</td>
+                    <td>71.0%</td>
+                </tr>
+                <tr>
+                    <td><strong>총계</strong></td>
+                    <td><strong>607명</strong></td>
+                    <td><strong>100%</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="insights">
+            <h3>휴면 사용자 인사이트</h3>
+            <ul>
+                <li>휴면 고가치 사용자의 <strong>71%가 1년 이상</strong> 미활동 상태로, 장기 휴면 사용자의 비율이 매우 높습니다.</li>
+                <li><strong>단기 휴면 사용자(31-90일)</strong>는 12.2%(74명)로, 이들은 적절한 캠페인을 통해 상대적으로 쉽게 재활성화할 수 있는 타겟 그룹입니다.</li>
+                <li>상위 10위 내 고가치 사용자 중 <strong>8명이 휴면 상태</strong>로, 이는 상당한 매출 기회 손실을 의미합니다.</li>
+                <li>휴면 사용자 중 일부는 매우 높은 플레이 일수(최대 620일)를 보였으며, 이는 과거에 매우 충성도 높은 사용자였음을 시사합니다.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>권장 전략</h2>
+        
+        <div class="recommendations">
+            <h3>활성 고가치 사용자 유지 전략</h3>
+            <ul>
+                <li><strong>맞춤형 VIP 프로그램</strong>: 개인화된 보상 및 혜택, 전담 VIP 매니저 배정, 고급 서비스 및 특별 이벤트 초대</li>
+                <li><strong>계층적 충성도 프로그램</strong>: 활동 수준에 따른 등급 시스템, 등급별 차별화된 혜택, 상위 등급 달성 시 상당한 보상</li>
+                <li><strong>활동 예측 및 예방</strong>: 활동 패턴 모니터링, 활동 감소 시 즉각적인 개입, 유지율 높은 게임 및 이벤트 추천</li>
+            </ul>
+        </div>
+        
+        <div class="recommendations">
+            <h3>휴면 고가치 사용자 재활성화 전략</h3>
+            <ul>
+                <li><strong>세그먼트별 맞춤형 전략</strong>:
+                    <ul>
+                        <li>단기 휴면(31-90일): 즉각적인 복귀 인센티브</li>
+                        <li>중기 휴면(91-365일): 단계적 재참여 유도</li>
+                        <li>장기 휴면(365일+): 강력한 복귀 패키지</li>
+                    </ul>
+                </li>
+                <li><strong>상위 휴면 사용자 집중 관리</strong>: 상위 100명에 대한 개별화된 접근, 직접적인 연락 및 특별 제안, 복귀 시 과거 상태 복원 및 추가 혜택</li>
+                <li><strong>이탈 원인 분석 및 개선</strong>: 게임별/이벤트별 이탈률 분석, 경쟁사 모니터링 및 비교 분석, 사용자 경험 및 서비스 개선</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>실행 계획</h2>
+        
+        <h3>즉시 실행 항목 (1-4주)</h3>
+        <ol>
+            <li>핵심 세그먼트 정의 및 자동화된 모니터링 시스템 구축</li>
+            <li>상위 100명의 휴면 고가치 사용자 대상 개인화된 재활성화 캠페인 시작</li>
+            <li>활성 고가치 사용자 대상 VIP 프로그램 강화</li>
+        </ol>
+        
+        <h3>중기 실행 항목 (1-3개월)</h3>
+        <ol>
+            <li>활동 패턴 예측 모델 개발 및 이탈 방지 시스템 구축</li>
+            <li>모든 휴면 고가치 사용자 대상 세그먼트별 재활성화 캠페인 진행</li>
+            <li>고가치 사용자의 게임 선호도 분석 및 맞춤형 게임 추천 시스템 구현</li>
+        </ol>
+        
+        <h3>장기 실행 항목 (3-6개월)</h3>
+        <ol>
+            <li>사용자 유지 및 재활성화 캠페인 효과 분석 및 최적화</li>
+            <li>잠재적 고가치 사용자 조기 식별 및 육성 전략 구현</li>
+            <li>고객 생애 가치(CLV) 최적화를 위한 통합 관리 시스템 구축</li>
+        </ol>
+    </div>
+    
+    <footer>
+        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025년 5월 21일</p>
+        <p><a href="/index.html">메인 대시보드로 돌아가기</a></p>
+    </footer>
+
+    <script src="/reports/js/report-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Firebase Function URL
+            const API_BASE_URL = '/api/highValueUsersApi';
+            
+            // 요소 참조
+            const usersTableBody = document.getElementById('usersTableBody');
+            const paginationContainer = document.getElementById('tablePagination');
+            const searchInput = document.getElementById('userSearchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const sortField = document.getElementById('sortField');
+            const sortDirection = document.getElementById('sortDirection');
+            const searchButton = document.getElementById('searchButton');
+            const refreshButton = document.getElementById('refreshButton');
+            const exportButton = document.getElementById('exportButton');
+            const perPageSelect = document.getElementById('perPage');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const emptyState = document.getElementById('emptyState');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // 상태 변수
+            let currentPage = 1;
+            let totalPages = 1;
+            let limit = parseInt(perPageSelect.value);
+            
+            // 초기 데이터 로드
+            loadUserData();
+            
+            // 검색 버튼 클릭 이벤트
+            searchButton.addEventListener('click', function() {
+                currentPage = 1;
+                loadUserData();
+            });
+            
+            // 엔터 키 이벤트
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    currentPage = 1;
+                    loadUserData();
+                }
+            });
+            
+            // 새로고침 버튼 클릭 이벤트
+            refreshButton.addEventListener('click', function() {
+                loadUserData();
+            });
+            
+            // CSV 내보내기 버튼 클릭 이벤트
+            exportButton.addEventListener('click', function() {
+                exportToCsv();
+            });
+            
+            // 페이지당 항목 수 변경 이벤트
+            perPageSelect.addEventListener('change', function() {
+                limit = parseInt(this.value);
+                currentPage = 1;
+                loadUserData();
+            });
+            
+            // 사용자 데이터 로드 함수
+            function loadUserData() {
+                // 로딩 표시
+                loadingSpinner.style.display = 'block';
+                usersTableBody.innerHTML = '';
+                paginationContainer.innerHTML = '';
+                emptyState.style.display = 'none';
+                errorMessage.style.display = 'none';
+                
+                // API 엔드포인트 결정
+                let endpoint = '/active';
+                if (statusFilter.value === 'dormant') {
+                    endpoint = '/dormant';
+                } else if (statusFilter.value === 'all') {
+                    // 활성 사용자만 먼저 로드 (all은 기능 구현 필요)
+                    endpoint = '/active';
+                }
+                
+                // 파라미터 구성
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    limit: limit,
+                    sortBy: sortField.value,
+                    sortOrder: sortDirection.value,
+                    search: searchInput.value.trim(),
+                    minNetBet: 50000 // 기본 최소 배팅액 설정
+                });
+                
+                // API 호출
+                fetch(`${API_BASE_URL}${endpoint}?${params.toString()}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('API 응답 오류: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // 로딩 숨김
+                        loadingSpinner.style.display = 'none';
+                        
+                        // 결과가 없거나 성공하지 않은 경우
+                        if (!data.success || !data.data || data.data.length === 0) {
+                            emptyState.style.display = 'block';
+                            return;
+                        }
+                        
+                        // 테이블 렌더링
+                        renderUsersTable(data.data, (currentPage - 1) * limit + 1);
+                        
+                        // 페이지네이션 정보
+                        const paginationInfo = {
+                            currentPage: data.currentPage || 1,
+                            totalPages: data.pages || 1,
+                            totalCount: data.totalCount || 0
+                        };
+                        
+                        // 페이지네이션 렌더링
+                        renderPagination(paginationInfo);
+                    })
+                    .catch(error => {
+                        // 오류 처리
+                        console.error('데이터 로드 중 오류 발생:', error);
+                        loadingSpinner.style.display = 'none';
+                        errorMessage.textContent = '데이터를 불러오는 중 오류가 발생했습니다: ' + error.message;
+                        errorMessage.style.display = 'block';
+                    });
+            }
+            
+            // CSV 내보내기 함수
+            function exportToCsv() {
+                const fileName = `high_value_users_${statusFilter.value}_${getCurrentDateStr()}.csv`;
+                const params = new URLSearchParams({
+                    minNetBet: 50000,
+                    type: statusFilter.value,
+                    search: searchInput.value.trim()
+                });
+                
+                // API 호출
+                fetch(`${API_BASE_URL}/export/csv?${params.toString()}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('CSV 내보내기 오류: ' + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(csvContent => {
+                        // CSV 파일 다운로드
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.setAttribute('href', url);
+                        link.setAttribute('download', fileName);
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => {
+                        console.error('CSV 내보내기 중 오류 발생:', error);
+                        errorMessage.textContent = 'CSV 내보내기 중 오류가 발생했습니다: ' + error.message;
+                        errorMessage.style.display = 'block';
+                    });
+            }
+            
+            // 현재 날짜 문자열 생성 함수
+            function getCurrentDateStr() {
+                const date = new Date();
+                return date.toISOString().split('T')[0];
+            }
+            
+            // 사용자 테이블 렌더링 함수
+            function renderUsersTable(users, startRank) {
+                usersTableBody.innerHTML = '';
+                
+                users.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    
+                    // 유효배팅 금액 포맷팅
+                    const formattedBet = new Intl.NumberFormat('ko-KR').format(user.netBet);
+                    
+                    // 상태 클래스
+                    const inactiveDays = parseInt(user.inactiveDays);
+                    const isActive = inactiveDays < 30;
+                    const statusClass = isActive ? 'tag-active' : 'tag-dormant';
+                    const statusText = isActive ? '활성' : '휴면';
+                    
+                    row.innerHTML = `
+                        <td>${startRank + index}</td>
+                        <td>${user.userId}</td>
+                        <td>${user.loginCount}</td>
+                        <td>${formattedBet}</td>
+                        <td>${formatDate(user.lastActivity)}</td>
+                        <td>${user.inactiveDays}</td>
+                        <td><span class="tag ${statusClass}">${statusText}</span></td>
+                    `;
+                    
+                    usersTableBody.appendChild(row);
+                });
+            }
+            
+            // 날짜 포맷팅 함수
+            function formatDate(dateStr) {
+                if (!dateStr) return '-';
+                
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr;
+                
+                return date.toISOString().split('T')[0];
+            }
+            
+            // 페이지네이션 렌더링 함수
+            function renderPagination(pagination) {
+                paginationContainer.innerHTML = '';
+                
+                const { currentPage, totalPages } = pagination;
+                
+                if (totalPages <= 1) {
+                    return;
+                }
+                
+                // 처음 페이지 버튼
+                const firstPageBtn = document.createElement('span');
+                firstPageBtn.textContent = '<<';
+                firstPageBtn.className = 'pagination-btn' + (currentPage === 1 ? ' disabled' : '');
+                firstPageBtn.addEventListener('click', () => {
+                    if (currentPage !== 1) {
+                        currentPage = 1;
+                        loadUserData();
+                    }
+                });
+                paginationContainer.appendChild(firstPageBtn);
+                
+                // 이전 페이지 버튼
+                const prevPageBtn = document.createElement('span');
+                prevPageBtn.textContent = '<';
+                prevPageBtn.className = 'pagination-btn' + (currentPage === 1 ? ' disabled' : '');
+                prevPageBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        loadUserData();
+                    }
+                });
+                paginationContainer.appendChild(prevPageBtn);
+                
+                // 페이지 번호 버튼
+                const maxPageBtns = 5;
+                const startPage = Math.max(1, currentPage - Math.floor(maxPageBtns / 2));
+                const endPage = Math.min(totalPages, startPage + maxPageBtns - 1);
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('span');
+                    pageBtn.textContent = i;
+                    pageBtn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        loadUserData();
+                    });
+                    paginationContainer.appendChild(pageBtn);
+                }
+                
+                // 다음 페이지 버튼
+                const nextPageBtn = document.createElement('span');
+                nextPageBtn.textContent = '>';
+                nextPageBtn.className = 'pagination-btn' + (currentPage === totalPages ? ' disabled' : '');
+                nextPageBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        loadUserData();
+                    }
+                });
+                paginationContainer.appendChild(nextPageBtn);
+                
+                // 마지막 페이지 버튼
+                const lastPageBtn = document.createElement('span');
+                lastPageBtn.textContent = '>>';
+                lastPageBtn.className = 'pagination-btn' + (currentPage === totalPages ? ' disabled' : '');
+                lastPageBtn.addEventListener('click', () => {
+                    if (currentPage !== totalPages) {
+                        currentPage = totalPages;
+                        loadUserData();
+                    }
+                });
+                paginationContainer.appendChild(lastPageBtn);
+            }
+            
+            // 테이블 헤더 클릭 이벤트 - 정렬
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.addEventListener('click', function() {
+                    const field = this.getAttribute('data-sort');
+                    
+                    // 이미 같은 필드로 정렬 중인 경우 방향 전환
+                    if (sortField.value === field) {
+                        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        sortField.value = field;
+                        sortDirection.value = 'desc'; // 기본은 내림차순
+                    }
+                    
+                    // 데이터 새로 로드
+                    currentPage = 1;
+                    loadUserData();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

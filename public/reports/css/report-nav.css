@@ -1,0 +1,36 @@
+/* 보고서 네비게이션 스타일 */
+.report-nav {
+  margin-bottom: 20px;
+}
+
+.report-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.report-nav li {
+  padding: 10px 15px;
+}
+
+.report-nav a {
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.report-nav a:hover {
+  color: #3498db;
+}
+
+.report-nav .active {
+  background-color: #3498db;
+  border-radius: 4px;
+}
+
+.report-nav .active a {
+  color: white;
+}

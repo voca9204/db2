@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# Firebase 변경사항에 대한 pre-push 검증 훅
+# 이 스크립트는 Firebase 관련 파일이 변경된 경우 변경 검증 프레임워크를 실행합니다.
+
+# 색상 정의
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+VALIDATION_DIR="$PROJECT_ROOT/scripts/validation"
+
+echo -e "${BLUE}Firebase 변경사항 검증 시작...${NC}"
+
+# 변경된 파일 확인
+CHANGED_FILES=$(git diff --cached --name-only)
+
+# Firebase 관련 파일이 변경되었는지 확인
+FIREBASE_CHANGED=false
+for file in $CHANGED_FILES; do
+  if [[ "$file" == firebase.json || 
+        "$file" == firestore.*.json || 
+        "$file" == firestore.rules || 
+        "$file" == storage.rules || 
+        "$file" == .firebaserc || 
+        "$file" == functions/* || 
+        "$file" == .env* ]]; then
+    FIREBASE_CHANGED=true
+    break
+  fi
+done
+
+# Firebase 관련 파일이 변경되지 않았다면 검증 건너뛰기
+if [ "$FIREBASE_CHANGED" = false ]; then
+  echo -e "${GREEN}Firebase 관련 파일이 변경되지 않았습니다. 검증을 건너뜁니다.${NC}"
+  exit 0
+fi# 검증 스크립트가 존재하는지 확인
+if [ ! -d "$VALIDATION_DIR" ]; then
+  echo -e "${YELLOW}경고: 변경 검증 프레임워크 디렉토리를 찾을 수 없습니다.${NC}"
+  echo -e "${YELLOW}검증을 건너뛰고 push를 진행합니다.${NC}"
+  exit 0
+fi
+
+# 필요한 의존성 확인
+if [ ! -f "$VALIDATION_DIR/package.json" ]; then
+  echo -e "${YELLOW}경고: $VALIDATION_DIR/package.json 파일을 찾을 수 없습니다.${NC}"
+  echo -e "${YELLOW}검증을 건너뛰고 push를 진행합니다.${NC}"
+  exit 0
+fi
+
+# 의존성 설치 확인
+if [ ! -d "$VALIDATION_DIR/node_modules" ]; then
+  echo -e "${BLUE}변경 검증 프레임워크 의존성 설치 중...${NC}"
+  cd "$VALIDATION_DIR" && npm install
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}오류: 의존성 설치에 실패했습니다.${NC}"
+    echo -e "${YELLOW}계속 진행하시겠습니까? (y/n)${NC}"
+    read answer
+    if [ "$answer" != "y" ]; then
+      echo -e "${RED}Push 취소.${NC}"
+      exit 1
+    fi
+    echo -e "${YELLOW}검증을 건너뛰고 push를 진행합니다.${NC}"
+    exit 0
+  fi
+fi# 변경된 파일 유형에 따라 검증 옵션 설정
+VALIDATION_OPTIONS=""
+
+if echo "$CHANGED_FILES" | grep -q "firebase.json\|.firebaserc"; then
+  VALIDATION_OPTIONS="$VALIDATION_OPTIONS --environments"
+fi
+
+if echo "$CHANGED_FILES" | grep -q "firestore.rules\|storage.rules"; then
+  VALIDATION_OPTIONS="$VALIDATION_OPTIONS --rules"
+fi
+
+if echo "$CHANGED_FILES" | grep -q "firestore.indexes.json"; then
+  VALIDATION_OPTIONS="$VALIDATION_OPTIONS --indexes"
+fi
+
+if echo "$CHANGED_FILES" | grep -q "functions/"; then
+  VALIDATION_OPTIONS="$VALIDATION_OPTIONS --functions"
+fi
+
+if [ -z "$VALIDATION_OPTIONS" ]; then
+  VALIDATION_OPTIONS="--all"
+fi
+
+# 검증 실행
+echo -e "${BLUE}Firebase 변경사항 검증 실행 중...${NC}"
+echo -e "${BLUE}실행 옵션: node validate.js $VALIDATION_OPTIONS${NC}"
+
+cd "$VALIDATION_DIR" && node validate.js $VALIDATION_OPTIONS
+
+# 검증 결과 확인
+if [ $? -ne 0 ]; then
+  echo -e "${RED}검증 실패!${NC}"
+  echo -e "${YELLOW}Firebase 변경사항에 문제가 있습니다.${NC}"
+  echo -e "${YELLOW}그래도 push를 진행하시겠습니까? (y/n)${NC}"
+  read answer
+  if [ "$answer" != "y" ]; then
+    echo -e "${RED}Push 취소.${NC}"
+    exit 1
+  fi
+  echo -e "${YELLOW}경고와 함께 push를 진행합니다.${NC}"
+else
+  echo -e "${GREEN}검증 성공!${NC}"
+  echo -e "${GREEN}모든 Firebase 변경사항이 유효합니다.${NC}"
+fi
+
+exit 0

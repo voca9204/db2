@@ -1,0 +1,25 @@
+{
+  "activeTasks": [
+    {
+      "id": 17,
+      "title": "Firebase Functions Migration for High-Value User Analytics API",
+      "status": "pending"
+    },
+    {
+      "id": 24,
+      "title": "Implement Systematic Approach for Firebase Functions Deployment",
+      "status": "pending"
+    },
+    {
+      "id": 18,
+      "title": "휴면 사용자 타겟팅 시스템 개발",
+      "status": "in-progress"
+    },
+    {
+      "id": 19,
+      "title": "Implement Personalized Event Recommendation System",
+      "status": "pending"
+    }
+  ],
+  "lastUpdate": "2025-05-20T14:17:53.450Z"
+}
