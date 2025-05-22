@@ -79,12 +79,15 @@ exports.getAprilUsers = functions.https.onRequest((req, res) => {
       });
 
       // 2025년 4월에 게임을 한 유저 조회 쿼리
+      const limit = req.query.limit ? parseInt(req.query.limit) : null;
+      const limitClause = limit ? `LIMIT ${limit}` : '';
+      
       const query = `
         SELECT DISTINCT userId 
         FROM game_scores 
         WHERE gameDate >= '2025-04-01' 
         AND gameDate < '2025-05-01'
-        LIMIT 100
+        ${limitClause}
       `;
       
       const [rows] = await connection.execute(query);
@@ -259,7 +262,7 @@ exports.activeUsers = functions.https.onRequest((req, res) => {
         GROUP BY userId
         HAVING gameDays >= 7 AND totalNetBet > 50000 AND daysSinceLastGame <= 30
         ORDER BY totalNetBet DESC
-        LIMIT 100
+        ${req.query.limit ? `LIMIT ${parseInt(req.query.limit)}` : ''}
       `;
       
       const [rows] = await connection.execute(query);
@@ -322,7 +325,7 @@ exports.dormantUsers = functions.https.onRequest((req, res) => {
         GROUP BY userId
         HAVING gameDays >= 7 AND totalNetBet > 50000 AND daysSinceLastGame > 30
         ORDER BY totalNetBet DESC
-        LIMIT 100
+        ${req.query.limit ? `LIMIT ${parseInt(req.query.limit)}` : ''}
       `;
       
       const [rows] = await connection.execute(query);
