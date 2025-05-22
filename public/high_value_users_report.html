@@ -599,7 +599,7 @@
     </div>
     
     <footer>
-        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025-05-21</p>
+        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025-05-22</p>
         <p><a href="/">홈페이지로 돌아가기</a></p>
     </footer>
     
@@ -619,8 +619,8 @@ const API_CONFIG = {
   // API 버전
   version: 'v1',
   
-  // 베이스 URL (Firebase Functions 에뮬레이터)
-  baseUrl: 'http://127.0.0.1:9000/db888-67827/us-central1',
+  // 베이스 URL (Firebase Functions 프로덕션)
+  baseUrl: 'https://us-central1-db888-67827.cloudfunctions.net',
   
   // 엔드포인트
   endpoints: {
@@ -631,8 +631,8 @@ const API_CONFIG = {
   
   // 레거시 호환성 (V1 기반 API 응답 완료 전까지 사용)
   legacy: {
-    baseUrl: 'http://127.0.0.1:9000/db888-67827/us-central1/highValueUsersApi',
-    forceUseLegacy: true  // Firebase Functions 테스트를 위해 true로 설정
+    baseUrl: 'https://us-central1-db888-67827.cloudfunctions.net/highValueUsersApi',
+    forceUseLegacy: true  // Firebase Functions 프로덕션 환경에서 사용
   }
 };
 

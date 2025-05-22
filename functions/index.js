@@ -468,3 +468,75 @@ exports.highValueUsersApi = functions.https.onRequest((req, res) => {
     }
   });
 });
+
+
+// 최근 게임 날짜 조회 함수
+exports.getLatestGameDate = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    const mysql = require('mysql2/promise');
+    
+    try {
+      const connection = await mysql.createConnection({
+        host: '211.248.190.46',
+        user: 'hermes',
+        password: 'mcygicng!022',
+        database: 'hermes',
+        connectTimeout: 10000,
+        acquireTimeout: 10000,
+        timeout: 10000
+      });
+
+      // 최근 게임 날짜 조회
+      const query = `
+        SELECT 
+          MAX(gameDate) as latestGameDate,
+          COUNT(DISTINCT gameDate) as totalGameDays,
+          COUNT(DISTINCT userId) as totalUniqueUsers,
+          COUNT(*) as totalGameRecords
+        FROM game_scores
+      `;
+      
+      const [rows] = await connection.execute(query);
+      
+      // 최근 일주일 간 게임 활동도 조회
+      const recentQuery = `
+        SELECT 
+          gameDate,
+          COUNT(DISTINCT userId) as uniqueUsers,
+          COUNT(*) as totalGames
+        FROM game_scores 
+        WHERE gameDate >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY gameDate
+        ORDER BY gameDate DESC
+        LIMIT 10
+      `;
+      
+      const [recentRows] = await connection.execute(recentQuery);
+      
+      await connection.end();
+      
+      res.json({
+        status: 'success',
+        message: '최근 게임 날짜 조회 완료',
+        timestamp: new Date().toISOString(),
+        latestData: rows[0],
+        recentActivity: recentRows,
+        success: true
+      });
+      
+    } catch (error) {
+      console.error('Query error:', error);
+      res.status(500).json({
+        status: 'error',
+        message: '최근 게임 날짜 조회 실패',
+        timestamp: new Date().toISOString(),
+        error: error.message,
+        success: false
+      });
+    }
+  });
+});
+
+// 보안이 적용된 API 엔드포인트 추가
+const secureApi = require('./src/secure-api');
+exports.secureHighValueUsersApi = secureApi.secureHighValueUsersApi;
