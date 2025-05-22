@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>고가치 사용자 종합 분석 보고서</title>
     <style>
         body {
@@ -307,17 +310,50 @@
             border-radius: 4px;
             font-size: 14px;
         }
+
+        .api-version-badge {
+            background-color: #17a2b8;
+            color: white;
+            font-size: 0.75rem;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .criteria-info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .criteria-info h4 {
+            margin-top: 0;
+            color: #1976d2;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>고가치 사용자 종합 분석 보고서</h1>
+        <h1>고가치 사용자 종합 분석 보고서 <span class="api-version-badge">v3.0</span></h1>
         <p>7일 이상 게임 기록 및 유효배팅 50,000 이상 사용자 분석</p>
-        <p>분석일: 2025-05-20</p>
+        <p>분석일: <span id="analysisDate">2025-05-22</span></p>
     </header>
     
     <div class="section">
         <h2>분석 개요</h2>
+        
+        <div class="criteria-info">
+            <h4>📊 활성/휴면 기준</h4>
+            <ul>
+                <li><strong>활성 사용자</strong>: 최근 30일 이내에 게임 기록이 있는 사용자</li>
+                <li><strong>휴면 사용자</strong>: 30일 이상 게임 기록이 없는 사용자</li>
+            </ul>
+        </div>
+
         <p>본 보고서는 다음 조건을 만족하는 고가치 사용자에 대한 분석 결과입니다:</p>
         <ul>
             <li>7일 이상 게임 기록이 있는 사용자</li>
@@ -327,18 +363,18 @@
         <div class="summary-stats">
             <div class="stat-card">
                 <h3>총 고가치 사용자 수</h3>
-                <div class="stat-value">731명</div>
+                <div class="stat-value" id="totalUsers">-</div>
                 <div class="stat-sub">모든 활성 및 휴면 사용자</div>
             </div>
             <div class="stat-card">
-                <h3>활성 사용자 비율</h3>
-                <div class="stat-value">62.5%</div>
-                <div class="stat-sub">457명 (최근 30일 내 활동)</div>
+                <h3>활성 사용자 수</h3>
+                <div class="stat-value" id="activeUsers">-</div>
+                <div class="stat-sub">최근 30일 내 활동</div>
             </div>
             <div class="stat-card">
-                <h3>휴면 사용자 비율</h3>
-                <div class="stat-value">37.5%</div>
-                <div class="stat-sub">274명 (30일 이상 미활동)</div>
+                <h3>휴면 사용자 수</h3>
+                <div class="stat-value" id="dormantUsers">-</div>
+                <div class="stat-sub">30일 이상 미활동</div>
             </div>
         </div>
     </div>
@@ -496,13 +532,13 @@
         <table id="userTable">
             <thead>
                 <tr>
-                    <th>순위</th>
-                    <th>유저명</th>
-                    <th>플레이 일수</th>
-                    <th>총 유효배팅</th>
-                    <th>마지막 플레이</th>
-                    <th>경과일수</th>
-                    <th>상태</th>
+                    <th data-sort="rank">순위</th>
+                    <th data-sort="userId">유저명</th>
+                    <th data-sort="gameDays">플레이 일수</th>
+                    <th data-sort="totalNetBet">총 유효배팅</th>
+                    <th data-sort="lastGameDate">마지막 플레이</th>
+                    <th data-sort="daysSinceLastGame">경과일수</th>
+                    <th data-sort="status">상태</th>
                 </tr>
             </thead>
             <tbody id="userTableBody">
@@ -563,9 +599,367 @@
     </div>
     
     <footer>
-        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025-05-20</p>
+        <p>© 2025 DB2 프로젝트 팀 | 보고서 생성일: 2025-05-21</p>
         <p><a href="/">홈페이지로 돌아가기</a></p>
     </footer>
+    
+    <!-- API 호출 스크립트 로드 (Task #26 - API 경로 표준화 및 응답 처리 개선) -->
+    <script>
+// 전역 변수 선언 (페이지 상태 관리)
+window.currentPage = 1;
+window.pageSize = 20;
+window.totalPages = 1;
+window.totalUsers = 0;
+window.userData = [];
+window.sortField = 'netBet';
+window.sortOrder = 'desc';
+
+// API 경로 구성
+const API_CONFIG = {
+  // API 버전
+  version: 'v1',
+  
+  // 베이스 URL (Firebase Functions 에뮬레이터)
+  baseUrl: 'http://127.0.0.1:9000/db888-67827/us-central1',
+  
+  // 엔드포인트
+  endpoints: {
+    active: '/highValueUsersApi/active',
+    dormant: '/highValueUsersApi/dormant',
+    export: '/highValueUsersApi/export/csv'
+  },
+  
+  // 레거시 호환성 (V1 기반 API 응답 완료 전까지 사용)
+  legacy: {
+    baseUrl: 'http://127.0.0.1:9000/db888-67827/us-central1/highValueUsersApi',
+    forceUseLegacy: true  // Firebase Functions 테스트를 위해 true로 설정
+  }
+};
+
+// API 호출 함수
+async function fetchApiData(endpoint, params = {}) {
+  // 현재 API 선택 (레거시 또는 V1)
+  const baseUrl = API_CONFIG.legacy.forceUseLegacy 
+    ? API_CONFIG.legacy.baseUrl
+    : API_CONFIG.baseUrl;
+    
+  // URL 구성
+  const queryParams = new URLSearchParams(params);
+  const url = `${baseUrl}${endpoint}?${queryParams.toString()}`;
+  
+  console.log('API 호출:', url);
+  
+  try {
+    // API 호출
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    // 응답 구조 정규화 (레거시 API와 V1 API 응답 포맷 차이 처리)
+    return normalizeApiResponse(data, endpoint);
+    
+  } catch (error) {
+    console.error('API 호출 오류:', error);
+    
+    // 오류 시 레거시 API 폴백 시도
+    if (!API_CONFIG.legacy.forceUseLegacy) {
+      console.log('레거시 API로 폴백 시도...');
+      API_CONFIG.legacy.forceUseLegacy = true;
+      return fetchApiData(endpoint, params);
+    }
+    
+    throw error;
+  }
+}
+
+// API 응답 구조 정규화 (양쪽 API 포맷 차이 처리)
+function normalizeApiResponse(data, endpoint) {
+  // API 버전 감지
+  const isLegacyResponse = !data.metadata && data.data;
+  const isV1Response = !!data.metadata;
+  
+  if (isV1Response) {
+    // 이미 V1 API 응답 형식인 경우 그대로 반환
+    return {
+      data: data.data || [],
+      totalCount: data.metadata.pagination.totalCount,
+      currentPage: data.metadata.pagination.currentPage,
+      pageSize: data.metadata.pagination.pageSize,
+      totalPages: data.metadata.pagination.totalPages,
+      success: data.success
+    };
+  } else if (isLegacyResponse) {
+    // 레거시 API 응답 형식을 V1 형식으로 변환
+    return {
+      data: data.data || [],
+      totalCount: data.totalCount || 0,
+      currentPage: data.currentPage || 1,
+      pageSize: data.params?.limit || 20,
+      totalPages: data.pages || 1,
+      success: data.success
+    };
+  } else {
+    // 알 수 없는 응답 형식
+    console.warn('알 수 없는 API 응답 형식:', data);
+    return {
+      data: [],
+      totalCount: 0,
+      currentPage: 1,
+      pageSize: 20,
+      totalPages: 1,
+      success: false
+    };
+  }
+}
+
+// CSV 내보내기 URL 생성
+function generateCsvExportUrl(params = {}) {
+  const baseUrl = API_CONFIG.legacy.forceUseLegacy 
+    ? API_CONFIG.legacy.baseUrl
+    : API_CONFIG.baseUrl;
+    
+  const queryParams = new URLSearchParams(params);
+  return `${baseUrl}${API_CONFIG.endpoints.export}?${queryParams.toString()}`;
+}
+
+// 페이지 로딩 시 사용자 데이터 로드
+async function loadUserData() {
+  // UI 상태 업데이트
+  updateLoadingState(true);
+  
+  try {
+    // 필터 옵션 가져오기
+    const statusFilter = document.getElementById('userStatus').value;
+    const minBettingValue = parseInt(document.getElementById('minBetting').value, 10);
+    const searchTerm = document.getElementById('userSearch').value.trim();
+    
+    // 정렬 및 페이지네이션 옵션 (전역 변수 직접 참조)
+    const sortParams = { 
+      sortBy: window.sortField || 'netBet', 
+      sortOrder: window.sortOrder || 'desc' 
+    };
+    const paginationParams = { 
+      page: window.currentPage || 1, 
+      limit: window.pageSize || 20 
+    };
+    
+    // API 경로 선택
+    let endpoint = '';
+    let params = {
+      ...paginationParams,
+      ...sortParams,
+      minNetBet: minBettingValue
+    };
+    
+    if (statusFilter === 'dormant') {
+      endpoint = '/dormant';
+    } else if (statusFilter === 'all') {
+      // 'all' 옵션은 현재 active API로 처리 (추후 통합 API 개발 시 변경)
+      endpoint = '';
+    }
+    
+    // 검색어 추가
+    if (searchTerm) {
+      params.search = searchTerm;
+    }
+    
+    // API 호출
+    const result = await fetchApiData(endpoint, params);
+    
+    if (result.success) {
+      // 데이터 업데이트
+      window.userData = result.data || [];
+      window.totalUsers = result.totalCount || 0;
+      window.totalPages = result.totalPages || 1;
+      
+      // UI 업데이트
+      if (typeof updateTable === 'function') {
+        updateTable();
+      }
+      if (typeof updatePagination === 'function') {
+        updatePagination();
+      }
+      
+      // 로딩 상태 업데이트
+      updateLoadingState(false);
+    } else {
+      // 오류 처리
+      throw new Error('API 응답 오류');
+    }
+  } catch (error) {
+    console.error('데이터 로드 오류:', error);
+    
+    // 오류 메시지 표시
+    updateLoadingState(false, true);
+  }
+}
+
+// CSV 내보내기 함수
+function exportUserDataToCsv() {
+  // 필터 옵션 가져오기
+  const statusFilter = document.getElementById('userStatus').value;
+  const minBettingValue = parseInt(document.getElementById('minBetting').value, 10);
+  const searchTerm = document.getElementById('userSearch').value.trim();
+  
+  // 엑스포트 URL 생성
+  const params = {
+    minNetBet: minBettingValue
+  };
+  
+  // 유저 타입 추가
+  if (statusFilter !== 'all') {
+    params.type = statusFilter;
+  }
+  
+  // 검색어 추가
+  if (searchTerm) {
+    params.search = searchTerm;
+  }
+  
+  // CSV 내보내기 URL 생성
+  const exportUrl = generateCsvExportUrl(params);
+  
+  // 새 탭에서 URL 열기 (다운로드 트리거)
+  window.open(exportUrl, '_blank');
+}
+
+// UI 상태 업데이트 함수
+function updateLoadingState(isLoading, hasError = false) {
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const errorMessage = document.getElementById('errorMessage');
+  const userTable = document.getElementById('userTable');
+  
+  if (isLoading) {
+    // 로딩 상태 표시
+    loadingIndicator.style.display = 'flex';
+    errorMessage.style.display = 'none';
+    userTable.style.display = 'none';
+  } else if (hasError) {
+    // 오류 상태 표시
+    loadingIndicator.style.display = 'none';
+    errorMessage.style.display = 'block';
+    userTable.style.display = 'none';
+  } else {
+    // 정상 상태 표시
+    loadingIndicator.style.display = 'none';
+    errorMessage.style.display = 'none';
+    userTable.style.display = 'table';
+  }
+}
+
+// 테이블 업데이트 함수
+function updateTable() {
+  const userTableBody = document.getElementById('userTableBody');
+  
+  userTableBody.innerHTML = '';
+  
+  if (window.userData.length === 0) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `<td colspan="7" style="text-align: center;">조건에 맞는 사용자가 없습니다.</td>`;
+    userTableBody.appendChild(emptyRow);
+    return;
+  }
+  
+  window.userData.forEach((user, index) => {
+    const row = document.createElement('tr');
+    const rank = (window.currentPage - 1) * window.pageSize + index + 1;
+    
+    // 플레이 일자 포맷팅
+    let lastActivity = '-';
+    if (user.lastActivity) {
+      lastActivity = user.lastActivity;
+    }
+    
+    // 상태 결정
+    const status = user.status || (user.inactiveDays <= 30 ? 'active' : 'dormant');
+    const statusLabel = status === 'active' ? '활성' : '휴면';
+    
+    row.innerHTML = `
+      <td>${rank}</td>
+      <td>${user.userName || user.userId || '알 수 없음'}</td>
+      <td>${user.playDays || user.loginCount || 0}</td>
+      <td>${(user.netBet || 0).toLocaleString()}</td>
+      <td>${lastActivity}</td>
+      <td>${user.inactiveDays || 0}</td>
+      <td><span class="tag tag-${status}">${statusLabel}</span></td>
+    `;
+    
+    userTableBody.appendChild(row);
+  });
+}
+
+// 페이지네이션 업데이트 함수
+function updatePagination() {
+  const paginationInfo = document.getElementById('paginationInfo');
+  const firstPageBtn = document.getElementById('firstPage');
+  const prevPageBtn = document.getElementById('prevPage');
+  const nextPageBtn = document.getElementById('nextPage');
+  const lastPageBtn = document.getElementById('lastPage');
+  const pageNumbers = document.getElementById('pageNumbers');
+  
+  // 페이지 정보 업데이트
+  const start = (window.currentPage - 1) * window.pageSize + 1;
+  const end = Math.min(window.currentPage * window.pageSize, window.totalUsers);
+  paginationInfo.textContent = `총 ${window.totalUsers}명의 사용자 중 ${start}-${end}명 표시`;
+  
+  // 페이지 버튼 상태 업데이트
+  firstPageBtn.disabled = window.currentPage === 1;
+  prevPageBtn.disabled = window.currentPage === 1;
+  nextPageBtn.disabled = window.currentPage === window.totalPages;
+  lastPageBtn.disabled = window.currentPage === window.totalPages;
+  
+  // 페이지 번호 생성
+  pageNumbers.innerHTML = '';
+  
+  const maxPageNumbers = 5;
+  const pageRange = getPageRange(window.currentPage, window.totalPages, maxPageNumbers);
+  
+  for (let i = pageRange.start; i <= pageRange.end; i++) {
+    const pageBtn = document.createElement('button');
+    pageBtn.textContent = i;
+    pageBtn.className = 'pagination-btn' + (i === window.currentPage ? ' active' : '');
+    
+    pageBtn.addEventListener('click', function() {
+      if (window.currentPage !== i) {
+        window.currentPage = i;
+        loadUserData();
+      }
+    });
+    
+    pageNumbers.appendChild(pageBtn);
+  }
+}
+
+// 페이지 범위 계산 함수
+function getPageRange(current, total, max) {
+  let start = Math.max(1, current - Math.floor(max / 2));
+  let end = start + max - 1;
+  
+  if (end > total) {
+    end = total;
+    start = Math.max(1, end - max + 1);
+  }
+  
+  return { start, end };
+}
+
+// 테이블 열 이름을 API 파라미터로 변환
+function getColumnName(headerText) {
+  const mapping = {
+    '유저명': 'userName',
+    '플레이 일수': 'playDays',
+    '총 유효배팅': 'netBet',
+    '마지막 플레이': 'lastActivity',
+    '경과일수': 'inactiveDays'
+  };
+  
+  return mapping[headerText];
+}
+    </script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -589,24 +983,15 @@
             const pageSizeSelect = document.getElementById('pageSize');
             const paginationInfo = document.getElementById('paginationInfo');
             
-            // 상태 관리 변수
-            let currentPage = 1;
-            let pageSize = parseInt(pageSizeSelect.value, 10);
-            let totalPages = 1;
-            let totalUsers = 0;
-            let userData = [];
-            let sortField = 'netBet';
-            let sortOrder = 'desc';
-            
-            // API 엔드포인트 URL
-            const API_BASE_URL = '/highValueUsersApi';
+            // 페이지 크기 초기화
+            window.pageSize = parseInt(pageSizeSelect.value, 10);
             
             // 초기 데이터 로드
             loadUserData();
             
             // 이벤트 리스너 등록
             applyFilters.addEventListener('click', function() {
-                currentPage = 1;
+                window.currentPage = 1;
                 loadUserData();
             });
             
@@ -618,35 +1003,35 @@
             });
             
             pageSizeSelect.addEventListener('change', function() {
-                pageSize = parseInt(this.value, 10);
-                currentPage = 1;
+                window.pageSize = parseInt(this.value, 10);
+                window.currentPage = 1;
                 loadUserData();
             });
             
             firstPageBtn.addEventListener('click', function() {
-                if (currentPage !== 1) {
-                    currentPage = 1;
+                if (window.currentPage !== 1) {
+                    window.currentPage = 1;
                     loadUserData();
                 }
             });
             
             prevPageBtn.addEventListener('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
+                if (window.currentPage > 1) {
+                    window.currentPage--;
                     loadUserData();
                 }
             });
             
             nextPageBtn.addEventListener('click', function() {
-                if (currentPage < totalPages) {
-                    currentPage++;
+                if (window.currentPage < window.totalPages) {
+                    window.currentPage++;
                     loadUserData();
                 }
             });
             
             lastPageBtn.addEventListener('click', function() {
-                if (currentPage !== totalPages) {
-                    currentPage = totalPages;
+                if (window.currentPage !== window.totalPages) {
+                    window.currentPage = window.totalPages;
                     loadUserData();
                 }
             });
@@ -657,14 +1042,14 @@
                     const columnName = getColumnName(this.textContent);
                     
                     if (columnName) {
-                        if (sortField === columnName) {
-                            sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                        if (window.sortField === columnName) {
+                            window.sortOrder = window.sortOrder === 'asc' ? 'desc' : 'asc';
                         } else {
-                            sortField = columnName;
-                            sortOrder = 'desc';
+                            window.sortField = columnName;
+                            window.sortOrder = 'desc';
                         }
                         
-                        currentPage = 1;
+                        window.currentPage = 1;
                         loadUserData();
                     }
                 });
@@ -683,204 +1068,35 @@
                 return mapping[headerText];
             }
             
-            // 사용자 데이터를 CSV로 내보내기
-            function exportUserDataToCsv() {
-                // 필터 적용
-                const statusFilter = userStatus.value;
-                const minBettingValue = parseInt(minBetting.value, 10);
-                const searchTerm = userSearch.value.trim();
-                
-                // CSV 내보내기 URL 생성
-                let exportUrl = `${API_BASE_URL}/export/csv?minNetBet=${minBettingValue}`;
-                
-                if (statusFilter !== 'all') {
-                    exportUrl += `&type=${statusFilter}`;
-                }
-                
-                if (searchTerm) {
-                    exportUrl += `&search=${encodeURIComponent(searchTerm)}`;
-                }
-                
-                // 새 탭에서 URL 열기 (다운로드 트리거)
-                window.open(exportUrl, '_blank');
-            }
-            
-            // 사용자 데이터 불러오기
-            function loadUserData() {
-                // 로딩 상태 표시
-                userTableBody.innerHTML = '';
-                loadingIndicator.style.display = 'flex';
-                errorMessage.style.display = 'none';
-                
-                // 필터 적용
-                const statusFilter = userStatus.value;
-                const minBettingValue = parseInt(minBetting.value, 10);
-                const searchTerm = userSearch.value.trim();
-                
-                // 실제 API 호출 코드
-                // API 엔드포인트 결정
-                let endpoint = '';
-                let params = new URLSearchParams();
-                
-                if (statusFilter === 'active' || statusFilter === 'all') {
-                    endpoint = API_BASE_URL + '/active';
-                } else if (statusFilter === 'dormant') {
-                    endpoint = API_BASE_URL + '/dormant';
-                }
-                
-                // 쿼리 파라미터 설정
-                params.append('page', currentPage);
-                params.append('limit', pageSize);
-                params.append('minNetBet', minBettingValue);
-                params.append('sortBy', sortField);
-                params.append('sortOrder', sortOrder);
-                
-                if (searchTerm) {
-                    params.append('search', searchTerm);
-                }
-                
-                // API 호출
-                const url = endpoint + '?' + params.toString();
-                console.log("API 호출 URL:", url);
-                
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('서버 오류가 발생했습니다.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // 데이터 저장
-                        console.log("API 응답 데이터:", data);
-                        
-                        // 응답 형식에 따라 데이터 추출
-                        userData = data.data || [];
-                        
-                        // 데이터 포맷 변환이 필요한 경우
-                        userData = userData.map(user => ({
-                            userId: user.userId,
-                            userName: user.userId, // userId를 userName으로도 사용
-                            playDays: user.loginCount || 0,
-                            netBet: user.netBet || 0,
-                            lastActivity: user.lastActivity || '',
-                            inactiveDays: user.inactiveDays || 0
-                        }));
-                        
-                        totalUsers = data.count || userData.length;
-                        totalPages = Math.ceil(totalUsers / pageSize) || 1;
-                        
-                        // 테이블 업데이트
-                        updateTable();
-                        
-                        // 페이지네이션 업데이트
-                        updatePagination();
-                        
-                        // 로딩 상태 숨김
-                        loadingIndicator.style.display = 'none';
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error);
-                        
-                        // 오류 발생 시 샘플 데이터 사용 (폴백)
-                        console.log("API 오류 발생, 샘플 데이터 사용");
-                        
-                        // 샘플 데이터 가져오기
-                        let allData = getSampleData();
-                        
-                        // 필터링 적용
-                        if (statusFilter !== 'all') {
-                            const isActive = statusFilter === 'active';
-                            allData = allData.filter(user => 
-                                isActive ? user.inactiveDays <= 30 : user.inactiveDays > 30
-                            );
-                        }
-                        
-                        userData = allData;
-                        totalUsers = userData.length;
-                        totalPages = Math.ceil(totalUsers / pageSize) || 1;
-                        
-                        // 테이�� 업데이트
-                        updateTable();
-                        
-                        // 페이지네이션 업데이트
-                        updatePagination();
-                        
-                        // 오류 메시지 표시
-                        loadingIndicator.style.display = 'none';
-                        errorMessage.style.display = 'block';
-                    });
-                    
-                // 샘플 데이터 사용 코드는 주석 처리
-                /*
-                setTimeout(() => {
-                    // 샘플 데이터 가져오기
-                    let allData = getSampleData();
-                    
-                    // 필터링 및 기타 처리...
-                    
-                    // 테이블 업데이트
-                    updateTable();
-                    
-                    // 페이지네이션 업데이트
-                    updatePagination();
-                    
-                    // 로딩 상태 숨김
-                    loadingIndicator.style.display = 'none';
-                }, 500);
-                */
-                        userData = data.users || [];
-                        totalUsers = data.total || 0;
-                        totalPages = data.pages || 1;
-                        
-                        // 테이블 업데이트
-                        updateTable();
-                        
-                        // 페이지네이션 업데이트
-                        updatePagination();
-                        
-                        // 로딩 상태 숨김
-                        loadingIndicator.style.display = 'none';
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error);
-                        
-                        // 오류 메시지 표시
-                        loadingIndicator.style.display = 'none';
-                        errorMessage.style.display = 'block';
-                    });
-                */
-            }
-            
             // 테이블 업데이트
             function updateTable() {
                 userTableBody.innerHTML = '';
                 
-                if (userData.length === 0) {
+                if (window.userData.length === 0) {
                     const emptyRow = document.createElement('tr');
                     emptyRow.innerHTML = `<td colspan="7" style="text-align: center;">조건에 맞는 사용자가 없습니다.</td>`;
                     userTableBody.appendChild(emptyRow);
                     return;
                 }
                 
-                userData.forEach((user, index) => {
+                window.userData.forEach((user, index) => {
                     const row = document.createElement('tr');
-                    const rank = (currentPage - 1) * pageSize + index + 1;
+                    const rank = (window.currentPage - 1) * window.pageSize + index + 1;
                     
                     // 플레이 일자 포맷팅
                     let lastActivity = '-';
                     if (user.lastActivity) {
-                        lastActivity = new Date(user.lastActivity).toISOString().split('T')[0];
+                        lastActivity = user.lastActivity;
                     }
                     
                     // 상태 결정
-                    const status = user.inactiveDays <= 30 ? 'active' : 'dormant';
+                    const status = user.status || (user.inactiveDays <= 30 ? 'active' : 'dormant');
                     const statusLabel = status === 'active' ? '활성' : '휴면';
                     
                     row.innerHTML = `
                         <td>${rank}</td>
                         <td>${user.userName || user.userId || '알 수 없음'}</td>
-                        <td>${user.playDays || 0}</td>
+                        <td>${user.playDays || user.loginCount || 0}</td>
                         <td>${(user.netBet || 0).toLocaleString()}</td>
                         <td>${lastActivity}</td>
                         <td>${user.inactiveDays || 0}</td>
@@ -894,30 +1110,30 @@
             // 페이지네이션 업데이트
             function updatePagination() {
                 // 페이지 정보 업데이트
-                const start = (currentPage - 1) * pageSize + 1;
-                const end = Math.min(currentPage * pageSize, totalUsers);
-                paginationInfo.textContent = `총 ${totalUsers}명의 사용자 중 ${start}-${end}명 표시`;
+                const start = (window.currentPage - 1) * window.pageSize + 1;
+                const end = Math.min(window.currentPage * window.pageSize, window.totalUsers);
+                paginationInfo.textContent = `총 ${window.totalUsers}명의 사용자 중 ${start}-${end}명 표시`;
                 
                 // 페이지 버튼 상태 업데이트
-                firstPageBtn.disabled = currentPage === 1;
-                prevPageBtn.disabled = currentPage === 1;
-                nextPageBtn.disabled = currentPage === totalPages;
-                lastPageBtn.disabled = currentPage === totalPages;
+                firstPageBtn.disabled = window.currentPage === 1;
+                prevPageBtn.disabled = window.currentPage === 1;
+                nextPageBtn.disabled = window.currentPage === window.totalPages;
+                lastPageBtn.disabled = window.currentPage === window.totalPages;
                 
                 // 페이지 번호 생성
                 pageNumbers.innerHTML = '';
                 
                 const maxPageNumbers = 5;
-                const pageRange = getPageRange(currentPage, totalPages, maxPageNumbers);
+                const pageRange = getPageRange(window.currentPage, window.totalPages, maxPageNumbers);
                 
                 for (let i = pageRange.start; i <= pageRange.end; i++) {
                     const pageBtn = document.createElement('button');
                     pageBtn.textContent = i;
-                    pageBtn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+                    pageBtn.className = 'pagination-btn' + (i === window.currentPage ? ' active' : '');
                     
                     pageBtn.addEventListener('click', function() {
-                        if (currentPage !== i) {
-                            currentPage = i;
+                        if (window.currentPage !== i) {
+                            window.currentPage = i;
                             loadUserData();
                         }
                     });
@@ -938,91 +1154,25 @@
                 
                 return { start, end };
             }
-            
-            // 샘플 데이터 (API 호출 실패 시 사용)
-            function getSampleData() {
-                return [
-                    {
-                        userId: 'gamer728',
-                        userName: 'gamer728',
-                        playDays: 24,
-                        netBet: 1254800,
-                        lastActivity: '2025-05-12',
-                        inactiveDays: 8
-                    },
-                    {
-                        userId: 'playpro365',
-                        userName: 'playpro365',
-                        playDays: 21,
-                        netBet: 982450,
-                        lastActivity: '2025-05-15',
-                        inactiveDays: 5
-                    },
-                    {
-                        userId: 'gameking03',
-                        userName: 'gameking03',
-                        playDays: 18,
-                        netBet: 845600,
-                        lastActivity: '2025-03-12',
-                        inactiveDays: 69
-                    },
-                    {
-                        userId: 'winner2025',
-                        userName: 'winner2025',
-                        playDays: 19,
-                        netBet: 782500,
-                        lastActivity: '2025-05-08',
-                        inactiveDays: 12
-                    },
-                    {
-                        userId: 'lucky777',
-                        userName: 'lucky777',
-                        playDays: 16,
-                        netBet: 758200,
-                        lastActivity: '2025-05-18',
-                        inactiveDays: 2
-                    },
-                    {
-                        userId: 'topplayer2',
-                        userName: 'topplayer2',
-                        playDays: 20,
-                        netBet: 732450,
-                        lastActivity: '2025-05-01',
-                        inactiveDays: 19
-                    },
-                    {
-                        userId: 'gamer465',
-                        userName: 'gamer465',
-                        playDays: 15,
-                        netBet: 695800,
-                        lastActivity: '2025-04-02',
-                        inactiveDays: 48
-                    },
-                    {
-                        userId: 'bestbets',
-                        userName: 'bestbets',
-                        playDays: 14,
-                        netBet: 658350,
-                        lastActivity: '2025-05-16',
-                        inactiveDays: 4
-                    },
-                    {
-                        userId: 'vipuser89',
-                        userName: 'vipuser89',
-                        playDays: 16,
-                        netBet: 635120,
-                        lastActivity: '2025-05-10',
-                        inactiveDays: 10
-                    },
-                    {
-                        userId: 'luckystar',
-                        userName: 'luckystar',
-                        playDays: 17,
-                        netBet: 618750,
-                        lastActivity: '2025-05-05',
-                        inactiveDays: 15
-                    }
-                ].slice(0, pageSize);
+        
+            // UI 상태 업데이트 함수
+            function updateLoadingState(isLoading, hasError = false) {
+                if (isLoading) {
+                    // 로딩 상태 표시
+                    loadingIndicator.style.display = 'flex';
+                    errorMessage.style.display = 'none';
+                    userTable.style.display = 'none';
+                } else if (hasError) {
+                    // 오류 상태 표시
+                    loadingIndicator.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    userTable.style.display = 'none';
+                } else {
+                    // 정상 상태 표시
+                    loadingIndicator.style.display = 'none';
+                    errorMessage.style.display = 'none';
+                    userTable.style.display = 'table';
+                }
             }
         });
     </script>

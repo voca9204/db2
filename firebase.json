@@ -59,23 +59,10 @@
   },
   "emulators": {
     "functions": {
-      "port": 11001
-    },
-    "hosting": {
-      "port": 11002
+      "port": 9000
     },
     "ui": {
-      "enabled": true,
-      "port": 11003
-    },
-    "firestore": {
-      "port": 11004
-    },
-    "hub": {
-      "port": 11005
-    },
-    "logging": {
-      "port": 11006
+      "enabled": false
     }
   }
 }
